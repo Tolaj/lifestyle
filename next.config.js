@@ -12,8 +12,8 @@ const nextConfig = {
   //   ]
   // },
   env: {
-    // SERVER_API: 'https://hashinclude.cloud/',
-    SERVER_API:'http://localhost:8081'
+    SERVER_API: '',
+    // SERVER_API:'http://localhost:8081'
 
   },
 }

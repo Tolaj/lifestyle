@@ -11,7 +11,7 @@ function CategoryList(props) {
   
   if(windowWidth<700){
     return(<>
-      <SmCardBody columns = {['name','description','color','icon']}  _as = {props._as} gridApi = "/api/categories" />
+      <SmCardBody columns = {['name','description','color','icon']}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/categories"} />
     </>)
   }else{
     const columnComponentIcon = (params) => {
@@ -21,7 +21,7 @@ function CategoryList(props) {
       return( <div className='flex items-center justify-center w-full h-full'><div className={`${params.data.color} rounded-lg w-16 h-5`}></div></div> )
     }
     return (<>
-      <GridBody columns = {['name','description','color','icon']} columnComponents = {['','',columnComponentColor,columnComponentIcon]}   _as = {props._as} gridApi = "/api/categories" />
+      <GridBody columns = {['name','description','color','icon']} columnComponents = {['','',columnComponentColor,columnComponentIcon]}   _as = {props._as} gridApi = {process.env.SERVER_API+"/api/categories"} />
     </>);
   }
   

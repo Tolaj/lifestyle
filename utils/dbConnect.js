@@ -17,22 +17,15 @@ const dbConnect = async () => {
     console.error(`DB Error: ${err.message}`);
     process.exit(1);
   } finally{
-    // setTimeout(async () => {
-    //   if (mongoose.connection.readyState === 1) {  
-    //     console.log('MongoDB is still connected. Disconnecting...');
-    //     await mongoose.disconnect();
-    //     console.log('Disconnected from MongoDB.');
-    //   } else {
-    //     console.log('MongoDB was already disconnected.');
-    //   }
-    // }, 10000);
-    if (mongoose.connection.readyState === 1) {  
-      console.log('MongoDB is still connected. Disconnecting...');
-      await mongoose.disconnect();
-      console.log('Disconnected from MongoDB.');
-    } else {
-      console.log('MongoDB was already disconnected.');
-    }
+    setTimeout(async () => {
+      if (mongoose.connection.readyState === 1) {  
+        console.log('MongoDB is still connected. Disconnecting...');
+        await mongoose.disconnect();
+        console.log('Disconnected from MongoDB.');
+      } else {
+        console.log('MongoDB was already disconnected.');
+      }
+    }, 10000);
   }
 };
 
