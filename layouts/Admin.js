@@ -60,11 +60,11 @@ export default function Admin({ children }) {
 
   return (
 
-    <div className={`flex  h-fit  bg-[#f9fafeb3] `}>
+    <div className={`flex  h-fit  bg-[#F9FAFE] `}>
       <div className={` ${_as.sidebarToggle?"absolute md:relative z-50":"hidden md:block"} `}>
         <Sidebar _ac={_ac} _as={_as} />
       </div>
-      <div className="flex flex-col  w-full h-full ">
+      <div className="flex flex-col  w-full h-screen ">
         {/* admin header nav */}
         <AdminNavbar _ac={_ac} _as={_as} />
         {/* admin body */}
