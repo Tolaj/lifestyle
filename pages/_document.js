@@ -14,7 +14,7 @@ class MyDocument extends Document {
           <link
             rel="apple-touch-icon"
             sizes="76x76"
-            href="/icon512_rounded.png"
+            href="/icon512_maskable.png"
           />
       
 
