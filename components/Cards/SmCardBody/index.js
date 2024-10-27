@@ -86,17 +86,30 @@ function SmCardBody(props) {
                         </div>
                         <div className={`${readMore==index+'i'?' p-3 -mt-6 divide-y ':"hidden"}`}>
                             {props.columns.map((column,index)=>{
-                                if (column === "category") return null;
-                                return(<>
-                                    <div key = {index} className=' divide-y'>
-                                        <div className='text-gray-400'>
-                                            {column}
+                                if (column === "category"){
+                                    return(<>
+                                        <div key = {index} className=' divide-y'>
+                                            <div className='text-gray-400'>
+                                                category
+                                            </div>
+                                            <div>
+                                                {row.category.name}
+                                            </div>
                                         </div>
-                                        <div>
-                                            {row[column]}
+                                    </>)
+                                }else{
+                                    return(<>
+                                        <div key = {index} className=' divide-y'>
+                                            <div className='text-gray-400'>
+                                                {column}
+                                            </div>
+                                            <div>
+                                                {row[column]}
+                                            </div>
                                         </div>
-                                    </div>
-                                </>)
+                                    </>)
+                                }
+                                
                             })}                             
                         </div>
                     </div>
