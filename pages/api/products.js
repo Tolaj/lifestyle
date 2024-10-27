@@ -1,4 +1,4 @@
-import Product from '../../models/Product';
+import {Product} from '../../models/index';
 import { createHandler } from '../../controllers/genericHandler';
 
 export const config = {

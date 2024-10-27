@@ -14,9 +14,15 @@ const nextConfig = {
 
   experimental: {
     esmExternals: "loose", // <-- add this
-    serverComponentsExternalPackages: ["mongoose"] // <-- and this
+    serverComponentsExternalPackages: ["mongoose"], // <-- and this
   },
-
+  webpack: (config) => {
+    config.experiments = {
+      topLevelAwait: true,
+      layers: true, // Enable the layers experiment
+    };
+    return config;
+  },
 
   env: {
     SERVER_API: '',
