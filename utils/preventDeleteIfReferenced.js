@@ -8,7 +8,7 @@ return function (schema) {
 
       // Check if there's a reference to this document in the refModel
         try {
-            const isReferenced = await mongoose.model(refModel).exists({ [refField]: docId });
+            const isReferenced = await mongoose.model(refModel).exists({ [refField]: new mongoose.Types.ObjectId(docId)  });
             if (isReferenced) {
                 const error = new Error(`Cannot delete; document is referenced in ${refModel}.`);
                 error.status = 400;

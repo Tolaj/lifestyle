@@ -47,7 +47,7 @@ function SmCardBody(props) {
     return(<>
         {preLoader?<PageChange />:<></>}
         <div className='flex flex-col space-y-2'>
-            {rowData.map((row,index)=>{
+            {rowData?rowData.map((row,index)=>{
                 return(<>
                     <div key={index} aria-label="content" className={` grid gap-2.5 ${readMore==index+'i'?"bg-white shadow-lg rounded-t-[35px] rounded-b-lg":"rounded-full bg-white shadow-lg"} `}>
                         <div className="flex items-center space-x-4 p-3.5 " >
@@ -101,7 +101,7 @@ function SmCardBody(props) {
                         </div>
                     </div>
                 </>)
-            })}
+            }):<></>}
         </div>
     </>) 
 }

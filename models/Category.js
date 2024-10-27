@@ -12,6 +12,6 @@ const CategorySchema = new mongoose.Schema({
   timestamps: true
 });
 
-CategorySchema.plugin(preventDeleteIfReferenced('Product', 'categoryId'));
+CategorySchema.plugin(preventDeleteIfReferenced('Product', 'category'));
 
 export default mongoose.models.Category || mongoose.model('Category', CategorySchema);

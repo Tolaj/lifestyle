@@ -7,4 +7,4 @@ export const config = {
   },
 };
 
-export default createHandler(Product,{populate: 'category',});
+export default createHandler(Product,{populate: 'category'});

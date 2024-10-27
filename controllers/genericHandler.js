@@ -23,21 +23,9 @@ const parseFormData = (req) => {
 
 // Function to handle GET requests
 async function handleGet(req, res, model, options) {
-  let data;
-
-  if (options.populate) {
-      data = await model.find().populate(options.populate);
-
-      data = data.map(doc => {
-        const docObj = doc.toObject();
-        docObj[options.populate+'Id'] = doc[options.populate]._id
-        return docObj;
-      });
-
-  } else{
-    data = await model.find()
-  }
-  
+  const data = options.populate
+    ? await model.find().populate(options.populate)
+    : await model.find();
   return res.status(200).json(data);
 }
 
