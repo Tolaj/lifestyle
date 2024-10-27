@@ -101,7 +101,7 @@ function Modal(props) {
                         {props.formTitle}
                       </h1>
                       <form className="flex flex-col gap-4 md:gap-6 " onSubmit={(e)=>{e.preventDefault(); props.formData ? handleUpdate() : handleSave() }}>  
-                        <div className="gap-4 md:gap-6 grid grid-cols-1">
+                        <div className={`gap-4 md:gap-6 ${props.style?props.style:"grid grid-cols-1"} `}>
                           {props.formFields.map((formField,index)=>{
                             switch (formField.type) {
                               case 'text':

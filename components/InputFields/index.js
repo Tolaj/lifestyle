@@ -52,10 +52,10 @@ const Select = (props) => {
         <div>
           <label for="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{props.label?props.label:"Name"}</label>
           <select name={props.name} onChange={props.onChange?props.onChange:()=>{}}  value = {props.value?props.value:null} id="name" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 " placeholder={props.placeholder?props.placeholder:"Jehiro"} required="">
-                <option  selected>Choose a country</option>
+                <option >Choose a option</option>
                {props.options.map((option,index)=>{
                 return(<>
-                    <option>{option}</option>
+                    <option value={props.optionValues[index]} >{option}</option>
                 </>)
                })}
                
@@ -73,7 +73,8 @@ const GridSelect = (props) => {
        
             if(props.value){
                 if(props.name=='icon'){
-                    setOptionSelect( <HeroIcon style="" iconTitle = {props.value} />);
+                    heroIconsNames.includes(props.value)?setOptionSelect(<HeroIcon style="" iconTitle = {props.value} />):setOptionSelect(<HeroIcon style="" iconTitle = {"ExclamationTriangleIcon"} />)
+                    
                 }else if(props.name == 'color'){
                     setOptionSelect( <div className={`${props.value} rounded-full w-4 h-4 `}></div>)
                 }else{

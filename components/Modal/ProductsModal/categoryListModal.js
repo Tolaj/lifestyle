@@ -4,11 +4,13 @@ import HeroIcon, { heroIcons, heroIconsNames }  from 'utils/heroIcon';
 import Colors from "utils/colors";
 
 function CategoryListModal(props) {
-  let iconList =heroIconsNames.map((heroIcon,index)=>{
+
+  let iconList = heroIconsNames.map((heroIcon,index)=>{
     return(<>
         <HeroIcon style="" iconTitle = {heroIconsNames[index]} />
         </>)
   })
+
   iconList = [<></>,...iconList]
   let heroIconsNamesVal = ['',...heroIconsNames]
   

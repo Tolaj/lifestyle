@@ -51,24 +51,25 @@ function SmCardBody(props) {
                 return(<>
                     <div key={index} aria-label="content" className={` grid gap-2.5 ${readMore==index+'i'?"bg-white shadow-lg rounded-t-[35px] rounded-b-lg":"rounded-full bg-white shadow-lg"} `}>
                         <div className="flex items-center space-x-4 p-3.5 " >
-                            <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full ${row.color} text-black `} >
-                                <HeroIcon  style="size-6 text-black" iconTitle = {row.icon} />
+                            <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full ${row.color || row.category.color} text-black `} >
+                                <HeroIcon  style="size-6 text-black" iconTitle = {row.icon || row.category.icon} />
                             </span>
                             <div className={`${ readMore==index+'i' ? 'invisible' : ' ' } flex flex-col flex-1`}>
                                 <h3 className="text-sm font-medium"> {row[props.columns[0]]}  </h3>
-                                <span className="inline-block  text-xs leading-none text-gray-400 font-normal " >{row[props.columns[1]]}</span>
+                                
+                                <span className={` ${props.columns[1] != 'price'?'':'hidden' } inline-block  text-xs leading-none text-gray-400 font-normal `} >{row[props.columns[1]]}</span>
                             
-                                {/* <div className="divide-x divide-gray-200 mt-auto">
-                                    <span
-                                    className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0"
-                                    >1 unit</span>
-                                    <span
-                                    className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0"
-                                    >8kWh</span>
-                                </div> */}
+                                <div className={`${props.columns[1] != 'price'?'hidden':'' } divide-x divide-gray-200 mt-auto `}>
+                                    <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0">
+                                        $ {row[props.columns[1]]} 
+                                    </span>
+                                    <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0" >
+                                        {row[props.columns[2]]} ml
+                                    </span>
+                                </div>
                             </div>
                             <div className='flex items-center justify-center gap-1'>
-                                <svg  onClick={()=>{props._as.setModalToggle(router.route);props._as.setCategoryData(row)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+                                <svg  onClick={()=>{props._as.setModalToggle(router.route);props.setFormData(row)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                                     <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
                                     <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
                                 </svg>
@@ -83,10 +84,11 @@ function SmCardBody(props) {
                                 </svg>
                             </div>
                         </div>
-                        <div className={`${readMore==index+'i'?' p-3  divide-y ':"hidden"}`}>
+                        <div className={`${readMore==index+'i'?' p-3 -mt-6 divide-y ':"hidden"}`}>
                             {props.columns.map((column,index)=>{
+                                if (column === "category") return null;
                                 return(<>
-                                    <div className=' divide-y'>
+                                    <div key = {index} className=' divide-y'>
                                         <div className='text-gray-400'>
                                             {column}
                                         </div>
@@ -95,9 +97,7 @@ function SmCardBody(props) {
                                         </div>
                                     </div>
                                 </>)
-                            })}
-                                
-                               
+                            })}                             
                         </div>
                     </div>
                 </>)

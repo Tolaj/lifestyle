@@ -1,33 +1,42 @@
 import axios from 'axios';
 
 const FetchAPI = async (api, method, data = null, config = {}) => {
-  // Determine the id from data if provided, otherwise set it to null
-  const id = data ? data._id : null;
+  const id = data?._id ?? data?.id ?? null;
+  const url = id && method !== 'POST' ? `${api}?id=${id}` : api;
 
-  // Construct the URL based on the presence of an id
-  const url = id ? `${api}?id=${id}` : `${api}`;
+  let payload = data;
+  const isMultipart = data instanceof FormData;
 
-  // Set the configuration for the request
+  // If data is not already FormData, convert it for file uploads (POST/PUT)
+  if (!isMultipart && (method === 'POST' || method === 'PUT') && data) {
+    payload = new FormData();
+    for (const key in data) {
+      payload.append(key, data[key]);
+    }
+    config.headers = {
+      ...config.headers,
+      'Content-Type': 'multipart/form-data',
+    };
+  }
+
   const options = {
     method,
     url,
-    data: method !== 'GET' ? data : undefined, // Assign data only for non-GET requests
+    data: payload, // FormData for file uploads, or regular JSON data
     headers: {
-      'Content-Type': 'application/json',
-      ...config.headers, // Spread any additional headers from config
+      'Content-Type': isMultipart ? 'multipart/form-data' : 'application/json',
+      ...config.headers,
     },
-    ...config, // Spread additional config options
+    ...config,
   };
 
   try {
-    // Make the API request using axios
     const response = await axios(options);
-
-    return response.data; // Return the response data
+    return response.data;
   } catch (error) {
-    alert("Rukh bc error aya Fetch API controller maybe bcz of the way dbConnect is defined")
-    console.error(`Error during ${method} request:`, error);
-    throw error; // Re-throw the error for further handling if needed
+    alert("Error from FetchAPI : " + JSON.stringify(error.response?.data.message || error.message));
+    console.error(`Error during ${method} request to ${url}:`, error.response?.data || error.message);
+    // throw error;
   }
 };
 
