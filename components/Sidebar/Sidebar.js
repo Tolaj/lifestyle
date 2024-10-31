@@ -17,7 +17,7 @@ export default function Sidebar(props) {
     <>
       {windowWidth<700?<>
         <div className="absolute bottom-0 w-screen z-50">
-          <div className="sticky bottom-2  p-5 px-6 m-2   flex items-center justify-between   bg-black shadow-3xl text-white rounded-2xl cursor-pointer">
+          <div className="sticky bottom-2  p-5 px-6 m-2   flex items-center justify-between   bg-black shadow-3xl text-white rounded-3xl cursor-pointer">
             {/* 1 */}
             <a href="/admin/dashboard" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 ">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -79,7 +79,7 @@ export default function Sidebar(props) {
           </div>
         </div>
         </>:<>
-        <div className="relative overflow-y-auto  h-screen w-full max-w-[22rem] flex-col rounded-xl bg-[#F9FAFE] bg-clip-border p-4 text-gray-700 ">
+        <div className="relative overflow-y-auto  h-screen w-full max-w-[18rem] flex-col rounded-xl bg-[#F9FAFE] bg-clip-border p-4 text-gray-700 ">
         <div className="flex items-center justify-evenly gap-4 p-4  mt-4">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-8">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m1.5.5-1.5-.5M6.75 7.364V3h-3v18m3-13.636 10.5-3.819" />

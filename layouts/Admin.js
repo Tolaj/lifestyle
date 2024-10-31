@@ -27,6 +27,7 @@ export default function Admin({ children }) {
     'inventory',
     'resourcePlans',
     'wishLists',
+    
 
   )
 
@@ -42,23 +43,25 @@ export default function Admin({ children }) {
         tabButtonType:[]
 
       },
-      { title: "Shopping", 
-        route: "/admin/shopping", 
+      
+      { 
+        title: "Products", 
+        route: "/admin/products",
+        tabSections: ["Products List","Category","Wish List","Inventory","Resource Plan","Orders"],
+        tabButtons : [["Add Item", "Cart"],["Add Category", "Cart"],["Add Item", "Cart"],["Cart"],['Add Plan',"Cart"],["Cart"]],
+        tabButtonType:[["ADD","CART"],["ADD","CART"],["ADD","CART"],["CART"],["ADD","CART"],["CART"]],
+        setActiveTabSection: _as.setProductsTab,
+        activeTabSection: _as.productsTab,
+        setModalToggle: _as.setModalToggle,
+      },
+
+      { title: "Finance", 
+        route: "/admin/finance", 
         tabSections: [],
         tabButtons : [],
         tabButtonType:[],
         setActiveTabSection: _as.setShoppingTab,
         activeTabSection: _as.shoppingTab,
-        setModalToggle: _as.setModalToggle,
-      }, 
-      { 
-        title: "Products", 
-        route: "/admin/products",
-        tabSections: ["Products List","Category","Inventory","Resource Plan","Order History"],
-        tabButtons : [["Add Item"],["Add Category"],[],['Add Plan']],
-        tabButtonType:[["ADD_BUTTON"],["ADD_BUTTON"]],
-        setActiveTabSection: _as.setProductsTab,
-        activeTabSection: _as.productsTab,
         setModalToggle: _as.setModalToggle,
       }
     ]
