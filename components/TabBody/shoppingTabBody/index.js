@@ -1,23 +1,16 @@
-import React from "react";
-import ContactList from "./contactList";
-import AdmissionEnquiry from "./admissionEnquiry";
-import NewsLetters from "./newsLetters";
-import CreateProject from "./createProject";
-import MobileUI from "components/extra/MobileUI";
-// components
+import useInstallPrompt from 'components/extra/pwa';
 
+export default function ShoppingTabBody() {
+  const { isInstallable, installApp } = useInstallPrompt();
 
-
-// layout for page
-
-
-export default function ShoppingTabBody(props) {
-   
-    return(<>
-    <MobileUI />
-    </>)
-  
+  return (
+    <div>
+      <h1>Welcome to Lifestyle App</h1>
+      {isInstallable && (
+        <button onClick={installApp} style={{ padding: '10px', fontSize: '16px', color: '#FFFFFF', backgroundColor: '#8936FF' }}>
+          Install App
+        </button>
+      )}
+    </div>
+  );
 }
-
-
-
