@@ -22,7 +22,12 @@ export default function Admin({ children }) {
     'shopping',
     'products',
     'category',
-    'sidebarToggle'
+    'sidebarToggle',
+    'orders',
+    'inventory',
+    'resourcePlans',
+    'wishLists',
+
   )
 
   let _ac = [
@@ -49,9 +54,9 @@ export default function Admin({ children }) {
       { 
         title: "Products", 
         route: "/admin/products",
-        tabSections: ["Products List","Category"],
-        tabButtons : [["Add Item"],["Add Category"],[]],
-        tabButtonType:[["ADD_BUTTON"],["ADD_BUTTON"],[]],
+        tabSections: ["Products List","Category","Inventory","Resource Plan","Order History"],
+        tabButtons : [["Add Item"],["Add Category"],[],['Add Plan']],
+        tabButtonType:[["ADD_BUTTON"],["ADD_BUTTON"]],
         setActiveTabSection: _as.setProductsTab,
         activeTabSection: _as.productsTab,
         setModalToggle: _as.setModalToggle,
@@ -61,9 +66,9 @@ export default function Admin({ children }) {
   return (
 
     <div className={`flex  h-fit  bg-[#F9FAFE] `}>
-      <div className={` ${_as.sidebarToggle?"absolute md:relative z-50":"hidden md:block"} `}>
+      {/* <div className={` ${_as.sidebarToggle?"absolute md:relative z-50":"hidden md:block"} `}> */}
         <Sidebar _ac={_ac} _as={_as} />
-      </div>
+      {/* </div> */}
       <div className="flex flex-col  w-full h-screen ">
         {/* admin header nav */}
         <AdminNavbar _ac={_ac} _as={_as} />

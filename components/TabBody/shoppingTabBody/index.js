@@ -3,6 +3,7 @@ import ContactList from "./contactList";
 import AdmissionEnquiry from "./admissionEnquiry";
 import NewsLetters from "./newsLetters";
 import CreateProject from "./createProject";
+import MobileUI from "components/extra/MobileUI";
 // components
 
 
@@ -13,6 +14,7 @@ import CreateProject from "./createProject";
 export default function ShoppingTabBody(props) {
    
     return(<>
+    <MobileUI />
     </>)
   
 }
