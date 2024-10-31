@@ -3,8 +3,16 @@ import { useState, useEffect } from 'react';
 export default function useInstallPrompt() {
   const [installPrompt, setInstallPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
+  const [isIos, setIsIos] = useState(false);
+  const [isInStandaloneMode, setIsInStandaloneMode] = useState(false);
 
   useEffect(() => {
+    const isIosDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+    setIsIos(isIosDevice);
+    setIsInStandaloneMode(isStandalone);
+
     const handleBeforeInstallPrompt = (event) => {
       event.preventDefault();
       setInstallPrompt(event);
@@ -31,5 +39,5 @@ export default function useInstallPrompt() {
     }
   };
 
-  return { isInstallable, installApp };
+  return { isInstallable, installApp, isIos, isInStandaloneMode };
 }
