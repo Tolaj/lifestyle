@@ -1,35 +1,27 @@
-import GridBody from 'components/Cards/GridBody';
-import SmCardBody from 'components/Cards/SmCardBody';
 import React, { useEffect, useState } from 'react';
-import HeroIcon, { heroIconsNames } from 'utils/heroIcon';
 
-function CategoryList(props) {
-  const [windowWidth, setWindowWidth] = useState(null);
-  useEffect(() => {
-      setWindowWidth(window.outerWidth)
-  },[]) 
-  
-  if(windowWidth<700){
-    return(<>
-      <SmCardBody columns = {['name','description','color','icon']} setFormData={props._as.setCategoryData}   _as = {props._as} gridApi = {process.env.SERVER_API+"/api/categories"} />
-    </>)
-  }else{
-    const columnComponentIcon = (params) => {
-      
-      if(heroIconsNames.includes(params.data.icon)) {
-        return( <div className='flex items-center justify-center w-full h-full'> <HeroIcon style="" iconTitle = {params.data.icon? params.data.icon:"ExclamationTriangleIcon"} /> </div> )
-      } else {
-        return( <div className='flex items-center justify-center w-full h-full'> <HeroIcon style="" iconTitle = {"ExclamationTriangleIcon"} /> </div> )
-      }
-    }
-    const columnComponentColor = (params) => {
-      return( <div className='flex items-center justify-center w-full h-full'><div className={`${params.data.color} rounded-lg w-16 h-5`}></div></div> )
-    }
-    return (<>
-      <GridBody columns = {['name','description','color','icon']} columnComponents = {['','',columnComponentColor,columnComponentIcon]} setFormData={props._as.setCategoryData}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/categories"} />
-    </>);
-  }
-  
+
+import useInstallPrompt from '../../../utils/useInstallPrompt';
+
+export default function CategoryList(props) {
+  const { installApp, isIos, isInStandaloneMode } = useInstallPrompt();
+
+  return (
+    <div>
+      <h1>Welcome to Lifestyle App</h1>
+      {!isInStandaloneMode && (
+        <button onClick={installApp} style={{ padding: '10px', fontSize: '16px', color: '#FFFFFF', backgroundColor: '#8936FF' }}>
+          Install App
+        </button>
+      )}
+      {isIos && !isInStandaloneMode && (
+        <p style={{ fontSize: '14px', color: '#666' }}>
+          Tap the Share icon below, then select "Add to Home Screen" to install the app.
+        </p>
+      )}
+    </div>
+  );
 }
 
-export default CategoryList;
+
+

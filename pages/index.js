@@ -1,9 +1,7 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-
-import IndexNavbar from "components/Navbars/IndexNavbar.js";
-import Footer from "components/Footers/Footer.js";
+import useInstallPrompt from '../utils/useInstallPrompt';
+import { useRouter } from "next/router";
 
 
 // default redirection 
@@ -16,10 +14,24 @@ import Footer from "components/Footers/Footer.js";
 //   }
 // }
 export default function Index() {
+	const { installApp, isIos, isInStandaloneMode } = useInstallPrompt();
 	const [windowWidth, setWindowWidth] = useState(null);
+	const router = useRouter()
 	useEffect(() => {
+		
         setWindowWidth(window.outerWidth);
     }, []);
+
+	const installAppOnDevice = () =>{	
+		if(isIos){
+			return alert("Tap the Share icon below, then select 'Add to Home Screen' to install the app.")
+		}else{
+ 			return installApp()
+		}
+	}
+	
+	useEffect(()=>{isInStandaloneMode?router.push('/admin/dashboard'):""},[isInStandaloneMode])
+	
 	
   return (
     <>
@@ -32,7 +44,7 @@ export default function Index() {
 
 						<p class="font-bold text-[8px] md:text-xs capitalize w-52 md:w-96 md:px-7  mx-4 md:mx-8 leading-[1.3] text-[#dcdbdb]  ">Introducing Lifestyle. Track expenses, create grocery lists, and plan budgets—all in one place! Take control of your finances effortlessly!</p> 
 						<div  class="z-index-top scale-10 md:scale-100 mx-4 md:mx-16 flex gap-2">
-							<div href="#" class="text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200 border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px] ">Install
+							<div onClick={()=>{installAppOnDevice()}}  class="text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200 border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px] ">Install
 							</div> 
 							<div href="#" class=" md:block hidden text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">Get Started
 							</div>
