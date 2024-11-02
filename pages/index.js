@@ -16,27 +16,80 @@ import { useRouter } from "next/router";
 export default function Index() {
 	const { installApp, isIos, isInStandaloneMode } = useInstallPrompt();
 	const [windowWidth, setWindowWidth] = useState(null);
+	const [dialog, setDialog] = useState(false);
+
 	const router = useRouter()
 	useEffect(() => {
 		
         setWindowWidth(window.outerWidth);
     }, []);
 
+
+
 	const installAppOnDevice = () =>{	
+
 		if(isIos){
-			return alert("Tap the Share icon below, then select 'Add to Home Screen' to install the app.")
+			return setDialog(true)
 		}else{
  			return installApp()
 		}
 	}
 	
-	useEffect(()=>{isInStandaloneMode?router.push('/admin/dashboard'):""},[isInStandaloneMode])
+	useEffect(()=>{isInStandaloneMode?router.push('/auth/login'):""},[isInStandaloneMode])
 	
+	const isChrome = () => {
+		if (typeof navigator !== 'undefined') {
+		  return /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+		}
+		return false;
+	  };
+	  
+	const isSafari = () => {
+		if (typeof navigator !== 'undefined') {
+		  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+		}
+		return false;
+	  };
 	
+	  
   return (
     <>
       {/* <IndexNavbar fixed /> */}
+	  {dialog?
+	  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[200]">
+	  <div className="bg-white rounded-lg p-6 w-80 md:w-96 shadow-lg relative">
+	  <button
+	  onClick={()=>{setDialog(false)}}
+	  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+	>
+	  ✕
+	</button>
 
+	<h2 className="text-xl font-bold mb-4 text-center">Install App</h2>
+	
+		<div className="text-sm text-gray-600">
+			
+			Tap the Share icon below <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 inline-block bg-black text-white rounded-sm p-[1px]">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+			</svg>,
+
+			 then select '<span className="font-bold text-black">Add to Home Screen'</span> to install the app.
+		</div>
+		<div className=" flex items-center justify-between mt-3">
+			<div className="flex flex-col">
+				{isSafari?<img src="/assets/images/install_safari.png" className="w-32" />:<img src="/assets/images/install_chrome.png" className="w-32" />}
+				
+				<span className="text-xs text-white font-semibold bg-black w-fit px-2 py-[3px]  rounded-lg mt-1">Step-1</span>
+			</div>
+			<div className="flex flex-col">
+				<img src="/assets/images/install_share.png" className="w-32" />
+				<span className="text-xs text-white font-semibold bg-black w-fit px-2 py-[3px] rounded-lg mt-1">Step-2</span>
+			</div>
+		</div>
+	</div>
+	</div>
+	  :<></>}
+	  	
 	  	<div className="bg-[#161616] flex flex-col overflow-hidden min-h-screen max-h-screen relative ">
 			<header>
 				<nav class="  ">
