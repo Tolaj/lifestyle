@@ -12,7 +12,7 @@ export default function Navbar(props) {
     <>
    
       <nav className="top-0 absolute z-30 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
-        <div className="container px-4 mx-auto flex flex-wrap items-center justify-end bg-[#F9FAFE] my-2">
+        <div className="container px-4 mx-auto flex flex-wrap items-center justify-end bg-[#161616] my-2">
           {/* <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
             <Link legacyBehavior href="/">
               <a
@@ -97,23 +97,13 @@ export default function Navbar(props) {
           </div> */}
            <div className="text-center">
             {router.route == "/auth/login" ? 
-                    <a href="#" onClick={()=>alert("For security reasons we did not automate this process, to create more admin logins please contact 8329867512")}><div
-                      className="bg-[#F9FAFE] hover:cursor-pointer text-black active:bg-slate-200 text-sm font-bold uppercase px-10 py-4 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-2/2 ease-linear transition-all duration-150"
-                      type="button"
-                      
-                    >
-                      Sign Up 
-                    </div></a>
+                    <div onClick={()=>{router.push('/auth/register')}} class=" my-6 md:my-8  text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">
+                      Sign Up
+							      </div>
                   :
-                  <a href="/auth/login">
-                  <div
-                      className="bg-[#F9FAFE] hover:cursor-pointer text-black active:bg-slate-200 text-sm font-bold uppercase px-10 py-4 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-2/2 ease-linear transition-all duration-150"
-                      type="button"
-                      
-                    >
-                      Sign In 
-                    </div>
-                    </a>
+                    <div onClick={()=>{router.push('/auth/login')}} class=" my-6 md:my-8  text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">
+                      Sign Up
+							      </div>
                   }
             </div>
         </div>

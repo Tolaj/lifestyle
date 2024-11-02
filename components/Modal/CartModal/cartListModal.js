@@ -5,64 +5,135 @@ import FetchAPI from "controllers/fetchAPI";
 
 function CartListModal(props) {
 
-  const [categoryList, setCategoryList] = useState(); 
+  return(
+    <div class="relative z-50" aria-labelled-by="slide-over-title" role="dialog" aria-modal="true">
+      {/* <!--
+      Background backdrop, show/hide based on slide-over state.
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await FetchAPI(process.env.SERVER_API+"/api/categories/", 'GET'); // Fetching data with GET method
-        setCategoryList(data); // Set the response data to state
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+      Entering: "ease-in-out duration-500"
+      From: "opacity-0"
+      To: "opacity-100"
+      Leaving: "ease-in-out duration-500"
+      From: "opacity-100"
+      To: "opacity-0"
+      --> */}
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
-    fetchData();
-  }, [props._as.reloadChild]);
+      <div class="fixed inset-0 overflow-hidden">
+      <div class="absolute inset-0 overflow-hidden">
+      <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+      {/* <!--
+        Slide-over panel, show/hide based on slide-over state.
 
-  const formFields =[
-    {
-      "type":"text",
-      "name":"name",
-      "label":"Name",
-      "placeholder":"Jehiro"
-    },
-    {
-      "type":"select",
-      "name":"category",
-      "label":"Category",
-      "placeholder":"Select a Category",
-      "optionValues": categoryList?categoryList.map(obj => obj._id):[],
-      "options": categoryList?categoryList.map(obj => obj.name):[]
-    },
-    {
-      "type":"text",
-      "name":"price",
-      "label":"Price ($)",
-      "placeholder":"2.25"
-    },
-    {
-      "type":"text",
-      "name":"quantity",
-      "label":"Quantity (ml)",
-      "placeholder":"800"
-    },
-    {
-      "type":"text",
-      "name":"description",
-      "label":"Description",
-      "placeholder":"Milk for jehiro from walmart"
-    },
-    {
-      "type":"text",
-      "name":"manufacturer",
-      "label":"Manufacturer",
-      "placeholder":"recibo"
-    },
-  ]
-  return (<>
-    <Modal formData = {props._as.productsData} setFormData = {props._as.setProductsData} _as = {props._as} formTitle = "Create a Product" formFields = {formFields} formAPI={process.env.SERVER_API+"/api/products/"} style="grid grid-cols-2" />
-  </>);
+        Entering: "transform transition ease-in-out duration-500 sm:duration-700"
+          From: "translate-x-full"
+          To: "translate-x-0"
+        Leaving: "transform transition ease-in-out duration-500 sm:duration-700"
+          From: "translate-x-0"
+          To: "translate-x-full"
+      --> */}
+      <div class="pointer-events-auto w-screen max-w-md">
+        <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+          <div class="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+            <div class="flex items-start justify-between">
+              <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">Shopping cart</h2>
+              <div class="ml-3 flex h-7 items-center">
+              {/* props.setShowCart(false) */}
+                <button onClick={()=>{}} type="button" class="relative -m-2 p-2 text-gray-400 hover:text-gray-500">
+                  <span class="absolute -inset-0.5"></span>
+                  <span class="sr-only">Close panel</span>
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-8">
+              <div class="flow-root">
+                <ul role="list" class="-my-6 divide-y divide-gray-200">
+                  {[].map((product,index)=>{
+                      return(
+                  <li class="flex py-6">
+                    <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                      <img src={product.imageUrl} alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="h-full w-full object-cover object-center"/>
+                    </div>
+
+                    <div class="ml-4 flex flex-1 flex-col">
+                      <div>
+                        <div class="flex justify-between text-base font-medium text-gray-900">
+                          <h3>
+                            <a href="#">{product.tag}</a>
+                          </h3>
+                          <p class="ml-4">Rs. {product.sellingPrice}</p>
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500">Size {product.size}</p>
+                      </div>
+                      <div class="flex flex-1 items-end justify-between text-sm">
+                        <p class="text-gray-500 flex">Qty {product.quantity} 
+                          <button onClick={()=>{handleReduceFromCart(product)}} className='font-medium text-red-600 hover:text-red-500 ml-2' >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+
+
+                          </button>
+                        </p>
+
+                        <div class="flex">
+                          <button onClick={()=>{handleRemoveFromCart(product)}} type="button" class="font-medium text-red-600 hover:text-red-500">Remove</button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                      )
+                  })}
+
+                  {/* <!-- More products... --> */}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
+            <div class="flex justify-between text-base font-medium text-gray-900">
+              <p>Subtotal</p>
+              <p>Rs. {[].reduce((total, product) => {
+                  const quantity = parseInt(product.quantity, 10) || 0; // Use parseInt and fallback to 0 if not a valid number
+                  const productTotal = product.sellingPrice * quantity;
+                  return total + productTotal;
+                }, 0)} 
+              </p>
+            </div>
+            <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+            <div class="mt-6">
+                <button 
+                onClick={()=>{
+                  router.replace({
+                    pathname: "/checkout",
+                    query: {array: encodeURIComponent(JSON.stringify(props.shoppingCart))}
+                  }, undefined, { shallow: false });   
+                  clearCart()          
+                }}  
+                disabled={[].length>0?0:1} class={` ${[].length>0? '' : 'opacity-10'}  w-full flex items-center justify-center rounded-md border border-transparent bg-[#161616] px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-[#2b2a2a]`}>Checkout</button>
+            </div>
+            <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
+              <p>
+                or&nbsp; 
+                <a href='/admin/dashboard' type="button" class="font-medium text-black">
+                  Continue Shopping
+                  <span aria-hidden="true"> &rarr;</span>
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      </div>
+      </div>
+    </div>
+  )
 }
 
 export default CartListModal;

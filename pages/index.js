@@ -31,11 +31,15 @@ export default function Index() {
 
 
 	const installAppOnDevice = () =>{	
-
 		if(isIos){
 			return setDialog(true)
 		}else{
- 			return installApp()
+			try{
+				installApp()
+			}finally{
+				alert("App successfully installed on your decide please check")
+			}
+			return router.push('/auth/login')
 		}
 	}
 	
@@ -128,9 +132,9 @@ export default function Index() {
 
 						<p class="font-bold text-[8px] md:text-xs capitalize w-52 md:w-96 md:px-7  mx-4 md:mx-8 leading-[1.3] text-[#dcdbdb]  ">Introducing Lifestyle. Track expenses, create grocery lists, and plan budgets—all in one place! Take control of your finances effortlessly!</p> 
 						<div  class="z-index-top scale-10 md:scale-100 mx-4 md:mx-16 flex gap-2">
-							<div onClick={()=>{installAppOnDevice()}}  class="text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200 border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px] ">Install
+							<div onClick={()=>{installAppOnDevice()}}  class={` ${isInStandaloneMode?"hidden":""} text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200 border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px] `}>Install
 							</div> 
-							<div href="#" class=" md:block hidden text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">Get Started
+							<div onClick={()=>{router.push('/auth/login')}} class=" md:block hidden text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">Get Started
 							</div>
 						</div>
 					</div>
@@ -239,9 +243,9 @@ export default function Index() {
 				<div class="sachet-1 top-[25.7vh] md:top-[53.7vh]">
 					<div class=" font-semibold mt-0 text-[#cacaca] text-base md:text-base flex flex-col items-center gap-4">
 						<div class="py-4 block md:hidden"><img src="assets/images/logo.png" class="h-16  shadow-2xl shadow-red-50 rounded-full bg-white bg-opacity-20 " /></div>
-						<a href="/shop" class="hover:text-white hover:cursor-pointer hover:underline">SHOP</a>
-						<div class="hover:text-white hover:cursor-pointer hover:underline">GALLERY</div>
-						<div class="hover:text-white hover:cursor-pointer hover:underline">ABOUT US</div>
+						<a href="/shop" class="hover:text-white hover:cursor-pointer hover:underline">Documentation</a>
+						{/* <div class="hover:text-white hover:cursor-pointer hover:underline">About Me</div> */}
+						<div class="hover:text-white hover:cursor-pointer hover:underline">swapniljadhav.com</div>
 						{/* <div class="hover:text-white hover:cursor-pointer hover:underline">CONTACT US</div> */}
 						<a href="https://www.instagram.com/lastlords/" class="flex gap-6 md:gap-2 hover:text-white hover:cursor-pointer hover:underline">
 							
