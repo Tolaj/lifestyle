@@ -60,6 +60,7 @@ export default class MyApp extends App {
           />
           <title>HAS</title>
           {/* <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script> */}
+ 
   
         </Head>
         
