@@ -27,8 +27,7 @@ export default function Admin({ children }) {
     'inventory',
     'resourcePlans',
     'wishLists',
-    
-
+    'cart'
   )
 
   let _ac = [
@@ -40,16 +39,13 @@ export default function Admin({ children }) {
         setActiveTabSection: _as.setDashboardTab,
         activeTabSection: _as.dashboardTab,
         setModalToggle: _as.setModalToggle,
-        tabButtonType:[]
-
       },
       
       { 
         title: "Products", 
         route: "/admin/products",
         tabSections: ["Products List","Category","Wish List","Inventory","Resource Plan","Orders"],
-        tabButtons : [["Add Item", "Cart"],["Add Category", "Cart"],["Add Item", "Cart"],["Cart"],['Add Plan',"Cart"],["Cart"]],
-        tabButtonType:[["ADD","CART"],["ADD","CART"],["ADD","CART"],["CART"],["ADD","CART"],["CART"]],
+        tabButtons:[["ADD","CART"],["ADD","CART"],["ADD","CART"],["CART"],["ADD","CART"],["CART"]],
         setActiveTabSection: _as.setProductsTab,
         activeTabSection: _as.productsTab,
         setModalToggle: _as.setModalToggle,
@@ -59,7 +55,6 @@ export default function Admin({ children }) {
         route: "/admin/finance", 
         tabSections: [],
         tabButtons : [],
-        tabButtonType:[],
         setActiveTabSection: _as.setShoppingTab,
         activeTabSection: _as.shoppingTab,
         setModalToggle: _as.setModalToggle,

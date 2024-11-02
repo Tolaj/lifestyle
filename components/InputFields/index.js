@@ -131,12 +131,11 @@ const GridSelect = (props) => {
 }
 
 const TabButton = (props) => {
-    const router = useRouter()
     switch (props.type) {
         case "ADD":
             return(<>
                     <div className="text-center ">
-                        <button type="submit" onClick={()=>{props.clickButton(router.route)}} className=" md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150">
+                        <button type="submit" onClick={()=>{props.clickButton(props.route)}} className=" md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150">
                             <div>
                                 {props.placeholder}
                             </div>                                        
@@ -152,7 +151,7 @@ const TabButton = (props) => {
         case "CART":
             return(<>
                     <div className="text-center ">
-                        <button type="submit" onClick={()=>{props.clickButton(router.route)}} className=" md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150">
+                        <button type="submit" onClick={()=>{props.clickButton(props.route)}} className=" md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150">
                             <div>
                                 {props.placeholder}
                             </div>                                        

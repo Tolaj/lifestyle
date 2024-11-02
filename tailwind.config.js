@@ -71,6 +71,17 @@ module.exports = {
       backgroundSize: {
         full: "100%",
       },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+      },
+      animation: {
+        float: 'float 3s ease-in-out infinite',
+        floatSlow: 'float 2s ease-in-out infinite', // Slower version
+        floatFast: 'float 2.5s ease-in-out infinite', // Faster version
+      },
     },
   },
   variants: [
