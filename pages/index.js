@@ -86,12 +86,36 @@ export default function Index() {
 		</div>
 		<div className=" flex items-center justify-between mt-3">
 			<div className="flex flex-col">
-				<img src="/assets/images/install_safari.png" className="w-32" />
+				{browserName=="Safari"?
+				<span className="relative">
+					
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-3 absolute text-black bottom-[4.7%] left-[45.5%] animate-ping  ">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+					</svg>
+					
+					<img src="/assets/images/install_safari.png" className="w-32" />
+				</span>
+				
+				:
+				<span className="relative">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-2 absolute text-black top-[6.7%] left-[88.3%] animate-ping   ">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+					</svg>
+
+					<img src="/assets/images/install_chrome.png" className="w-32" />
+				</span>
+				}
 				<span className="text-xs text-white font-semibold bg-black w-fit px-2 py-[3px]  rounded-lg mt-1">Step-1</span>
 			</div>
 			<div className="flex flex-col">
-				<img src="/assets/images/install_share.png" className="w-32" />
-				<span className="text-xs text-white font-semibold bg-black w-fit px-2 py-[3px] rounded-lg mt-1">Step-2</span>
+					<span className="relative"> 
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-[6px] absolute text-black top-[67.6%] border-[0.2px] rounded-[1px] border-black  left-[86.9%] animate-ping ">
+							<path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+						</svg>
+
+						<img src="/assets/images/install_share.png" className="w-32" />
+					</span>
+					<span className="text-xs text-white font-semibold bg-black w-fit px-2 py-[3px] rounded-lg mt-1">Step-2</span>
 			</div>
 		</div>
 	</div>
