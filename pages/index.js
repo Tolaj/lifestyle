@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import useInstallPrompt from '../utils/useInstallPrompt';
 import { useRouter } from "next/router";
+import UAParser from 'ua-parser-js';
 
 
 // default redirection 
@@ -13,6 +14,9 @@ import { useRouter } from "next/router";
 //     },
 //   }
 // }
+
+
+
 export default function Index() {
 	const { installApp, isIos, isInStandaloneMode } = useInstallPrompt();
 	const [windowWidth, setWindowWidth] = useState(null);
@@ -37,35 +41,40 @@ export default function Index() {
 	
 	useEffect(()=>{isInStandaloneMode?router.push('/auth/login'):""},[isInStandaloneMode])
 	
-	const isChrome = () => {
-		if (typeof navigator !== 'undefined') {
-		  return /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+	const [browserName, setBrowserName] = useState('');
+
+	useEffect(() => {
+		const userAgent = navigator.userAgent;
+
+		const getBrowserName = (userAgent) => {
+		if (/CriOS/.test(userAgent)) {
+			return "Chrome"; // Chrome on iOS
+		} else if (/FxiOS/.test(userAgent)) {
+			return "Firefox"; // Firefox on iOS
+		} else if (/Safari/.test(userAgent) && !/CriOS/.test(userAgent)) {
+			return "Safari"; // Safari on iOS
+		} else if (/EdgiOS/.test(userAgent)) {
+			return "Edge"; // Edge on iOS
+		} else {
+			return "Unknown"; // Other browsers
 		}
-		return false;
-	  };
-	  
-	const isSafari = () => {
-		if (typeof navigator !== 'undefined') {
-		  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-		}
-		return false;
-	  };
-	
-	  
+		};
+
+		const browserName = getBrowserName(userAgent);
+		setBrowserName(browserName);
+	}, []);
+
   return (
     <>
       {/* <IndexNavbar fixed /> */}
 	  {dialog?
 	  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[200]">
 	  <div className="bg-white rounded-lg p-6 w-80 md:w-96 shadow-lg relative">
-	  <button
-	  onClick={()=>{setDialog(false)}}
-	  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
-	>
-	  ✕
-	</button>
-
-	<h2 className="text-xl font-bold mb-4 text-center">Install App</h2>
+	  	<button onClick={()=>{setDialog(false)}} className="absolute top-2 right-3 text-gray-500 hover:text-gray-700 focus:outline-none" >
+			✕
+		</button>
+		{browserName}
+		<h2 className="text-xl font-bold mb-4 text-center">Install App</h2>
 	
 		<div className="text-sm text-gray-600">
 			
@@ -77,8 +86,7 @@ export default function Index() {
 		</div>
 		<div className=" flex items-center justify-between mt-3">
 			<div className="flex flex-col">
-				{isSafari?<img src="/assets/images/install_safari.png" className="w-32" />:<img src="/assets/images/install_chrome.png" className="w-32" />}
-				
+				<img src="/assets/images/install_safari.png" className="w-32" />
 				<span className="text-xs text-white font-semibold bg-black w-fit px-2 py-[3px]  rounded-lg mt-1">Step-1</span>
 			</div>
 			<div className="flex flex-col">
