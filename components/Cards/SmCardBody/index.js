@@ -116,7 +116,31 @@ function SmCardBody(props) {
                                         </div>
                                     </>)
                                 }else{
-                                    if(props.customComponents && (typeof(props.customComponents[index]) != 'function')){
+                                    if(props.customComponents){
+                                        if( (typeof(props.customComponents[index]) != 'function')){
+                                            return(<>
+                                                <div key = {index} className=' divide-y'>
+                                                    <div className='text-gray-400'>
+                                                        {column}
+                                                    </div>
+                                                    <div>
+                                                        {data[column]}
+                                                    </div>
+                                                </div>
+                                            </>)
+                                        }else{
+                                            return(<>
+                                                <div key = {index} className=' divide-y'>
+                                                    <div className='text-gray-400'>
+                                                        {column}
+                                                    </div>
+                                                    <div>
+                                                        {props.customComponents[index](data)}
+                                                    </div>
+                                                </div>
+                                            </>)
+                                        }
+                                    }else{
                                         return(<>
                                             <div key = {index} className=' divide-y'>
                                                 <div className='text-gray-400'>
@@ -127,18 +151,8 @@ function SmCardBody(props) {
                                                 </div>
                                             </div>
                                         </>)
-                                    }else{
-                                        return(<>
-                                            <div key = {index} className=' divide-y'>
-                                                <div className='text-gray-400'>
-                                                    {column}
-                                                </div>
-                                                <div>
-                                                    {props.customComponents[index](data)}
-                                                </div>
-                                            </div>
-                                        </>)
                                     }
+                                    
                                     
                                 }
                                 
