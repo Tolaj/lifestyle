@@ -74,19 +74,14 @@ const Tab = ({ _acTab, _as }) => {
                     </div>
                     
                     {windowWidth < 700 ? (
-                        <div className="flex flex-col gap-2">
+                        <>
                             {renderTabSections()}
-                            <div className="absolute bottom-8 right-8">
-                                <div className="flex flex-col items-end">
-                                    {renderTabButtons()}
-                                </div>
-                            </div>
-                        </div>
+                        </>
                     ) : (
                         <>
                             {renderTabSections()}
                             <div className='flex'>
-                            {renderTabButtons()}
+                                {renderTabButtons()}
                             </div>
                         </>
                     )}

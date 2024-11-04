@@ -1,32 +1,39 @@
 import dbConnect from '../utils/dbConnect';
 import formidable,{IncomingForm} from 'formidable';
+import verifyToken from '../utils/authMiddleware';
+import parseFormData from 'utils/parseFormData';
+import cookie from 'cookie';
 
 
 
-const parseFormData = (req) => {
-  const form = formidable({
-      multiples: true, // Allows multiple file uploads
-  });
-  return new Promise((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
-          if (err) reject(err);
-          // Convert fields to strings if they are arrays
-          const formattedFields = Object.fromEntries(
-              Object.entries(fields).map(([key, value]) => {
-                  return [key, Array.isArray(value) ? value[0] : value];
-              })
-          );
-          resolve({ fields: formattedFields, files });
-      });
-  });
-};
 
-// Function to handle GET requests
+
 async function handleGet(req, res, model, options) {
-  const data = options.populate
-    ? await model.find().populate(options.populate)
-    : await model.find();
-  return res.status(200).json(data);
+  try {
+    const { id } = req.query; // Extract the ID from request parameters
+    // If an ID is provided, fetch the specific document
+    if (id) {
+      const populateOptions = options.populate ? options.populate : []; // Ensure options.populate is an array
+
+      const data = await model.findById(id).populate(populateOptions); // Use findById for single document retrieval
+
+      // If no document is found, return a 404 status
+      if (!data) {
+        return res.status(404).json({ message: 'Document not found' });
+      }
+
+      return res.status(200).json(data); // Return the found document
+    } else {
+      // If no ID is provided, fetch all documents
+      const populateOptions = options.populate ? options.populate : []; // Ensure options.populate is an array
+
+      const data = await model.find().populate(populateOptions); // Use find to retrieve all documents
+
+      return res.status(200).json(data); // Return all documents
+    }
+  } catch (error) {
+    return res.status(500).json({ message: 'Server error', error: error.message });
+  }
 }
 
 // Function to handle POST requests
@@ -90,6 +97,24 @@ export function createHandler(model, options = {}) {
     await dbConnect();
 
     const { method } = req;
+
+    const needsAuth = options.useAuth;
+    
+    
+        if (needsAuth && ['POST', 'PUT', 'DELETE'].includes(method)) {
+          const cookies = cookie.parse(req.headers.cookie || '');
+          const token = cookies.token;
+          if (!token) {
+            return res.status(401).json({ success: false, message: 'No authentication token found' });
+          }
+          await new Promise((resolve, reject) =>
+            verifyToken(token, (err) => (err ? reject(err) : resolve()))
+          );
+        }
+
+      if (options.middleware) {
+        await options.middleware(req, res);
+      }
 
     try {
       switch (method) {

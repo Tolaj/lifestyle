@@ -1,4 +1,4 @@
-import User from 'models/User';
+import Group from 'models/Group';
 
 import { createHandler } from '../../controllers/genericHandler';
 
@@ -13,8 +13,8 @@ const customMiddleware = async (req, res) => {
   
 };
 
-export default createHandler(User, {
+export default createHandler(Group, {
   useAuth: false, 
   middleware: customMiddleware, 
-  populate: ['groups','friends.requester']
+  populate: 'members'
 });

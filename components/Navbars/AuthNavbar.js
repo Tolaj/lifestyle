@@ -102,7 +102,7 @@ export default function Navbar(props) {
 							      </div>
                   :
                     <div onClick={()=>{router.push('/auth/login')}} class=" my-6 md:my-8  text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">
-                      Sign Up
+                      Sign In
 							      </div>
                   }
             </div>

@@ -105,7 +105,11 @@ function Modal(props) {
                           {props.formFields.map((formField,index)=>{
                             switch (formField.type) {
                               case 'text':
-                                return(<><FormInputFields.Text name={formField.name} onChange={handleChange} value={tempData[formField.name]} label={formField.label} placeholder={formField.placeholder} /></>)
+                                return(<><FormInputFields.Text name={formField.name} onChange={handleChange} value={tempData[formField.name]} label={formField.label} placeholder={formField.placeholder} style={formField.style} /></>)
+                              case 'email':
+                                return(<><FormInputFields.Email name={formField.name} onChange={handleChange} value={tempData[formField.name]} label={formField.label} placeholder={formField.placeholder} /></>)
+                              case 'password':
+                                return(<><FormInputFields.Password name={formField.name} onChange={handleChange} value={tempData[formField.name]} label={formField.label} placeholder={formField.placeholder} /></>)  
                               case 'select':
                                 return(<><FormInputFields.Select name={formField.name} onChange={handleChange} value={tempData[formField.name]} label={formField.label} options = {formField.options} optionValues = {formField.optionValues} placeholder={formField.placeholder} /></>)
                               case 'customSelect':
@@ -115,7 +119,7 @@ function Modal(props) {
                             }                          
                           })}
                           <FormInputFields.Button label={props.formData ? "Update Changes" :"Save Changes"} styleBg="bg-black hover:bg-gray-700 focus:ring-black"  />
-                          <FormInputFields.Button label="Cancel" onClick={()=>{props._as.setModalToggle(""); props.setFormData("")}} styleBg="bg-black hover:bg-gray-700 focus:ring-white-300" />
+                          <FormInputFields.Button label="Cancel" onClick={()=>{props._as.setModalToggle(""); }} styleBg="bg-black hover:bg-gray-700 focus:ring-white-300" />
                         </div>
                         <div className=" flex items-center justify-center">
                           <FormInputFields.NoticeTag />

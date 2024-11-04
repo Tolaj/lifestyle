@@ -6,8 +6,8 @@ const InputFields = () => {};
 
 const Text = (props) => {
     return(<>
-        <div>
-          <label for="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{props.label?props.label:"Name"}</label>
+        <div className={`${props.style? props.style:""} `}>
+          <label for="name" className={` block mb-2 text-sm font-medium text-gray-900 dark:text-white`}>{props.label?props.label:"Name"}</label>
           <input type="text" name={props.name} onChange={props.onChange?props.onChange:()=>{}}  value = {props.value?props.value:null} id="name" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 " placeholder={props.placeholder?props.placeholder:"Jehiro"} required=""/>
         </div>
     </>)

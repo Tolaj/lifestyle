@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import preventDeleteIfReferenced from '../utils/preventDeleteIfReferenced';
+import {preventDeleteIfReferenced} from '../utils/modelPlugins';
 import Product from './Product';
 
 const CategorySchema = new mongoose.Schema({
@@ -11,6 +11,7 @@ const CategorySchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
+
 
 CategorySchema.plugin(preventDeleteIfReferenced('Product', 'category'));
 

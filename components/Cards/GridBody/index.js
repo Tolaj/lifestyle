@@ -59,7 +59,7 @@ const GridBody = (props) => {
                 headerName: 'Action',
                 field: 'action',
                 filter: false,
-                cellRenderer: ActionsComponent,
+                cellRenderer: props.ActionsComponent?props.ActionsComponent:ActionsComponent,
                 cellRendererParams: { router:router.route, setFormData : props.setFormData , _as: props._as, gridApi: props.gridApi, preLoader:preLoader, setPreLoader:setPreLoader }
               }
         ]);
@@ -85,15 +85,17 @@ const GridBody = (props) => {
        useEffect(() => {
         const fetchData = async () => {
           try {
-            const data = await FetchAPI(props.gridApi, 'GET'); // Fetching data with GET method
-            setRowData(data); // Set the response data to state
+            let data = props.gridData || await FetchAPI(props.gridApi, 'GET');
+            if (data ) {
+              setRowData(data); // Set data only if it exists
+            }
           } catch (error) {
             console.error("Error fetching data:", error);
           }
         };
-    
+        
         fetchData();
-      }, [props._as.reloadChild]);
+      }, [props._as.reloadChild, props.gridData]);
 
 
         const getRowStyle = params => {

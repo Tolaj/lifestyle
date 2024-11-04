@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router"
-
+import { parse } from 'cookie';
+import { verify } from 'jsonwebtoken';
 // components
 
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
@@ -9,10 +10,15 @@ import FooterAdmin from "components/Footers/FooterAdmin.js";
 import Modal from "components/Modal";
 import useDynamicState from "../utils/dynamicState";
 import TabBody from "components/TabBody";
+import useSession from "utils/useSession";
+import FetchAPI from "controllers/fetchAPI";
+import PageChange from "components/PreLoader";
+
 
 export default function Admin({ children }) {
 
   const router = useRouter()
+  const { sessionData, loading } = useSession();
 
   let _as = useDynamicState(
     'modalToggle',
@@ -27,8 +33,28 @@ export default function Admin({ children }) {
     'inventory',
     'resourcePlans',
     'wishLists',
-    'cart'
+    'cart',
+    'profile',
+    'user'
   )
+
+  useEffect(() => {
+    const fetchData = async () => {
+        if (!sessionData) return; // Exit if no session data
+        
+        try {
+            const res = await FetchAPI('/api/users', "GET", sessionData.user);
+            _as.setUserData(res);
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+
+    fetchData(); // Call the fetch function
+}, [sessionData, _as.reloadChild]); 
+  
+
+
 
   let _ac = [
       {
@@ -55,11 +81,31 @@ export default function Admin({ children }) {
         route: "/admin/finance", 
         tabSections: [],
         tabButtons : [],
+        setActiveTabSection: _as.setFinanceTab,
+        activeTabSection: _as.financeTab,
+        setModalToggle: _as.setModalToggle,
+      },
+      {},
+      { title: "Documentation", 
+        route: "/admin/documentation", 
+        tabSections: [],
+        tabButtons : [],
         setActiveTabSection: _as.setShoppingTab,
         activeTabSection: _as.shoppingTab,
         setModalToggle: _as.setModalToggle,
-      }
+      },
+      { title: "Profile", 
+        route: "/admin/profile", 
+        tabSections: ["My Profile","Friends","Groups"],
+        tabButtons : [["CART"],["ADD","CART"],["ADD","CART"]],
+        setActiveTabSection: _as.setProfileTab,
+        activeTabSection: _as.profileTab,
+        setModalToggle: _as.setModalToggle,
+      },
+
     ]
+
+
 
   return (
 

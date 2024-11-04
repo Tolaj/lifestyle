@@ -4,40 +4,50 @@ import { useRouter } from 'next/router';
 // layout for page
 
 import Auth from "layouts/Auth.js";
+import FetchAPI from "controllers/fetchAPI";
+import PageChange from "components/PreLoader";
 
 export default function Register() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const router = useRouter();
+  const [preLoader, setPreLoader] = React.useState(0);
+  const [tempData, setTempData] = React.useState({});
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    // Replace the URL with your API endpoint to handle login logic
-    // const userLoginUrl = `${process.env.SERVER_API}api/users/login`
-    let loginForm = {email:email,password:password}
-    // const response =  await axios.post(userLoginUrl, loginForm)
+  const handleChange = (e) => {
+      const { name, value } = e.target;
+      setTempData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+        
+      const file = e.target.files?e.target.files[0]:null;
 
-    // const response = {}
+      if (file) {
+          setTempData((prevState) => ({
+            ...prevState,
+            file: file,
+          }));
+      }
+  }
 
-    // if(email == "root@gmail.com" && password == "root"){
-    //   router.push('/admin/dashboard')
-    // }else{
-      
-    // }
+  const handleSave = async () => {
+    setPreLoader(true);
 
-    // if (response.status == 200) {
-    //   // Redirect to the dashboard page after successful login
-      router.push('/admin/dashboard');
-    //   const token = response.data.token;
-    //   localStorage.setItem('token', token);
-    // } else {
-    //   // Handle login failure
-    //   alert('Invalid email or password');
-    // }
+    try {
+      const result = await FetchAPI('/api/users', 'POST', tempData);
+      setPreLoader(false); // Stop the preloader
+      router.push("/auth/login")
+    } catch (error) {
+      console.log('_____Create Account Failed!_____');
+      setPreLoader(false);
+      console.log(error);
+    }
   };
+
+  if(preLoader) return <PageChange />
 
   return (
     <>
+      
       <div className="container mx-auto px-4 h-full md:mt-20 mt-14">
         <div className="flex content-center items-center justify-center h-full">
           <div className="w-full md:w-2/5 px-4 ">
@@ -48,29 +58,12 @@ export default function Register() {
                     <img src="/assets/images/logo.png" className="px-2  w-52     rounded-full " alt="" />
                   </div>
                 </div>
-                {/* <div className="btn-wrapper text-center">
-                  <button
-                    className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-2 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
-                    type="button"
-                  >
-                    <img alt="..." className="w-5 mr-1" src="/img/github.svg" />
-                    Github
-                  </button>
-                  <button
-                    className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-2 rounded outline-none focus:outline-none mr-1 mb-1 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
-                    type="button"
-                  >
-                    <img alt="..." className="w-5 mr-1" src="/img/google.svg" />
-                    Google
-                  </button>
-                </div> */}
-                {/* <hr className="mt-6 border-b-1 bg-[#F9FAFE]" /> */}
               </div>
               <div className="flex-auto pt-0">
                 {/* <div className="text-white text-center py-4 text-lg font-medium">
                   Welcome to LifeStyle 
                 </div> */}
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={(e)=>{e.preventDefault();handleSave()}}>
                   <div className="relative w-full mb-3">
                     <label
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -82,11 +75,10 @@ export default function Register() {
     
                       className="border-0 px-3 py-4 placeholder-blueGray-400 drop-shadow-sm  font-medium text-blueGray-600 bg-white rounded text-base  focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       placeholder="Your Name"
-
+                      name="name"
                       type="text"
                       id="name"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
+                      onChange={handleChange}
                       required
                     />
                   </div>
@@ -101,11 +93,10 @@ export default function Register() {
     
                       className="border-0 px-3 py-4 placeholder-blueGray-400 drop-shadow-sm  font-medium text-blueGray-600 bg-white rounded text-base  focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       placeholder="Email address"
-
+                      name="email"
                       type="email"
                       id="email"
-                      value={email}
-                      onChange={(event) => setEmail(event.target.value)}
+                      onChange={handleChange}
                       required
                     />
                   </div>
@@ -121,16 +112,15 @@ export default function Register() {
         
                       className="border-0 px-3 py-4 placeholder-blueGray-400 font-medium drop-shadow-sm text-blueGray-600 bg-white rounded text-base  focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       placeholder="Password"
-
+                      name="password"
                       type="password"
                       id="password"
-                      value={password}
-                      onChange={(event) => setPassword(event.target.value)}
+                      onChange={handleChange}
                       required
                     />
                   </div>
                   {/* <div>
-                    <label className="inline-flex items-center cursor-pointer">
+                    <label className="inline-flex text-white items-center cursor-pointer">
                       <input
                         id="customCheckLogin"
                         type="checkbox"
@@ -142,10 +132,10 @@ export default function Register() {
                     </label>
                   </div> */}
 
-                  <div className="text-center mt-6 ">
-                  <div onClick={()=>{router.push('/auth/login')}} class=" my-6 md:my-8   text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">
-                    Sign In
-                  </div>
+                  <div className=" flex items-center justify-center ">
+                    <button type="submit" class=" my-6 md:my-8  w-fit text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">
+                      Create Account
+                    </button>
                   </div>
                 </form>
               </div>

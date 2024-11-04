@@ -39,7 +39,7 @@ const nextConfig = {
   env: {
     SERVER_API: '',
     // SERVER_API:'http://localhost:8081'
-
+    JWT_SECRET:'kirti'
   },
 }
 
