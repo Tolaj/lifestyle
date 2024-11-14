@@ -122,14 +122,17 @@ useEffect(() => {
   return (
 
     <div className={`flex  h-fit  bg-[#F9FAFE] `}>
-      {/* <div className={` ${_as.sidebarToggle?"absolute md:relative z-50":"hidden md:block"} `}> */}
+      <div className={` md:relative  fixed  bottom-0  h-16  `}>
         <Sidebar _ac={_ac} _as={_as} />
-      {/* </div> */}
+      </div>
       <div className="flex flex-col  w-full h-screen ">
         {/* admin header nav */}
+        <div className="md:relative fixed bg-[#F9FAFE] z-[999] ">
         <AdminNavbar _ac={_ac} _as={_as} />
+
+        </div>
         {/* admin body */}
-        <div className="   bg-opacity-50 flex-grow  p-4    max-w-full  flex flex-col  justify-between  ">
+        <div className="   bg-opacity-50 flex-grow  p-4 md:py-0 py-44  max-w-full  flex flex-col  justify-between  ">
           <div className="  bg-[#f9fafeb3] h-full w-full rounded-3xl p-3">
             {/* below comment is to use pages/page as child component */}
 

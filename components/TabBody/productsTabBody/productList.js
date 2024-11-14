@@ -26,9 +26,7 @@ export default function ProductList(props)  {
 
   const columnComponentPrice = (params) => {
     return(<>
-        {params.readMore?
-        params.data.price
-        :
+       
         <div className={`divide-x divide-gray-200 mt-auto `}>
           <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0">
               $ {params.data.price} 
@@ -37,7 +35,7 @@ export default function ProductList(props)  {
             {params.data.quantity} ml
           </span>
         </div>
-        }
+        
         
       </>)
   }
