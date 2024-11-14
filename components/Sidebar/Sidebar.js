@@ -23,7 +23,7 @@ export default function Sidebar(props) {
     <>
       {windowWidth<700?<>
         <div className="absolute bottom-0 w-screen z-50 bg-black h-16">
-          <div className="fixed w-full bottom-2  p-5 px-6 mb-4  flex items-center justify-between   bg-black shadow-3xl text-white  cursor-pointer">
+          <div className="fixed w-full bottom-2  p-5 px-6 mb-3  flex items-center justify-between   bg-black shadow-3xl text-white  cursor-pointer">
             {/* 1 */}
             <a href="/admin/dashboard" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 ">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"

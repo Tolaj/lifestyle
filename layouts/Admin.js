@@ -127,7 +127,7 @@ useEffect(() => {
       </div>
       <div className="flex flex-col  w-full h-screen ">
         {/* admin header nav */}
-        <div className="md:relative fixed bg-[#F9FAFE] z-[999] ">
+        <div className="md:relative fixed bg-[#F9FAFE] z-3 ">
         <AdminNavbar _ac={_ac} _as={_as} />
 
         </div>
