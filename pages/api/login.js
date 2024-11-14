@@ -14,27 +14,29 @@ export const config = {
 };
 
 const loginMiddleware = async (req, res) => {
-  const { fields } = await parseFormData(req);
+  const  fields  = req.body
   const { email, password } = fields;
 
   if (!email || !password) {
-    return res.status(400).json({ success: false, message: 'Username and password are required' });
+     res.status(400).json({ success: false, message: 'Username and password are required' });
+     return 'ok'
   }
 
   // Find user
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).populate('groups');
   if (!user) {
-    return res.status(404).json({ success: false, message: 'User not found' });
+      res.status(404).json({ success: false, message: 'User not found' });
+      return 'ok'
   }
 
   // Check password
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return res.status(401).json({ success: false, message: 'Invalid credentials' });
+     res.status(401).json({ success: false, message: 'Invalid credentials' });
+     return 'ok'
   }
-
   // Generate JWT token
-  const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id: user._id, email: user.email, groupId: user.groups.find(group => group.name === "ISOLATED_GROUP")?._id }, process.env.JWT_SECRET, {
     expiresIn: '1h',
   });
 
@@ -44,7 +46,8 @@ const loginMiddleware = async (req, res) => {
         sameSite: 'strict',
         path: '/'
     }));
-    return res.status(200).json({ message: 'Login successful' });
+     res.status(200).json({ message: 'Login successful' });
+     return 'ok'
 };
 
 export default createHandler(User, {

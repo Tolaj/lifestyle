@@ -35,7 +35,8 @@ export default function Admin({ children }) {
     'wishLists',
     'cart',
     'profile',
-    'user'
+    'user',
+    'groups'
   )
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function Admin({ children }) {
         
         try {
             const res = await FetchAPI('/api/users', "GET", sessionData.user);
-            _as.setUserData(res);
+            _as.setUser(res);
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
@@ -53,7 +54,18 @@ export default function Admin({ children }) {
     fetchData(); // Call the fetch function
 }, [sessionData, _as.reloadChild]); 
   
+useEffect(() => {
+  const fetchData = async () => {
+      if (!sessionData) return; // Exit if no session data
+      try {
+         localStorage.getItem('activeGroup') ? null: localStorage.setItem('activeGroup',sessionData.user.groupId)
+      } catch (error) {
+          console.error('Error fetching user data:', error);
+      }
+  };
 
+  fetchData(); // Call the fetch function
+}, [sessionData]); 
 
 
   let _ac = [
@@ -61,7 +73,7 @@ export default function Admin({ children }) {
         title: "Dashboard",
         route: "/admin/dashboard",
         tabSections: ["code Template","Test Cases","Documentation"],
-        tabButtons : [],
+        tabButtons : [["GROUP"],["GROUP"],["GROUP"]],
         setActiveTabSection: _as.setDashboardTab,
         activeTabSection: _as.dashboardTab,
         setModalToggle: _as.setModalToggle,
@@ -71,7 +83,7 @@ export default function Admin({ children }) {
         title: "Products", 
         route: "/admin/products",
         tabSections: ["Products List","Category","Wish List","Inventory","Resource Plan","Orders"],
-        tabButtons:[["ADD","CART"],["ADD","CART"],["ADD","CART"],["CART"],["ADD","CART"],["CART"]],
+        tabButtons:[["GROUP","ADD","CART"],["GROUP","ADD","CART"],["GROUP","ADD","CART"],["GROUP","CART"],["GROUP","ADD","CART"],["GROUP","CART"]],
         setActiveTabSection: _as.setProductsTab,
         activeTabSection: _as.productsTab,
         setModalToggle: _as.setModalToggle,
@@ -80,7 +92,7 @@ export default function Admin({ children }) {
       { title: "Finance", 
         route: "/admin/finance", 
         tabSections: [],
-        tabButtons : [],
+        tabButtons : ["GROUP"],
         setActiveTabSection: _as.setFinanceTab,
         activeTabSection: _as.financeTab,
         setModalToggle: _as.setModalToggle,
@@ -97,7 +109,7 @@ export default function Admin({ children }) {
       { title: "Profile", 
         route: "/admin/profile", 
         tabSections: ["My Profile","Friends","Groups"],
-        tabButtons : [["CART"],["ADD","CART"],["ADD","CART"]],
+        tabButtons : [["GROUP","CART"],["GROUP","ADD","CART"],["GROUP","ADD","CART"]],
         setActiveTabSection: _as.setProfileTab,
         activeTabSection: _as.profileTab,
         setModalToggle: _as.setModalToggle,

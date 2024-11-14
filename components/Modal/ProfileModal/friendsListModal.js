@@ -15,7 +15,7 @@ function FriendsListModal(props) {
 
     ]
     return (<>
-      <Modal formData = {props._as.userData} _as = {props._as} formTitle = "Send a friend request" formFields = {formFields} formAPI={process.env.SERVER_API+"/api/sendFriendReq/"} />
+      <Modal formData = {props._as.user} _as = {props._as} formTitle = "Send a friend request" formFields = {formFields} formAPI={process.env.SERVER_API+"/api/sendFriendReq/"} />
   </>);
 }
 

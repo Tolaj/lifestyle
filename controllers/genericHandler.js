@@ -10,26 +10,24 @@ import cookie from 'cookie';
 
 async function handleGet(req, res, model, options) {
   try {
-    const { id } = req.query; // Extract the ID from request parameters
-    // If an ID is provided, fetch the specific document
-    if (id) {
-      const populateOptions = options.populate ? options.populate : []; // Ensure options.populate is an array
+    const { id } = req.query; 
+     if (id) {
+      const populateOptions = options.populate ? options.populate : [];  
 
-      const data = await model.findById(id).populate(populateOptions); // Use findById for single document retrieval
+      const data = await model.findById(id).populate(populateOptions);  
 
-      // If no document is found, return a 404 status
+       
       if (!data) {
         return res.status(404).json({ message: 'Document not found' });
       }
 
-      return res.status(200).json(data); // Return the found document
+      return res.status(200).json(data);  
     } else {
-      // If no ID is provided, fetch all documents
-      const populateOptions = options.populate ? options.populate : []; // Ensure options.populate is an array
+      const populateOptions = options.populate ? options.populate : []; 
 
-      const data = await model.find().populate(populateOptions); // Use find to retrieve all documents
+      const data = await model.find().populate(populateOptions); 
 
-      return res.status(200).json(data); // Return all documents
+      return res.status(200).json(data);  
     }
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error: error.message });
@@ -38,8 +36,9 @@ async function handleGet(req, res, model, options) {
 
 // Function to handle POST requests
 async function handlePost(req, res, model, options) {
-  const { fields, files } = await parseFormData(req);
-  const data = { ...fields };
+
+  const { body, files } = req
+  const data = { ...body };
 
   if (options.fileField && files[options.fileField]) {
     data[options.fileField] = files[options.fileField].filepath;
@@ -57,9 +56,8 @@ async function handlePut(req, res, model, options) {
     return res.status(400).json({ success: false, message: 'Missing id for PUT request' });
   }
 
-  
-  const { fields, files } = await parseFormData(req);
-  const data = { ...fields };
+  const { body, files } = req
+  const data = { ...body };
 
   if (options.fileField && files[options.fileField]) {
     data[options.fileField] = files[options.fileField].filepath;
@@ -99,7 +97,12 @@ export function createHandler(model, options = {}) {
     const { method } = req;
 
     const needsAuth = options.useAuth;
-    
+
+    if(['POST', 'PUT'].includes(method)){
+      const { fields,files } = await parseFormData(req)
+      req.body = fields;
+      req.files = files
+    }
     
         if (needsAuth && ['POST', 'PUT', 'DELETE'].includes(method)) {
           const cookies = cookie.parse(req.headers.cookie || '');
@@ -112,9 +115,13 @@ export function createHandler(model, options = {}) {
           );
         }
 
-      if (options.middleware) {
-        await options.middleware(req, res);
-      }
+    
+        if (options.middleware) {
+          const middlewareResponse = await options.middleware(req, res);
+          if (middlewareResponse) {
+            return "Middleware response ok"
+          }
+        }
 
     try {
       switch (method) {

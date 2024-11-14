@@ -61,7 +61,7 @@ const longitude = position.lng; // Example longitude
 fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`)
 .then(response => response.json())
 .then(data => {
-  console.log(data)
+  
   setLocation(data)
   setShowMap(0)
 })

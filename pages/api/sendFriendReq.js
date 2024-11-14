@@ -93,12 +93,14 @@ async function sendFriendRequest(userId, friendEmail) {
 }
 
 const customMiddleware = async (req, res) => {
-  const { fields } = await parseFormData(req);
+  const  fields  = req.body
   const response = await sendFriendRequest(fields._id, fields.friendEmail);
   if(response.message == 'send'){
     res.status(200).json(response);
+    return 'ok'
   }else{
     res.status(400).json({ success: false, message: response.message });
+    return 'ok'
   }
 
 };

@@ -1,5 +1,6 @@
 import GridBody from 'components/Cards/GridBody';
 import SmCardBody from 'components/Cards/SmCardBody';
+import InputFields from 'components/InputFields';
 import FetchAPI from 'controllers/fetchAPI';
 import React, { useEffect, useState } from 'react';
 import HeroIcon, { heroIconsNames } from 'utils/heroIcon';
@@ -9,9 +10,9 @@ function FriendsList(props) {
   const [userData, setUserData] = useState({}); 
 
   useEffect(() => {
-    let tempData = props?._as?.userData;
+    let tempData = props?._as?.user;
     setUserData(tempData);
-  }, [props._as.userData]);
+  }, [props._as.user]);
   
 
 
@@ -19,139 +20,64 @@ function FriendsList(props) {
       setWindowWidth(window.outerWidth)
   },[]) 
 
-  const customComponentName = (params) => {
-      
-    return( <> {params.requester.name} </> )
+  const IconComponent = (params) => {
+    return(<>
+        <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full bg-black text-black `} >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-white">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+          </svg>     
+        </span>
+      </>)
   }
 
-  const customComponentEmail = (params) => {
+  const columnComponentStatus = (params) => {
       
-    return( <> {params.requester.email} </> )
+    return( <div className=' w-full h-full flex items-center justify-start md:justify-center'><div className={`  flex items-center justify-center bg-black text-white px-2 py-2  rounded-lg max-h-6 `}> {params.data.status}  </div></div> )
+  }
+
+  const columnComponentName = (params) => {
+    
+    return( <> {params.data.requester.name} </> )
+  }
+
+  const columnComponentEmail = (params) => {
+    
+    return( <> {params.data.requester.email} </> )
   }
   
-  const customComponentActions = (params) => {
-      
-    const handleAction = async (method,data) => {
-      try {
-          const response = await FetchAPI('/api/receiveFriendReq', method, data);
-      //   console.log("Action successful:", response);
-          params.setPreLoader(false)
-          params._as.setReloadChild(Math.random())
-      } catch (error) {
-          console.error("Error deleting data:", error);
-      }
+  const ActionsComponent = (params) => {
 
+    const handleAction = async (method,data) => {
+        try {
+            const response = await FetchAPI('/api/receiveFriendReq', method, data);
+        //   console.log("Action successful:", response);
+            params.setPreLoader(false)
+            params._as.setReloadChild(Math.random())
+        } catch (error) {
+            console.error("Error deleting data:", error);
+        }
+
+    };
+
+
+    
+    return (<>
+              <div   className="flex items-center justify-center text-transparent md:gap-4">.
+                <InputFields.GridButton type="ADD_USER" title={"Accept"} onClick={()=>{params.setPreLoader(true);handleAction("POST",{"userId":params._as.user._id,"friendId":params.data.requester._id,'action':"ACCEPTED"})}} className={params.data.status == "ACCEPTED" ? "invisible" : "visible"} />
+                <InputFields.GridButton type="RM_USER" title={"Reject"} onClick={()=>{params.setPreLoader(true);handleAction("POST",{"userId":params._as.user._id,"friendId":params.data.requester._id,'action':"REJECTED"})}} className={params.data.status == "REJECTED" ? "invisible" : "visible"} />
+                <InputFields.GridButton type="DELETE" title={"Delete"} onClick={()=>{params.setPreLoader(true);handleAction("POST",{"userId":params._as.user._id,"friendId":params.data.requester._id,'action':"DELETE"})}} className={"flex items-center justify-center gap-2 hover:cursor-pointer text-black font-semibold"} />
+                <InputFields.GridButton type="ARROW" title={""} onClick={()=>{params.setReadMore(params.readMore==params.index+'i'?null:params.index+'i')}} className={`w-5 h-5 md:hidden  text-black ${params.readMore == params.index+'i' ?"rotate-90":""}`} />
+              </div>
+        </>);
   };
 
-  return (<>
-                  <div   className="flex items-center justify-center text-transparent  gap-2 z-99 fixed left-40   bg-white  bg-opacity-50 right-0">.
-                    
-                    <div title="Accept" onClick={()=>{params.setPreLoader(true);handleAction("POST",{"userId":params._as.userData._id,"friendId":params.data.requester._id,'action':"ACCEPTED"})}}  className={`${params.data.status == "ACCEPTED" ? "hidden" : "visible "}`} >
-
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-black hover:cursor-pointer">
-                          <path d="M5.25 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM2.25 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM18.75 7.5a.75.75 0 0 0-1.5 0v2.25H15a.75.75 0 0 0 0 1.5h2.25v2.25a.75.75 0 0 0 1.5 0v-2.25H21a.75.75 0 0 0 0-1.5h-2.25V7.5Z" />
-                        </svg>
-
-                    </div>
-
-                    <div title="Reject" onClick={()=>{params.setPreLoader(true);handleAction("POST",{"userId":params._as.userData._id,"friendId":params.data.requester._id,'action':"REJECTED"})}}  className={`${params.data.status == "REJECTED" ? "hidden" : "visible "}`} >
-                        
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-black hover:cursor-pointer">
-                          <path d="M10.375 2.25a4.125 4.125 0 1 0 0 8.25 4.125 4.125 0 0 0 0-8.25ZM10.375 12a7.125 7.125 0 0 0-7.124 7.247.75.75 0 0 0 .363.63 13.067 13.067 0 0 0 6.761 1.873c2.472 0 4.786-.684 6.76-1.873a.75.75 0 0 0 .364-.63l.001-.12v-.002A7.125 7.125 0 0 0 10.375 12ZM16 9.75a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5h-6Z" />
-                        </svg>
-
-
-                    </div>
-                     
-                      
-                      <div title="Delete" onClick={()=>{params.setPreLoader(true);handleAction("POST",{"userId":params._as.userData._id,"friendId":params.data.requester._id,'action':"DELETE"})}}  className={`flex items-center justify-center gap-2 hover:cursor-pointer text-black font-semibold`}>
-                          
-                          <svg className="w-6 h-6 text-black hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" >
-                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
-                          </svg>
-
-                      </div> 
-
-                      <svg onClick={()=>{params.setReadMore(params.readMore==params.index+'i'?null:params.index+'i')}} className={`w-5 h-5  text-black ${params.readMore == params.index+'i' ?"rotate-90":""}`} xmlns="http://www.w3.org/2000/svg"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" >
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M9 6l6 6l-6 6"></path>
-                                    </svg>
-
-                  </div>
-      </>);
-  
-}
 
 
   if(windowWidth<700){
     return(<>
-      <SmCardBody columns = {['name','email','status']} setFormData={props._as.setUserData} customComponents = {[customComponentName,customComponentEmail,""]} customComponentActions = {customComponentActions}  _as = {props._as} gridData={props._as.userData}   />
+      <SmCardBody columns = {['name','email','status']} setFormData={props._as.setUserData} columnComponents = {[columnComponentName,columnComponentEmail,columnComponentStatus]} ActionsComponent = {ActionsComponent} IconComponent={IconComponent}  _as = {props._as} gridData={props._as.user.friends}   />
     </>)
   }else{
-  
-    const columnComponentStatus = (params) => {
-      
-      return( <div className='flex items-center justify-center w-full h-full'><div className={` items-center flex justify-center bg-black text-white px-2 py-2  rounded-lg max-h-6 `}> {params.data.status}  </div></div> )
-    }
-
-    const columnComponentName = (params) => {
-      
-      return( <> {params.data.requester.name} </> )
-    }
-
-    const columnComponentEmail = (params) => {
-      
-      return( <> {params.data.requester.email} </> )
-    }
-
-    
-    const ActionsComponent = (params) => {
-
-      const handleAction = async (method,data) => {
-          try {
-              const response = await FetchAPI('/api/receiveFriendReq', method, data);
-          //   console.log("Action successful:", response);
-              params.setPreLoader(false)
-              params._as.setReloadChild(Math.random())
-          } catch (error) {
-              console.error("Error deleting data:", error);
-          }
-
-      };
-
-      return (<>
-                      <div   className="flex items-center justify-center text-transparent gap-4">.
-                        
-                        <div title="Accept" onClick={()=>{params.setPreLoader(true);handleAction("POST",{"userId":params._as.userData._id,"friendId":params.data.requester._id,'action':"ACCEPTED"})}}  className={`${params.data.status == "ACCEPTED" ? "invisible" : "visible"}`} >
-
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-black hover:cursor-pointer">
-                              <path d="M5.25 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM2.25 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM18.75 7.5a.75.75 0 0 0-1.5 0v2.25H15a.75.75 0 0 0 0 1.5h2.25v2.25a.75.75 0 0 0 1.5 0v-2.25H21a.75.75 0 0 0 0-1.5h-2.25V7.5Z" />
-                            </svg>
-
-                        </div>
-
-                        <div title="Reject" onClick={()=>{params.setPreLoader(true);handleAction("POST",{"userId":params._as.userData._id,"friendId":params.data.requester._id,'action':"REJECTED"})}}  className={`${params.data.status == "REJECTED" ? "invisible" : "visible"}`} >
-                            
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-black hover:cursor-pointer">
-                              <path d="M10.375 2.25a4.125 4.125 0 1 0 0 8.25 4.125 4.125 0 0 0 0-8.25ZM10.375 12a7.125 7.125 0 0 0-7.124 7.247.75.75 0 0 0 .363.63 13.067 13.067 0 0 0 6.761 1.873c2.472 0 4.786-.684 6.76-1.873a.75.75 0 0 0 .364-.63l.001-.12v-.002A7.125 7.125 0 0 0 10.375 12ZM16 9.75a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5h-6Z" />
-                            </svg>
-
-  
-                        </div>
-                         
-                          
-                          <div title="Delete" onClick={()=>{params.setPreLoader(true);handleAction("POST",{"userId":params._as.userData._id,"friendId":params.data.requester._id,'action':"DELETE"})}}  className={`flex items-center justify-center gap-2 hover:cursor-pointer text-black font-semibold`}>
-                              
-                              <svg className="w-6 h-6 text-black hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" >
-                                <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z" clip-rule="evenodd" />
-                              </svg>
-  
-                          </div> 
-    
-                      </div>
-          </>);
-    };
-
     return (<>
       <GridBody columns = {['name','email','request']} columnComponents = {[columnComponentName,columnComponentEmail,columnComponentStatus]} ActionsComponent = {ActionsComponent}   _as = {props._as} gridData={userData.friends}  />
     </>);

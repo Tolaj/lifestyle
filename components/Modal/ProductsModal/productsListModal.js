@@ -20,6 +20,8 @@ function ProductListModal(props) {
     fetchData();
   }, [props._as.reloadChild]);
 
+  let myGroup = props?._as?.user?.groups?.find((data) => data._id === localStorage.getItem("activeGroup"))
+
   const formFields =[
     {
       "type":"text",
@@ -32,8 +34,8 @@ function ProductListModal(props) {
       "name":"category",
       "label":"Category",
       "placeholder":"Select a Category",
-      "optionValues": categoryList?categoryList.map(obj => obj._id):[],
-      "options": categoryList?categoryList.map(obj => obj.name):[]
+      "optionValues": categoryList?categoryList.filter((data) => myGroup.categories.includes(data._id)).map(obj => obj._id):[],
+      "options": categoryList?categoryList.filter((data) => myGroup.categories.includes(data._id)).map(obj => obj.name):[]
     },
     {
       "type":"text",
@@ -61,7 +63,7 @@ function ProductListModal(props) {
     },
   ]
   return (<>
-    <Modal formData = {props._as.productsData} setFormData = {props._as.setProductsData} _as = {props._as} formTitle = "Create a Product" formFields = {formFields} formAPI={process.env.SERVER_API+"/api/products/"} style="grid grid-cols-2" />
+    <Modal formData = {props._as.productsData} setFormData = {props._as.setProductsData} _as = {props._as} additionalData = {{"groupId":localStorage.getItem("activeGroup")}} formTitle = "Create a Product" formFields = {formFields} formAPI={process.env.SERVER_API+"/api/products/"} style="grid grid-cols-2" />
   </>);
 }
 

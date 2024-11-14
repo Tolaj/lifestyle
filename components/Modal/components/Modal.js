@@ -47,8 +47,17 @@ function Modal(props) {
         // Additional config options can be added here if needed
       };
     
+      let additionalData = tempData;
+
+        if(props.additionalData){
+          additionalData = {
+              ...tempData,
+              ...props.additionalData 
+            }
+        }
+
       try {
-        const result = await FetchAPI(props.formAPI, 'POST', tempData, config);
+        const result = await FetchAPI(props.formAPI, 'POST', additionalData, config);
         
         props._as.setModalToggle(""); // Close the modal
         props.setFormData("")
@@ -75,7 +84,17 @@ function Modal(props) {
       };
     
       try {
-        const result = await FetchAPI(props.formAPI, 'PUT', tempData, config);
+
+        let additionalData = tempData;
+
+        if(props.additionalData){
+          additionalData = {
+              ...tempData,
+              ...props.additionalData 
+            }
+        }
+
+        const result = await FetchAPI(props.formAPI, 'PUT', additionalData, config);
         
         props._as.setModalToggle(""); // Close the modal
         props.setFormData("")
@@ -114,12 +133,14 @@ function Modal(props) {
                                 return(<><FormInputFields.Select name={formField.name} onChange={handleChange} value={tempData[formField.name]} label={formField.label} options = {formField.options} optionValues = {formField.optionValues} placeholder={formField.placeholder} /></>)
                               case 'customSelect':
                                 return(<><FormInputFields.GridSelect name={formField.name} onClick={handleChange} value={tempData[formField.name]} label={formField.label} options = {formField.options} optionValues = {formField.optionValues} placeholder={formField.placeholder} /></>)
+                              case 'checkBoxSelect':
+                                return(<><FormInputFields.CheckBoxSelect name={formField.name} onClick={handleChange} value={tempData[formField.name]} label={formField.label} options = {formField.options} optionValues = {formField.optionValues} placeholder={formField.placeholder} /></>)
                               default:
                                 return(<>No Form Field</>)                               
                             }                          
                           })}
                           <FormInputFields.Button label={props.formData ? "Update Changes" :"Save Changes"} styleBg="bg-black hover:bg-gray-700 focus:ring-black"  />
-                          <FormInputFields.Button label="Cancel" onClick={()=>{props._as.setModalToggle(""); }} styleBg="bg-black hover:bg-gray-700 focus:ring-white-300" />
+                          <FormInputFields.Button label="Cancel" onClick={()=>{props._as.setModalToggle(""); props.setFormData("") }} styleBg="bg-black hover:bg-gray-700 focus:ring-white-300" />
                         </div>
                         <div className=" flex items-center justify-center">
                           <FormInputFields.NoticeTag />

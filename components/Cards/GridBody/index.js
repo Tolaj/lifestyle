@@ -53,7 +53,13 @@ const GridBody = (props) => {
     const [columnDefs, setColumnDefs] = useState(
         [
             ...props.columns.map((column,index) => {
-              return { headerName: column, field: column, filter: true, cellRenderer: props.columnComponents?(typeof(props.columnComponents[index]) != 'function') ? (params)=>{ return params.data[column]}:props.columnComponents[index]:(params)=>{ return params.data[column]} };
+              return { 
+                headerName: column, 
+                field: column, 
+                // autoHeight: true , 
+                filter: true, 
+                cellRendererParams: {paramPass:props?.paramPass?props?.paramPass:{}},
+                cellRenderer: props.columnComponents?(typeof(props.columnComponents[index]) != 'function') ? (params)=>{ return params.data[column]}:props.columnComponents[index]:(params)=>{ return params.data[column]} };
             }),
             {
                 headerName: 'Action',
@@ -87,7 +93,9 @@ const GridBody = (props) => {
           try {
             let data = props.gridData || await FetchAPI(props.gridApi, 'GET');
             if (data ) {
-              setRowData(data); // Set data only if it exists
+              props?.dataFilter ?   
+              setRowData(props.dataFilter({data,_as:props._as})):
+              setRowData(data)
             }
           } catch (error) {
             console.error("Error fetching data:", error);
@@ -95,7 +103,7 @@ const GridBody = (props) => {
         };
         
         fetchData();
-      }, [props._as.reloadChild, props.gridData]);
+      }, [props._as.reloadChild, props.gridData, props._as.user]);
 
 
         const getRowStyle = params => {

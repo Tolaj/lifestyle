@@ -16,5 +16,5 @@ const customMiddleware = async (req, res) => {
 export default createHandler(User, {
   useAuth: false, 
   middleware: customMiddleware, 
-  populate: ['groups','friends.requester']
+  populate: ['groups','friends.requester','groups.members']
 });

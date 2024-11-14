@@ -9,10 +9,48 @@ export default function ProductList(props)  {
   useEffect(() => {
       setWindowWidth(window.outerWidth)
   },[]) 
+
   
+
+  const IconComponent = (params) => {
+    return(<>
+        <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full ${params.data?.color || params.data?.category?.color || 'bg-black'} text-black `} >
+                  <HeroIcon  style="size-6 text-black" iconTitle = {params.data?.icon || params.data?.category?.icon} />              
+        </span>
+      </>)
+  }
+
+  const columnComponentCategory = (params) => {
+    return(<>{params.data.category.name}</>)
+  }
+
+  const columnComponentPrice = (params) => {
+    return(<>
+        {params.readMore?
+        params.data.price
+        :
+        <div className={`divide-x divide-gray-200 mt-auto `}>
+          <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0">
+              $ {params.data.price} 
+          </span>
+          <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0" >
+            {params.data.quantity} ml
+          </span>
+        </div>
+        }
+        
+      </>)
+  }
+
+  const dataFilter = (params) => {
+    
+    let myGroup = params?._as?.user?.groups?.find((data) => data._id === localStorage.getItem('activeGroup'))
+    return params.data.filter((data) => myGroup.products.includes(data._id));
+  }
+
   if(windowWidth<700){
     return(<>
-      <SmCardBody columns = {['name','price','quantity','description','category','manufacturer']} setFormData={props._as.setProductsData}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/products"} />
+      <SmCardBody columns = {['name','price','quantity','description','category','manufacturer']} columnComponents={["",columnComponentPrice,"","",columnComponentCategory]}  IconComponent={IconComponent} setFormData={props._as.setProductsData}   _as = {props._as} dataFilter={dataFilter}  gridApi = {process.env.SERVER_API+"/api/products"} />
     </>)
   }else{
     const columnComponentIcon = (params) => {
@@ -30,7 +68,7 @@ export default function ProductList(props)  {
     }
   
     return (<>
-      <GridBody columns = {['name','description','category','price','quantity','manufacturer']} columnComponents = {['','',columnComponentIcon]}  setFormData={props._as.setProductsData}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/products"} />
+      <GridBody columns = {['name','description','category','price','quantity','manufacturer']} columnComponents = {['','',columnComponentIcon]}  setFormData={props._as.setProductsData}  _as = {props._as} dataFilter={dataFilter}  gridApi = {process.env.SERVER_API+"/api/products"} />
     </>);
   }
   
