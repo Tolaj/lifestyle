@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 function GroupModal(props) {
 
   const [groups,setGroups] = useState(props?._as?.user?.groups)
-  const [activeGroups,setActiveGroups] = useState(localStorage.getItem('activeGroup'))
+  const [activeGroups,setActiveGroups] = useState(localStorage.getItem('projectLifestyle_activeGroup'))
   const router = useRouter()
     return (<>
               <div className="justify-center items-center bg-black bg-opacity-50 flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -31,7 +31,7 @@ function GroupModal(props) {
                               checked={group._id === activeGroups}
                               onClick={(e) => {
                                 setActiveGroups(e.target.value);
-                                localStorage.setItem('activeGroup', e.target.value);
+                                localStorage.setItem('projectLifestyle_activeGroup', e.target.value);
                                 router.reload();
                               }}
                               id={`list-radio-license-${group._id}`}

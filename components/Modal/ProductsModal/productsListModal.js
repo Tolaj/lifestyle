@@ -20,7 +20,7 @@ function ProductListModal(props) {
     fetchData();
   }, [props._as.reloadChild]);
 
-  let myGroup = props?._as?.user?.groups?.find((data) => data._id === localStorage.getItem("activeGroup"))
+  let myGroup = props?._as?.user?.groups?.find((data) => data._id === localStorage.getItem("projectLifestyle_activeGroup"))
 
   const formFields =[
     {
@@ -45,8 +45,8 @@ function ProductListModal(props) {
     },
     {
       "type":"text",
-      "name":"quantity",
-      "label":"Quantity (ml)",
+      "name":"unit",
+      "label":"Unit (ml,kg,unit)",
       "placeholder":"800"
     },
     {
@@ -63,7 +63,7 @@ function ProductListModal(props) {
     },
   ]
   return (<>
-    <Modal formData = {props._as.productsData} setFormData = {props._as.setProductsData} _as = {props._as} additionalData = {{"groupId":localStorage.getItem("activeGroup")}} formTitle = "Create a Product" formFields = {formFields} formAPI={process.env.SERVER_API+"/api/products/"} style="grid grid-cols-2" />
+    <Modal formData = {props._as.productsData} setFormData = {props._as.setProductsData} _as = {props._as} additionalData = {{"groupId":localStorage.getItem("projectLifestyle_activeGroup")}} formTitle = "Create a Product" formFields = {formFields} formAPI={process.env.SERVER_API+"/api/products/"} style="grid grid-cols-2" />
   </>);
 }
 

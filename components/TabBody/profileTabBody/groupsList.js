@@ -94,7 +94,7 @@ function GroupsList(props) {
     };
 
     return (<>
-                    <div   className="flex items-center justify-center text-transparent md:gap-4">.
+                    <div   className="flex items-center justify-center text-transparent md:gap-4">  
                         <InputFields.GridButton title="Edit" type="EDIT"  onClick={()=>{params._as.setModalToggle(router.route);params.setFormData(params.data)}} className="w-6 h-6 text-black hover:cursor-pointer" />
                         <InputFields.GridButton title="Edit" type="DELETE"  onClick={()=>{params.setPreLoader(true);handleAction("DELETE",{"_id":params.data._id})}}  className={`flex items-center justify-center gap-2 hover:cursor-pointer text-black font-semibold`}/>
                         <InputFields.GridButton title="Edit" type="ARROW" onClick={()=>{params.setReadMore(params.readMore==params.index+'i'?null:params.index+'i')}} className={`w-5 h-5 md:hidden  text-black ${params.readMore == params.index+'i' ?"rotate-90":""}`}/>

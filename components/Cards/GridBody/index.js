@@ -57,7 +57,10 @@ const GridBody = (props) => {
                 headerName: column, 
                 field: column, 
                 // autoHeight: true , 
+                editable: props?.colProps? props?.colProps[index]?.editable ? props?.colProps[index]?.editable : false:false ,
                 filter: true, 
+                cellStyle:()=>{return props?.cellStyle?props?.cellStyle[index]?props?.cellStyle[index]:{}:{};},
+                popoverAppendToBody: true,
                 cellRendererParams: {paramPass:props?.paramPass?props?.paramPass:{}},
                 cellRenderer: props.columnComponents?(typeof(props.columnComponents[index]) != 'function') ? (params)=>{ return params.data[column]}:props.columnComponents[index]:(params)=>{ return params.data[column]} };
             }),
@@ -176,7 +179,23 @@ const GridBody = (props) => {
                                         --ag-input-border-color: black;
                                         // --ag-input-border-color: rgb(240, 189, 102);
                                     }
+
+                                    
+                                  // .ag-cell {
+                                  //     overflow: visible !important;  
+                                      
+                                  //   }
+
+    
+                                    // .ag-cell-value {
+                                    //   overflow: visible;
+                                    // }
+                                
+                                  .ag-row.ag-row-focus {
+                                    z-index: 1;
+                                  }
                                   
+                                      
                                   `}
                              </style>
                              

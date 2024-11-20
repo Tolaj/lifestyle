@@ -90,7 +90,7 @@ function CategoryListModal(props) {
       },
     ]
     return (<>
-      <Modal formData = {props._as.categoryData} setFormData = {props._as.setCategoryData} _as = {props._as} formTitle = "Create a Category" additionalData = {{"groupId":localStorage.getItem("activeGroup")}}  formFields = {formFields} formAPI={process.env.SERVER_API+"/api/categories/"} />
+      <Modal formData = {props._as.categoryData} setFormData = {props._as.setCategoryData} _as = {props._as} formTitle = "Create a Category" additionalData = {{"groupId":localStorage.getItem("projectLifestyle_activeGroup")}}  formFields = {formFields} formAPI={process.env.SERVER_API+"/api/categories/"} />
   </>);
 }
 

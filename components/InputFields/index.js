@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
+import { useClickOutside } from 'utils/helperFunctions';
 import HeroIcon, { heroIcons, heroIconsNames }  from 'utils/heroIcon';
 
 const InputFields = () => {};
@@ -65,9 +66,8 @@ const Select = (props) => {
 }
 
 const GridSelect = (props) => {
-    const [showSelect,setShowSelect] = useState(0)
+    const {isVisible,setIsVisible,isVisibleRef} = useClickOutside()
     const [optionSelect, setOptionSelect] = useState(props.value || '');
-    const dropdownRef = useRef(null); 
 
     useEffect(() => {
        
@@ -87,39 +87,21 @@ const GridSelect = (props) => {
         
     }, [props.value]);
 
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-          if (!dropdownRef.current?.contains(event.target)) {
-            setShowSelect(false); // Close the dropdown if clicked outside
-          }else{
-            setShowSelect(true);
-          }
-        };
-        
-        // Add event listener for clicks
-        document.addEventListener('mousedown', handleClickOutside);
-        
-        return () => {
-          // Clean up the event listener on unmount
-          document.removeEventListener('mousedown', handleClickOutside);
-        };
-      }, [dropdownRef]);
-
       
     return(<>
         <div  className='relative'  >
           <label for="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{props.label?props.label:"Name"}</label>
           
-            <div ref={dropdownRef}   id="name" className="bg-gray-50 border hover:cursor-default  border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 min-h-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 "> {props.placeholder && !optionSelect ?props.placeholder:optionSelect}
-                <svg onClick={()=>{setShowSelect(1)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-6 absolute top-[50%] right-[10px]">
+            <div ref={isVisibleRef}   id="name" className="bg-gray-50 border hover:cursor-default  border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 min-h-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 "> {props.placeholder && !optionSelect ?props.placeholder:optionSelect}
+                <svg onClick={()=>{setIsVisible(1)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-6 absolute top-[50%] right-[10px]">
                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                 </svg>
             
-                <div  className={` ${showSelect?"block":"hidden"} overflow-y-auto  absolute left-0 z-50 w-full max-h-48 md:max-h-52 -ml-2  -mt-7 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-xl focus:outline-none`} >
+                <div  className={` ${isVisible?"block":"hidden"} overflow-y-auto  absolute left-0 z-50 w-full max-h-48 md:max-h-52 -ml-2  -mt-7 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-xl focus:outline-none`} >
                         <div className="py-1 bg-gray-200 grid grid-cols-6  drop-shadow-2xl rounded-md" >
                             {props.options.map((option,index)=>{
                                 return(<>
-                                    <div onClick={()=>{props.onClick({"target":{"name":props.name,"value":props.optionValues[index]}});setOptionSelect(option);setShowSelect(0);}} key={index} name="icon" value="value" className="  text-center items-center justify-center flex mx-2 py-1 text-sm  hover:bg-blue-200 text-gray-700  rounded-md" >{option}</div>
+                                    <div onClick={()=>{props.onClick({"target":{"name":props.name,"value":props.optionValues[index]}});setOptionSelect(option);setIsVisible(0);}} key={index} name="icon" value="value" className="  text-center items-center justify-center flex mx-2 py-1 text-sm  hover:bg-blue-200 text-gray-700  rounded-md" >{option}</div>
                                 </>)
                             })}
                         </div>
@@ -131,27 +113,9 @@ const GridSelect = (props) => {
 }
 
 const CheckBoxSelect = (props) => {
-    const [showSelect,setShowSelect] = useState(0)
+    const {isVisible,setIsVisible,isVisibleRef} = useClickOutside()
     const [optionSelect, setOptionSelect] = useState(props.value || '');
     const dropdownRef = useRef(null); 
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-          if (!dropdownRef.current?.contains(event.target)) {
-            setShowSelect(false); // Close the dropdown if clicked outside
-          }else{
-            setShowSelect(true);
-          }
-        };
-        
-        // Add event listener for clicks
-        document.addEventListener('mousedown', handleClickOutside);
-        
-        return () => {
-          // Clean up the event listener on unmount
-          document.removeEventListener('mousedown', handleClickOutside);
-        };
-      }, [dropdownRef]);
 
     const handleCheckboxChange = (option,index) => {
         // Create an array of checked values based on the current props
@@ -174,12 +138,12 @@ const CheckBoxSelect = (props) => {
         <div  className='relative'  >
           <label for="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{props.label?props.label:"Name"}</label>
           
-            <div  ref={dropdownRef}  id="name" className="bg-gray-50 border hover:cursor-default  border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 min-h-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 ">{props.placeholder && !optionSelect ?props.placeholder:optionSelect.map((item,i)=>{ if(i==0){return item}else{return ", "+item } })}
+            <div  ref={isVisibleRef}  id="name" className="bg-gray-50 border hover:cursor-default  border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 min-h-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 ">{props.placeholder && !optionSelect ?props.placeholder:optionSelect.map((item,i)=>{ if(i==0){return item}else{return ", "+item } })}
                 {/* <svg onClick={()=>{setShowSelect(1)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-6 absolute top-[50%] right-[10px]">
                     <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                 </svg> */}
             {/* onClick={()=>{props.onClick({"target":{"name":props.name,"value":props.optionValues[index]}});setOptionSelect(option);setShowSelect(0);}} */}
-                <div  className={` ${showSelect?"block":"hidden"} overflow-y-auto  absolute left-0 z-50 w-full max-h-48 md:max-h-52 -ml-2  -mt-7 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-xl focus:outline-none`} >
+                <div  className={` ${isVisible?"block":"hidden"} overflow-y-auto  absolute left-0 z-50 w-full max-h-48 md:max-h-52 -ml-2  -mt-7 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-xl focus:outline-none`} >
                         <div className="py-2 bg-gray-200 px-2 flex gap-2 flex-col drop-shadow-2xl rounded-md" >
                             {props.options.map((option,index)=>{
                                 return(<>
@@ -293,10 +257,23 @@ const GridButton = (props) => {
                 </>)
         case "EDIT":
             return(<>
-                    <svg  title={props.title} onClick={props.onClick}  className={`${props.className}`}  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" >
-                        <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                        <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                    </svg>
+                    <div title={props.title} onClick={props.onClick}  className={`${props.className} flex flex-grow`} >          
+                        <svg   xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className='flex-grow' >
+                            <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                            <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                        </svg>
+                    </div>
+                </>)
+        case "ADD_CART":
+            return(<>
+                   <div title={props.title} onClick={props.onClick}  className={`${props.className} relative `} >          
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3 absolute top-0 right-0 bg-white rounded-full">
+                            <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm.75-10.25v2.5h2.5a.75.75 0 0 1 0 1.5h-2.5v2.5a.75.75 0 0 1-1.5 0v-2.5h-2.5a.75.75 0 0 1 0-1.5h2.5v-2.5a.75.75 0 0 1 1.5 0Z" clip-rule="evenodd" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-black hover:cursor-pointer flex flex-grow ">
+                            <path d="M2.25 2.25a.75.75 0 0 0 0 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 0 0-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 0 0 0-1.5H5.378A2.25 2.25 0 0 1 7.5 15h11.218a.75.75 0 0 0 .674-.421 60.358 60.358 0 0 0 2.96-7.228.75.75 0 0 0-.525-.965A60.864 60.864 0 0 0 5.68 4.509l-.232-.867A1.875 1.875 0 0 0 3.636 2.25H2.25ZM3.75 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM16.5 20.25a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" />
+                        </svg>
+                    </div> 
                 </>)
         default:
             return(<><div className='bg-black text-white text-xs p-1 rounded-xl'>No Button Type Provided</div></>)

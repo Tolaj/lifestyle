@@ -3,7 +3,7 @@ import axios from 'axios';
 const FetchAPI = async (api, method, data = null, config = {}) => {
   const id = data?._id ?? data?.id ?? null;
   const url = id && method !== 'POST' ? `${api}?id=${id}` : api;
-
+  
   let payload = data;
   const isMultipart = data instanceof FormData;
   // If data is not already FormData, convert it for file uploads (POST/PUT)

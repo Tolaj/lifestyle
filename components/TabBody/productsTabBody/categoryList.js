@@ -12,7 +12,7 @@ function CategoryList(props) {
 
   
   const dataFilter = (params) => {
-    let myGroup = params?._as?.user?.groups?.find((data) => data._id === localStorage.getItem('activeGroup'))
+    let myGroup = params?._as?.user?.groups?.find((data) => data._id === localStorage.getItem('projectLifestyle_activeGroup'))
     return params.data.filter((data) => myGroup.categories.includes(data._id));
   }
 

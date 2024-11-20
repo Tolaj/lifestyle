@@ -1,16 +1,20 @@
 import mongoose from 'mongoose';
 
 const OrderSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+
+  name: { type: String, required: true },
   items: [{
-    groceryItemId: { type: mongoose.Schema.Types.ObjectId, ref: 'GroceryItem', required: true },
-    quantity: { type: Number, required: true },
-    price: { type: Number, required: true }
+    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    unit: { type: String, required: true },
+    price: { type: String, required: true },
+    splitType: { type: String , default: 'Equal',enum: ['equal', 'percentage', 'custom']},
+	  splitAmong: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    count: { type: String, required: true },
   }],
-  totalAmount: { type: Number, required: true },
-  status: { type: String, enum: ['pending', 'completed', 'canceled'], default: 'pending' }
-}, {
-  timestamps: true
-});
+  TotalPrice: { type: String, required: true },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  paidBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+
+}, { timestamps: true });
 
 export default mongoose.models.Order || mongoose.model('Order', OrderSchema);

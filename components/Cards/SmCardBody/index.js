@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { BeakerIcon } from '@heroicons/react/24/solid'
 import HeroIcon, { heroIcons, heroIconsNames }  from 'utils/heroIcon';
 import ReadLess from './components/readLess';
+import { isEmpty } from 'lodash';
 
 function SmCardBody(props) {
     
@@ -25,8 +26,8 @@ function SmCardBody(props) {
                 console.error("Error fetching data:", error);
               }          
     };
-    
-        fetchData();
+        !isEmpty(props._as.user)?fetchData():null;
+        
       }, [props._as.reloadChild,props._as.user]);
 
     const ActionDelete = async (data) => {
@@ -98,7 +99,8 @@ function SmCardBody(props) {
                         {/* read more section */}
 
                         <div className={`${readMore==index+'i'?' p-3 -mt-6 divide-y ':"hidden"}`}>
-                            {props.columns.map((column,index)=>{                            
+                            {props.columns.map((column,index)=>{   
+                                                         
                                     if(props.columnComponents){
                                         if( (typeof(props.columnComponents[index]) != 'function')){
                                             return(<>
@@ -107,7 +109,12 @@ function SmCardBody(props) {
                                                         {column}
                                                     </div>
                                                     <div>
-                                                        {data[column]}
+                                                    {typeof data[column] === "object" ? (
+                                                            // Render a JSON string for debugging or handle gracefully
+                                                            JSON.stringify(data[column])
+                                                        ) : (
+                                                            data[column]
+                                                        )}
                                                     </div>
                                                 </div>
                                             </>)
@@ -118,7 +125,7 @@ function SmCardBody(props) {
                                                         {column}
                                                     </div>
                                                     <div>
-                                                        {props.columnComponents[index]({data,readMore})}
+                                                        {props.columnComponents[index]({data,readMore,setRowData,_as:props._as})}
                                                     </div>
                                                 </div>
                                             </>)

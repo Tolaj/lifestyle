@@ -8,7 +8,7 @@ const useDynamicState = (...stateNames) => {
     const state = {};
 
     stateNames.forEach((stateName) => {
-      const [isolate, setIsolate] = React.useState(0);
+      const [isolate, setIsolate] = React.useState([]);
       const [tab, setTab] = React.useState(0);
       const [data, setData] = React.useState(0);
   

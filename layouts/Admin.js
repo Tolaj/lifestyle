@@ -13,6 +13,7 @@ import TabBody from "components/TabBody";
 import useSession from "utils/useSession";
 import FetchAPI from "controllers/fetchAPI";
 import PageChange from "components/PreLoader";
+import Toast from "components/Toast";
 
 
 export default function Admin({ children }) {
@@ -44,6 +45,7 @@ export default function Admin({ children }) {
         if (!sessionData) return; // Exit if no session data
         
         try {
+            localStorage.getItem('projectLifestyle_activeGroup') ? null: localStorage.setItem('projectLifestyle_activeGroup',sessionData.user.groupId)
             const res = await FetchAPI('/api/users', "GET", sessionData.user);
             _as.setUser(res);
         } catch (error) {
@@ -53,20 +55,32 @@ export default function Admin({ children }) {
 
     fetchData(); // Call the fetch function
 }, [sessionData, _as.reloadChild]); 
-  
-useEffect(() => {
-  const fetchData = async () => {
-      if (!sessionData) return; // Exit if no session data
-      try {
-         localStorage.getItem('activeGroup') ? null: localStorage.setItem('activeGroup',sessionData.user.groupId)
-      } catch (error) {
-          console.error('Error fetching user data:', error);
-      }
-  };
 
-  fetchData(); // Call the fetch function
-}, [sessionData]); 
+ 
 
+  useEffect(() => {
+    const fetchData = async () => {
+
+      if(localStorage.getItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`)){
+          _as.setCart(JSON.parse(localStorage.getItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`)))
+        }
+      
+    };
+
+    fetchData(); // Call the fetch function
+  }, []); 
+
+  useEffect(() => {
+    const fetchData = async () => {
+       if(_as.cart.length > 0){
+        localStorage.setItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`,JSON.stringify(_as.cart))
+       }else{
+        localStorage.setItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`,[])
+       }
+    };
+
+    fetchData(); // Call the fetch function
+  }, [_as.cart]);
 
   let _ac = [
       {
@@ -119,13 +133,14 @@ useEffect(() => {
 
 
 
-  return (
-
+  return (<>
+ 
     <div className={`flex  h-fit  bg-[#F9FAFE] `}>
       <div className={` md:relative  fixed  bottom-0  h-16  `}>
         <Sidebar _ac={_ac} _as={_as} />
       </div>
       <div className="flex flex-col  w-full h-screen ">
+        
         {/* admin header nav */}
         <div className="md:relative fixed bg-[#F9FAFE] z-3 ">
         <AdminNavbar _ac={_ac} _as={_as} />
@@ -140,8 +155,7 @@ useEffect(() => {
               return React.cloneElement(child, { _as: _as });
             })} */}
 
-
-          <TabBody  _as = {_as} /> 
+            {_as?.user?._id != undefined?  <TabBody  _as = {_as} /> :<></>}
 
           <Modal _as = {_as} />
 
@@ -153,5 +167,8 @@ useEffect(() => {
       </div>
     </div>
 
-  );
+  </>);
 }
+
+
+

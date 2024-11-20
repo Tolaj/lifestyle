@@ -3,21 +3,13 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import PageChange from 'components/PreLoader';
 import InputFields from 'components/InputFields';
-import { TimeAgo } from 'utils/formatDate';
+import { TimeAgo } from 'utils/helperFunctions'; // Adjust path as needed
 
 
 export default function Profile(props)  {
   const router = useRouter()
-  const [profileData,setProfileData] =  useState()
-  useEffect(() => {
-    let tempData = props?._as?.user;
-    setProfileData(tempData)
-  }, [props._as.user]);
-
-  if (!profileData) {
-    return  <PageChange />; // A loader while data is being fetched
-  }
-
+ 
+ 
   const IconComponent = (params) => {
     return(<>
         <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full bg-black text-black `} >
@@ -52,8 +44,10 @@ export default function Profile(props)  {
         </>);
     
   }
+
+  
   return(<>
-    <SmCardBody columns = {['name','email','totalGroups','totalFriends','createdAt']} setFormData={props._as.setUserData} columnComponents = {["","",customComponentGroups,customComponentFriends,customComponentCreatedAt]} ActionsComponent = {ActionsComponent} IconComponent={IconComponent}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/users"} gridData = {profileData} />
+    <SmCardBody columns = {['name','email','totalGroups','totalFriends','createdAt']} setFormData={props._as.setUserData} columnComponents = {["","",customComponentGroups,customComponentFriends,customComponentCreatedAt]} ActionsComponent = {ActionsComponent} IconComponent={IconComponent}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/users"} gridData = {props._as.user} />
   </>)
 
 }

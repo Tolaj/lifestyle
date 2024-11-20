@@ -43,8 +43,8 @@ function ProductListModal(props) {
     },
     {
       "type":"text",
-      "name":"quantity",
-      "label":"Quantity (ml)",
+      "name":"unit",
+      "label":"unit (ml,kg,unit)",
       "placeholder":"800"
     },
     {

@@ -12,7 +12,7 @@ export default function ProductList(props)  {
   
   if(windowWidth<700){
     return(<>
-      <SmCardBody columns = {['name','price','quantity','description','category','manufacturer']} setFormData={props._as.setProductsData}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/products"} />
+      <SmCardBody columns = {['name','price','unit','description','category','manufacturer']} setFormData={props._as.setProductsData}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/products"} />
     </>)
   }else{
     const columnComponentIcon = (params) => {
@@ -30,7 +30,7 @@ export default function ProductList(props)  {
     }
   
     return (<>
-      <GridBody columns = {['name','description','category','price','quantity','manufacturer']} columnComponents = {['','',columnComponentIcon]}  setFormData={props._as.setProductsData}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/products"} />
+      <GridBody columns = {['name','description','category','price','unit','manufacturer']} columnComponents = {['','',columnComponentIcon]}  setFormData={props._as.setProductsData}  _as = {props._as} gridApi = {process.env.SERVER_API+"/api/products"} />
     </>);
   }
   
