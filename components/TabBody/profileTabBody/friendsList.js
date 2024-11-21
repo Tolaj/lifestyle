@@ -79,7 +79,7 @@ function FriendsList(props) {
     </>)
   }else{
     return (<>
-      <GridBody columns = {['name','email','request']} columnComponents = {[columnComponentName,columnComponentEmail,columnComponentStatus]} ActionsComponent = {ActionsComponent}   _as = {props._as} gridData={userData.friends}  />
+      <GridBody columns = {['name','email','request','action']} columnComponents = {[columnComponentName,columnComponentEmail,columnComponentStatus]} ActionsComponent = {ActionsComponent}   _as = {props._as} gridData={userData.friends}  />
     </>);
   }
   

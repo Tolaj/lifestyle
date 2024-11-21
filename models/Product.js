@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Group from './Group';
+import { deleteFromGroupPostDelete } from '../utils/modelPlugins';
 
 const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -13,18 +14,8 @@ const ProductSchema = new mongoose.Schema({
   timestamps: true
 });
 
-ProductSchema.post('findOneAndDelete', async function (doc) {
-  if (doc) { 
-    try {
-      await Group.updateOne(
-        { products: doc._id },  // Find the group that contains doc._id in the categories array
-        { $pull: { products: doc._id } }  // Remove doc._id from the categories array
-      );
-    } catch (error) {
-      console.error("Error removing group for user:", error);
-    }
-  }
-});
+ProductSchema.plugin(deleteFromGroupPostDelete('Group', 'products'));
+
 
 // Check if the model already exists; if not, create it
 export default mongoose.models.Product || mongoose.model('Product', ProductSchema);

@@ -41,7 +41,7 @@ function CategoryList(props) {
       return( <div className='flex items-center justify-center w-full h-full'><div className={`${params.data.color} rounded-lg w-16 h-5`}></div></div> )
     }
     return (<>
-      <GridBody columns = {['name','description','color','icon']} columnComponents = {['','',columnComponentColor,columnComponentIcon]} setFormData={props._as.setCategoryData}  _as = {props._as} dataFilter={dataFilter} gridApi = {process.env.SERVER_API+"/api/categories"} />
+      <GridBody columns = {['name','description','color','icon','action']} columnComponents = {['','',columnComponentColor,columnComponentIcon]} setFormData={props._as.setCategoryData}  _as = {props._as} dataFilter={dataFilter} gridApi = {process.env.SERVER_API+"/api/categories"} />
     </>);
   }
   

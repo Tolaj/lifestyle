@@ -112,7 +112,7 @@ function GroupsList(props) {
     </>)
   }else{
     return (<>
-      <GridBody columns = {['name','members']} columnComponents = {[columnComponentName,columnComponentMembers]} ActionsComponent = {ActionsComponent} paramPass = {{"setGroupToggle":setGroupToggle,groupToggle:()=>dataRef.current}} setFormData = {props._as.setGroupsData}  _as = {props._as} dataFilter={dataFilter} gridApi={process.env.SERVER_API+"/api/groups"}  />
+      <GridBody columns = {['name','members','action']} columnComponents = {[columnComponentName,columnComponentMembers]} ActionsComponent = {ActionsComponent} paramPass = {{"setGroupToggle":setGroupToggle,groupToggle:()=>dataRef.current}} setFormData = {props._as.setGroupsData}  _as = {props._as} dataFilter={dataFilter} gridApi={process.env.SERVER_API+"/api/groups"}  />
     </>);
   }
   

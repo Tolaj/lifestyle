@@ -31,3 +31,21 @@ export const preventDeleteIfReferenced = (refModel, refField) => {
   };
 };
 
+export const deleteFromGroupPostDelete = (refModel, refField) => {
+  return function (schema) {
+    schema.post('findOneAndDelete', async function (doc) {
+      if (doc) {
+        try {
+          // Check if the document has a reference in the specified refModel
+          await mongoose.model(refModel).updateMany(
+            { [refField]: doc._id },  // Find groups where the Order is referenced
+            { $pull: { [refField]: doc._id } }  // Pull the reference to the deleted order
+          );
+          console.log(`Successfully removed order reference from ${refModel}`);
+        } catch (error) {
+          console.error("Error removing reference in group:", error);
+        }
+      }
+    });
+  };
+};

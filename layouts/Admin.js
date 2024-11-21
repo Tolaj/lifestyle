@@ -37,8 +37,20 @@ export default function Admin({ children }) {
     'cart',
     'profile',
     'user',
-    'groups'
+    'groups',
+    'toast'
   )
+
+  useEffect(() => {
+    if (_as.toast) {
+      const timer = setTimeout(() => {
+        _as.setToast(0);
+      }, 2000);
+  
+      // Cleanup the timeout if toast state changes before 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [_as.toast]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -154,7 +166,12 @@ export default function Admin({ children }) {
             {/* {React.Children.map(children, (child) => {
               return React.cloneElement(child, { _as: _as });
             })} */}
-
+              {_as.toast != 0 && (
+                <Toast 
+                  message={`${_as.toast}`} 
+                  setToast={_as.setToast} 
+                />
+              )} 
             {_as?.user?._id != undefined?  <TabBody  _as = {_as} /> :<></>}
 
           <Modal _as = {_as} />

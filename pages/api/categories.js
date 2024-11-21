@@ -2,6 +2,7 @@ import {Category} from '../../models/index';
 import { createHandler } from '../../controllers/genericHandler';
 import Group from 'models/Group';
 import { message } from 'antd';
+import { addToGroupAndSaveMiddleware } from 'utils/almostGenericMiddleware';
 
 export const config = {
   api: {
@@ -9,28 +10,10 @@ export const config = {
   },
 };
 
-const customMiddleware = async (req, res) => {
-  const { body } = req;
-  const { method } = req;
-  if(['POST'].includes(method)){
-
-    const data = { ...body };
-
-    const doc = new Category(data);
-    let newCategory = await doc.save();
-    console.log(await Group.updateOne(
-      { _id: body.groupId },
-      { $addToSet: { categories: newCategory._id } }
-    ))
-
-    res.status(200).json({"message":"category created"}); 
-    return 'ok'
-  }
-};
 
 export default createHandler(Category, {
   useAuth: false, 
-  middleware: customMiddleware, 
+  middleware: addToGroupAndSaveMiddleware('Category', 'Group', 'groupId', 'categories'), 
 });
 
 // export default createHandler(Product, {

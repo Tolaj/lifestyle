@@ -12,24 +12,11 @@ import HeroIcon, { heroIconsNames } from 'utils/heroIcon';
 
 export default function ProductList(props)  {
   const [windowWidth, setWindowWidth] = useState(null);
-  const [toast, setToast] = useState(0);
-
   const router = useRouter()
 
   useEffect(() => {
       setWindowWidth(window.outerWidth)
   },[]) 
-
-  useEffect(() => {
-    if (toast) {
-      const timer = setTimeout(() => {
-        setToast(0);
-      }, 3000);
-  
-      // Cleanup the timeout if toast state changes before 3 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [toast]);
 
   const dataFilter = (params) => {
     
@@ -52,7 +39,14 @@ export default function ProductList(props)  {
     
     return (<>
                     <div   className="flex items-center justify-center md:h-full gap-1 md:w-full md:gap-4">
-                        <InputFields.GridButton title="Add to cart" type="ADD_CART"  onClick={() => {setToast(prevToast => prevToast + 1);props._as.setCart((prevCart) => [...prevCart, { ...params.data }])}} className="w-6 h-6 text-black hover:cursor-pointer" />
+                        <InputFields.GridButton title="Add to cart" type="ADD_CART"  
+                            onClick={() => {
+                              props._as.setToast((prevToast) => {                              
+                                return `${(typeof prevToast === 'string' ? parseInt(prevToast.split(' ')[0], 10) : 0) + 1} Item(s) added to cart successfully!`;
+                              });
+                              props._as.setCart((prevCart) => [...prevCart, { ...params.data }])}
+                            } 
+                          className="w-6 h-6 text-black hover:cursor-pointer" />
                         <InputFields.GridButton title="Edit" type="EDIT"  onClick={()=>{params._as.setModalToggle(router.route);params.setFormData(params.data)}} className="w-6 h-6 text-black hover:cursor-pointer" />
                         <InputFields.GridButton title="Delete" type="DELETE"  onClick={()=>{params.setPreLoader(true);handleAction("DELETE",{"_id":params.data._id})}}  className={`flex items-center justify-center gap-2 hover:cursor-pointer text-black font-semibold`}/>
                         <InputFields.GridButton title="Edit" type="ARROW" onClick={()=>{params.setReadMore(params.readMore==params.index+'i'?null:params.index+'i')}} className={`w-5 h-5 md:hidden  text-black ${params.readMore == params.index+'i' ?"rotate-90":""}`}/>
@@ -273,13 +267,7 @@ export default function ProductList(props)  {
       );
     };
     
-    return(<>
-      {toast > 0 && (
-        <Toast 
-          message={`${toast} Item added to cart successfully`} 
-          setToast={setToast} 
-        />
-      )}  
+    return(<> 
       <SmCardBody columns = {['name','price','unit',"splitAmong",'description','category','manufacturer']} columnComponents={["",(params) => <ColumnComponentPrice params={params} />,(params) => <ColumnComponentUnit params={params} />,(params) => <ColumnComponentSplit params={params} />,"",columnComponentCategory]}  IconComponent={IconComponent} ActionsComponent = {ActionsComponent}  setFormData={props._as.setProductsData}   _as = {props._as} dataFilter={dataFilter}  gridApi = {process.env.SERVER_API+"/api/products"} />
     </>)
   }else{
@@ -451,14 +439,8 @@ export default function ProductList(props)  {
       );
     };
   
-    return (<>
-      {toast > 0 && (
-        <Toast 
-          message={`${toast} Item added to cart successfully`} 
-          setToast={setToast} 
-        />
-      )}     
-      <GridBody columns = {['name','description','category','price','unit','splitAmong','manufacturer']}  columnComponents = {['','',columnComponentIcon,columnComponentPrice,columnComponentUnit,columnComponentSplit]} ActionsComponent = {ActionsComponent} cellStyle={['','','','','',{overflow:'visible'}]} paramPass={{"_as":props._as.user._id != undefined  ?props._as:"nothing"}} setFormData={props._as.setProductsData}  _as = {props._as} dataFilter={dataFilter}  gridApi = {process.env.SERVER_API+"/api/products"} />
+    return (<>  
+      <GridBody columns = {['name','description','category','price','unit','splitAmong','manufacturer','action']}  columnComponents = {['','',columnComponentIcon,columnComponentPrice,columnComponentUnit,columnComponentSplit]} ActionsComponent = {ActionsComponent} cellStyle={['','','','','',{overflow:'visible'}]} paramPass={{"_as":props._as.user._id != undefined  ?props._as:"nothing"}} setFormData={props._as.setProductsData}  _as = {props._as} dataFilter={dataFilter}  gridApi = {process.env.SERVER_API+"/api/products"} />
     </>);
   }
   

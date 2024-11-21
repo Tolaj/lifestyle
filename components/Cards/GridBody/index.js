@@ -53,24 +53,29 @@ const GridBody = (props) => {
     const [columnDefs, setColumnDefs] = useState(
         [
             ...props.columns.map((column,index) => {
-              return { 
-                headerName: column, 
-                field: column, 
-                // autoHeight: true , 
-                editable: props?.colProps? props?.colProps[index]?.editable ? props?.colProps[index]?.editable : false:false ,
-                filter: true, 
-                cellStyle:()=>{return props?.cellStyle?props?.cellStyle[index]?props?.cellStyle[index]:{}:{};},
-                popoverAppendToBody: true,
-                cellRendererParams: {paramPass:props?.paramPass?props?.paramPass:{}},
-                cellRenderer: props.columnComponents?(typeof(props.columnComponents[index]) != 'function') ? (params)=>{ return params.data[column]}:props.columnComponents[index]:(params)=>{ return params.data[column]} };
-            }),
-            {
-                headerName: 'Action',
-                field: 'action',
-                filter: false,
-                cellRenderer: props.ActionsComponent?props.ActionsComponent:ActionsComponent,
-                cellRendererParams: { router:router.route, setFormData : props.setFormData , _as: props._as, gridApi: props.gridApi, preLoader:preLoader, setPreLoader:setPreLoader }
+              if(column == "action"){
+                return {
+                  headerName: 'Action',
+                  field: 'action',
+                  filter: false,
+                  cellRenderer: props.ActionsComponent?props.ActionsComponent:ActionsComponent,
+                  cellRendererParams: { router:router.route, setFormData : props.setFormData , _as: props._as, gridApi: props.gridApi, preLoader:preLoader, setPreLoader:setPreLoader }
+                }
+              }else{
+                return { 
+                  headerName: column, 
+                  field: column, 
+                  // autoHeight: true , 
+                  editable: props?.colProps? props?.colProps[index]?.editable ? props?.colProps[index]?.editable : false:false ,
+                  filter: true, 
+                  cellStyle:()=>{return props?.cellStyle?props?.cellStyle[index]?props?.cellStyle[index]:{}:{};},
+                  popoverAppendToBody: true,
+                  cellRendererParams: {paramPass:props?.paramPass?props?.paramPass:{}},
+                  cellRenderer: props.columnComponents?(typeof(props.columnComponents[index]) != 'function') ? (params)=>{ return params.data[column]}:props.columnComponents[index]:(params)=>{ return params.data[column]} 
+                };
               }
+              
+            }),
         ]);
  
     const defaultColDef = useMemo(() => {

@@ -10,7 +10,7 @@
     "react/jsx-key":"off",
     "react/display-name":"off",
     "react-hooks/exhaustive-deps":"off",
-    "eslint-disable-next-line":"off"
-    
+    "eslint-disable-next-line":"off",
+    "react-hooks/rules-of-hooks":"off"
   }
 }

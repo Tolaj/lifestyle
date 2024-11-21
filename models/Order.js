@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { deleteFromGroupPostDelete } from '../utils/modelPlugins';
 
 const OrderSchema = new mongoose.Schema({
 
@@ -11,10 +12,15 @@ const OrderSchema = new mongoose.Schema({
 	  splitAmong: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     count: { type: String, required: true },
   }],
-  TotalPrice: { type: String, required: true },
+  date: { type: String, required: true },
+  totalPrice: { type: String, required: true },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   paidBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 
 }, { timestamps: true });
+
+
+OrderSchema.plugin(deleteFromGroupPostDelete('Group', 'orders'));
+
 
 export default mongoose.models.Order || mongoose.model('Order', OrderSchema);
