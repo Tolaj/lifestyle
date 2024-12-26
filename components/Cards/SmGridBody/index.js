@@ -44,7 +44,7 @@ const ActionsComponent = (params) => {
         </>);
   };
 
-const GridBody = (props) => {
+const SmGridBody = (props) => {
     
     const gridRef = useRef();
     const router = useRouter()
@@ -60,7 +60,7 @@ const GridBody = (props) => {
                 return {
                   headerName: 'Action',
                   field: 'action',
-                  filter: false,
+                  filter: true,
                   cellRenderer: props.ActionsComponent?props.ActionsComponent:ActionsComponent,
                   cellRendererParams: { router:router.route, setFormData : props.setFormData , _as: props._as, gridApi: props.gridApi, preLoader:preLoader, setPreLoader:setPreLoader,groupGrid:() => dataRef.current, setGroupGrid:setGroupGrid }
                 }
@@ -94,7 +94,7 @@ const GridBody = (props) => {
           flex: 1,
           minWidth: 100,
           filter: 'agTextColumnFilter',
-          floatingFilter: true,
+          floatingFilter: false,
         };
       }, []);
 
@@ -111,10 +111,8 @@ const GridBody = (props) => {
        useEffect(() => {
         const fetchData = async () => {
           try {
-            let data = props.gridData || await FetchAPI(props.gridApi, 'GET');
+            let data = props.gridData;
             if (data ) {
-              props?.dataFilter ?   
-              setRowData(props.dataFilter({data,_as:props._as})):
               setRowData(data)
             }
           } catch (error) {
@@ -153,7 +151,6 @@ const GridBody = (props) => {
     
     return (<>
     <div className="flex flex-wrap relative items-center z-0 justify-center ">
-    <img src="/img/display.png" className="absolute top-0 blur-sm z-0 w-2/4" alt="" />
     {preLoader? <PageChange />:<></>}
                 <div className="h-full w-full  z-20 top-0 ">
                              <style >{`
@@ -216,8 +213,8 @@ const GridBody = (props) => {
                                   `}
                              </style>
                              
-                              <div style={containerStyle} className="my-8 -mt-4 ">
-                                    <div  className="ag-theme-alpine 2xl:h-[80vh] md:h-[70vh] h-[75vh] ">
+                              <div  className=" ">
+                                    <div  className="ag-theme-alpine h-[900vh]  w-[100vh] ">
                                         
                                         <AgGridReact
                                             className="w-full h-full "
@@ -244,4 +241,4 @@ const GridBody = (props) => {
     </>)
 }
 
-export default GridBody;
+export default SmGridBody;

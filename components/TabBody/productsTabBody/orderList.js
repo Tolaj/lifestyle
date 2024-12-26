@@ -1,5 +1,6 @@
 import GridBody from 'components/Cards/GridBody';
 import SmCardBody from 'components/Cards/SmCardBody';
+import SmGridBody from 'components/Cards/SmGridBody';
 import React, { useEffect, useState } from 'react';
 import HeroIcon, { heroIconsNames } from 'utils/heroIcon';
 
@@ -36,26 +37,99 @@ function OrderList(props) {
       <SmCardBody columns = {['name','totalPrice','date','paidBy','createdBy']} columnComponents = {['','','',columnComponentPaidBy,columnComponentCreatedBy]} setFormData={props._as.setCategoryData} IconComponent={IconComponent}   _as = {props._as} dataFilter={dataFilter} gridApi = {process.env.SERVER_API+"/api/orders"} />
     </>)
   }else{
-    const columnComponentIcon = (params) => {
-      
-      if(heroIconsNames.includes(params.data.icon)) {
-        return( <div className='flex items-center justify-center w-full h-full'> <HeroIcon style="" iconTitle = {params.data.icon? params.data.icon:"ExclamationTriangleIcon"} /> </div> )
-      } else {
-        return( <div className='flex items-center justify-center w-full h-full'> <HeroIcon style="" iconTitle = {"ExclamationTriangleIcon"} /> </div> )
-      }
+    const columnComponentName = (params) => {
+      return(<>
+        <div className="flex items-center justify-start gap-2">
+          <div onClick={()=>{params.setGroupGrid((prev)=>prev!=-1?prev==params.rowIndex?-1:params.rowIndex:params.rowIndex)}} title="Drop down" className="hover:bg-black hover:bg-opacity-10 hover:rounded-md hover:cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class={`w-5 h-5 ${params.groupGrid()==params.rowIndex?'rotate-90':''} `}>
+              <path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          {params.value}
+        </div>
+        </>)
     }
-    const columnComponentColor = (params) => {
-      return( <div className='flex items-center justify-center w-full h-full'><div className={`${params.data.color} rounded-lg w-16 h-5`}></div></div> )
-    }
-
     const columnComponentPaidBy = (params) => {
       return( <>{params.data.paidBy.name}</>)
     }
     const columnComponentCreatedBy = (params) => {
       return( <>{params.data.createdBy.name}</>)
     }
+    const columnComponentItems = (params) => {
+      // return( <>{JSON.stringify(params.data.items)}</>)
+      
+      const columnComponentItemProduct = (subParams) => {
+        return subParams?.data?.product?.name
+      }
+      const columnComponentItemSplitAmong = (subParams) => {
+        console.log(subParams)
+        const names = subParams.data.splitAmong.map(person => person.name);
+        return(<>
+          <div className='flex gap-2 divide-x-2   '>
+            {names.map((name, index) =>{
+              return(<div className='px-1' key={index}>{name}</div>)
+            })}
+          </div>
+        </>)
+      }
+
+      
+      return(<>
+          <div>{params?.data?.items?.length}</div>
+          {/* this element is there to just span space for grid  */}
+          <div className={` ${params.groupGrid()==params.rowIndex?"invisible pt-10 pb-2":"hidden"} `}>
+            <div class="relative overflow-x-auto">
+              <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                  <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                      <tr>
+                          <th scope="col" class="px-6 py-3 rounded-s-lg">
+                              Product
+                          </th>
+                          <th scope="col" class="px-6 py-3">
+                              Price
+                          </th>
+                          <th scope="col" class="px-6 py-3 rounded-e-lg">
+                              Unit
+                          </th>
+                          <th scope="col" class="px-6 py-3 rounded-e-lg">
+                              Count
+                          </th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  {params.data.items.map((item,index)=>{
+                    return(<>
+                      <tr class="bg-white dark:bg-gray-800">
+                          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                              {item.product.name}
+                          </th>
+                          <td class="px-6 py-4">
+                            $ {item.price}
+                          </td>
+                          <td class="px-6 py-4">
+                            {item.unit}
+                          </td>
+                          <td class="px-6 py-4">
+                            {item.count}
+                          </td>
+                      </tr>
+                    </>)
+                  })}
+
+                  </tbody>
+                 
+              </table>
+            </div>
+          </div>
+         
+          <div className={` ${params.groupGrid()==params.rowIndex?"absolute top-10 -left-8":"hidden"} `}>
+            <SmGridBody columns = {['product','price','count','unit','splitAmong']} columnComponents = {[columnComponentItemProduct,"","","",columnComponentItemSplitAmong]}  _as = {props._as} dataFilter={dataFilter} gridData = {params.data.items} />
+          </div>
+
+        </>)
+    }
     return (<>
-      <GridBody columns = {['name','totalPrice','date','paidBy','createdBy']} columnComponents = {['','','',columnComponentPaidBy,columnComponentCreatedBy]} setFormData={props._as.setCategoryData}  _as = {props._as} dataFilter={dataFilter} gridApi = {process.env.SERVER_API+"/api/orders"} />
+      <GridBody columns = {['name','items','totalPrice','date','paidBy','createdBy',]} columnComponents = {[columnComponentName,columnComponentItems,'','',columnComponentPaidBy,columnComponentCreatedBy]} setFormData={props._as.setCategoryData} colProps={['',{autoHeight:true}]}  _as = {props._as} dataFilter={dataFilter} gridApi = {process.env.SERVER_API+"/api/orders"} />
     </>);
   }
   

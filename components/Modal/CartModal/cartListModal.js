@@ -182,6 +182,7 @@ function CartListModal(props) {
                   </div>
                 </div>
                 {/* cart List */}
+                
                 <div class="flex-1 overflow-y-auto px-4  sm:px-6 ">
                   <div class="mt-4">
                     <div class="flow-root">
@@ -206,7 +207,7 @@ function CartListModal(props) {
                                 <p class="ml-4">$ {parseFloat(product.price*product.count).toFixed(2)}</p>
                               </div>
                               <div className="text-sm  flex md:gap-8 gap-2">
-                                  <div className="flex flex-col">
+                                  <div className="flex flex-col mt-2">
                                     <div className="flex md:w-36 w-28  justify-between">
                                       <div>Price</div>
                                       <div  className="flex items-center w-8/12 md:w-7/12">
@@ -234,7 +235,7 @@ function CartListModal(props) {
                                         </svg>
                                       </div>
                                     </div>
-                                    <div className="flex md:w-36 w-28   justify-between">
+                                    {/* <div className="flex md:w-36 w-28   justify-between">
                                       <div>Unit</div>
                                       <div  className="flex items-center w-8/12 md:w-7/12 ">
                                       
@@ -260,7 +261,7 @@ function CartListModal(props) {
                                           <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
                                         </svg>
                                       </div>
-                                    </div>
+                                    </div> */}
                                     
                                   </div>
                                   

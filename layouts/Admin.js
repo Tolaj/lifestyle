@@ -57,9 +57,19 @@ export default function Admin({ children }) {
         if (!sessionData) return; // Exit if no session data
         
         try {
-            localStorage.getItem('projectLifestyle_activeGroup') ? null: localStorage.setItem('projectLifestyle_activeGroup',sessionData.user.groupId)
+
             const res = await FetchAPI('/api/users', "GET", sessionData.user);
             _as.setUser(res);
+
+            if(localStorage.getItem('projectLifestyle_activeGroup') ){
+              let groupExist = res && res.groups && res.groups.some(g => g._id === localStorage.getItem('projectLifestyle_activeGroup')) || false;
+              if(!groupExist){
+                localStorage.setItem('projectLifestyle_activeGroup',sessionData.user.groupId)
+              }
+            }else{
+              localStorage.setItem('projectLifestyle_activeGroup',sessionData.user.groupId)
+            }
+            
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
@@ -142,7 +152,6 @@ export default function Admin({ children }) {
       },
 
     ]
-
 
 
   return (<>
