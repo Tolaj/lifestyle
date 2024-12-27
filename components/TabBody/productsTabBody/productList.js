@@ -90,7 +90,7 @@ export default function ProductList(props)  {
     
       return (<>
         {
-          params.readMore ? 
+          params.readMore == params.index+'i' ? 
           <div  className="flex items-center w-full h-full  justify-between space-x-1 px-2">
             <svg  onClick={()=>{handleChange({"target":{"name":"price","value":(parseFloat(tempData.price) - 0.05).toFixed(2)}})}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 flex-shrink-0 hover:cursor-pointer   ">
               <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />

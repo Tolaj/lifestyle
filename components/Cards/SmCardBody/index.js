@@ -69,7 +69,7 @@ function SmCardBody(props) {
 
                             <div className={`${ readMore==index+'i' ? 'invisible' : ' ' } flex flex-col flex-1`}>
                                 <h3 className="text-sm font-medium"> {props?.columnComponents && typeof(props.columnComponents[0]) == 'function' ? props?.columnComponents[0]({data}) : data[props.columns[0]]}  </h3>
-                                <span className={`text-xs leading-none text-gray-400 font-normal `} > {props?.columnComponents && typeof(props.columnComponents[1]) == 'function' ? props?.columnComponents[1]({data,readMore}) : data[props.columns[1]]}</span>
+                                <span className={`text-xs leading-none text-gray-400 font-normal `} > {props?.columnComponents && typeof(props.columnComponents[1]) == 'function' ? props?.columnComponents[1]({data,readMore,index}) : data[props.columns[1]]}</span>
                             </div>
 
                         {/* action section */}
@@ -99,12 +99,12 @@ function SmCardBody(props) {
                         {/* read more section */}
 
                         <div className={`${readMore==index+'i'?' p-3 -mt-6 divide-y ':"hidden"}`}>
-                            {props.columns.map((column,index)=>{   
+                            {props.columns.map((column,index2)=>{   
                                                          
                                     if(props.columnComponents){
-                                        if( (typeof(props.columnComponents[index]) != 'function')){
+                                        if( (typeof(props.columnComponents[index2]) != 'function')){
                                             return(<>
-                                                <div key = {index} className=' divide-y'>
+                                                <div key = {index2} className=' divide-y'>
                                                     <div className='text-gray-400'>
                                                         {column}
                                                     </div>
@@ -120,19 +120,19 @@ function SmCardBody(props) {
                                             </>)
                                         }else{
                                             return(<>
-                                                <div key = {index} className=' divide-y'>
+                                                <div key = {index2} className=' divide-y'>
                                                     <div className='text-gray-400'>
                                                         {column}
                                                     </div>
                                                     <div>
-                                                        {props.columnComponents[index]({data,readMore,setRowData,_as:props._as})}
+                                                        {props.columnComponents[index2]({data,readMore,setRowData,_as:props._as,index:index})}
                                                     </div>
                                                 </div>
                                             </>)
                                         }
                                     }else{
                                         return(<>
-                                            <div key = {index} className=' divide-y'>
+                                            <div key = {index2} className=' divide-y'>
                                                 <div className='text-gray-400'>
                                                     {column}
                                                 </div>

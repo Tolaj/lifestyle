@@ -38,7 +38,8 @@ export default function Admin({ children }) {
     'profile',
     'user',
     'groups',
-    'toast'
+    'toast',
+    'finance'
   )
 
   useEffect(() => {

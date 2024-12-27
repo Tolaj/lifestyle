@@ -23,14 +23,29 @@ export default function Sidebar(props) {
       }
       window.location.reload();
   }
+  let disableAddButton = false
+  switch (router.route) {
+    case "/admin/profile":
+      props._as.profileTab == 0 ? disableAddButton = true :  disableAddButton = false;
+      break;
+    case "/admin/products":
+        props._as.productsTab == 3 || props._as.productsTab == 5 ? disableAddButton = true :  disableAddButton = false;
+        break;
+    // case "/admin/products":
+    //     props._as.productsTab == 3 || props._as.productsTab == 5 ? disableAddButton = true :  disableAddButton = false;
+    //     break;
+    default:
+        disableAddButton = false
+      break;
+  }
 
   return (
     <>
       {windowWidth<700?<>
         <div className="absolute bottom-0 w-screen z-50 bg-black h-16">
-          <div className="fixed w-full bottom-2  p-5 px-6 mb-3  flex items-center justify-between   bg-black shadow-3xl text-white  cursor-pointer">
+          <div className="fixed w-full bottom-2  p-3 px-6 mb-3  flex items-center justify-between   bg-black shadow-3xl text-white  cursor-pointer">
             {/* 1 */}
-            <a href="/admin/dashboard" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 ">
+            <a href="/admin/dashboard" className="flex flex-col items-center transition ease-in duration-20 hover:text-blue-400 p-2">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -41,7 +56,7 @@ export default function Sidebar(props) {
             
             {/* 2 */}
 
-            <a href="/admin/products" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 ">
+            <a href="/admin/products" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 p-2 ">
               {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -54,9 +69,9 @@ export default function Sidebar(props) {
             </a>
 
             {/* 3 Action Button */}
-
-            <div className="flex flex-col items-center  hover:text-blue-400 ">
-              <div onClick={()=>{props._as.setModalToggle(router.route)}} className="absolute bottom-5 text-center flex items-center justify-center rounded-full border-4  border-[#F9FAFE]  bg-black w-16 h-16  p-2 text-black  ">
+            
+            <div className="flex flex-col items-center  hover:text-blue-400 p-2 ">
+              <div onClick={()=>{disableAddButton?false:props._as.setModalToggle(router.route)}} className={`absolute bottom-5 text-center flex items-center justify-center rounded-full border-4  border-[#F9FAFE] ${disableAddButton?"bg-gray-300":"bg-black"}  w-16 h-16  p-2 text-black  `}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class=" size-6 stroke-colors-white  text-white   ">
                   <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
                 </svg>
@@ -64,7 +79,7 @@ export default function Sidebar(props) {
             </div>
 
             {/* 4 */}
-            <a href="/admin/finance" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 ">
+            <a href="/admin/finance" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 p-2 ">
               {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -79,7 +94,7 @@ export default function Sidebar(props) {
             </a>
 
             {/* 5 */}
-            <a href="/admin/profile" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 ">
+            <a href="/admin/profile" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 p-2 ">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

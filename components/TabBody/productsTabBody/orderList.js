@@ -1,11 +1,13 @@
 import GridBody from 'components/Cards/GridBody';
 import SmCardBody from 'components/Cards/SmCardBody';
 import SmGridBody from 'components/Cards/SmGridBody';
+import InputFields from 'components/InputFields';
 import React, { useEffect, useState } from 'react';
 import HeroIcon, { heroIconsNames } from 'utils/heroIcon';
 
 function OrderList(props) {
   const [windowWidth, setWindowWidth] = useState(null);
+  const [showItems, setShowItems] = useState(null);
 
   useEffect(() => {
       setWindowWidth(window.outerWidth)
@@ -32,9 +34,115 @@ function OrderList(props) {
   const columnComponentCreatedBy = (params) => {
     return( <>{params.data.createdBy.name}</>)
   }
+  const columnComponentItems = (params) => {
+
+    return(<>
+      <div onClick={()=>{setShowItems(!showItems)}} className='w-full h-6 border-2 rounded-xl my-1 hover:bg-gray-100 flex items-center justify-center'>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class={`size-5 ${showItems?"rotate-180":"rotate-0"} `}>
+          <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div className={` ${showItems?"":"hidden"}  divide-y  `}>
+        {params.data.items.map((item,index)=>{
+            return(<>
+            <div className='grid grid-cols-5 divide-x'>
+              <div className={` ${index!=0?"hidden":""} text-gray-400 pl-1 `}>
+                Product
+              </div>
+              <div className={` ${index!=0?"hidden":""} text-gray-400 pl-1`}>
+                Price
+              </div>
+              <div className={` ${index!=0?"hidden":""} text-gray-400 pl-1`}>
+                Unit
+              </div>
+              <div className={` ${index!=0?"hidden":""} text-gray-400 pl-1`}>
+                Count
+              </div>
+              <div className={` ${index!=0?"hidden":""} text-gray-400 pl-1`}>
+                Split 
+              </div>
+              <div className='pl-1'>
+                {item.product.name} 
+              </div>
+              <div className='pl-1'>
+                {item.price}
+              </div>
+              <div className='pl-1'>
+                {item.unit}
+              </div>
+              <div className='pl-1'>
+                {item.count}
+              </div>
+              <div className='pl-1'>
+                {item.splitAmong.map((split)=>{
+                  return(<>
+                    <div className=''>
+                      {split.name}
+                    </div>
+                  </>)
+                })}
+              </div>
+            </div>
+              
+            </>)
+        })}
+      </div>
+    </>)
+  }
+
+   const ColumnComponentTotalPrice = (params) => {
+        return (<>
+          {
+            params.readMore == params?.index+'i' ? 
+              <span >
+                  $ {params.data.totalPrice} 
+              </span>
+            :
+            <div className={`divide-x divide-gray-200 mt-auto `}>
+              <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0">
+                  $ {params.data.totalPrice} 
+              </span>
+              <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0" >
+                {params.data.date} 
+              </span>
+            </div>
+           }
+        </>);
+      };
+      
+  const ActionsComponent = (params) => {
+
+    // const handleAction = async (method,data) => {
+    //     try {
+    //         const response = await FetchAPI('/api/products', method, data);
+    //         params.setPreLoader(false)
+    //         params._as.setReloadChild(Math.random())
+    //     } catch (error) {
+    //         console.error("Error deleting data:", error);
+    //     }
+
+    // };
+    
+    return (<>
+                    <div   className="flex items-center justify-center md:h-full gap-1 md:w-full md:gap-4">
+                        {/* <InputFields.GridButton title="Add to cart" type="ADD_CART"  
+                            onClick={() => {
+                              props._as.setToast((prevToast) => {                              
+                                return `${(typeof prevToast === 'string' ? parseInt(prevToast.split(' ')[0], 10) : 0) + 1} Item(s) added to cart successfully!`;
+                              });
+                              props._as.setCart((prevCart) => [...prevCart, { ...params.data }])}
+                            } 
+                          className="w-6 h-6 text-black hover:cursor-pointer" />
+                        <InputFields.GridButton title="Edit" type="EDIT"  onClick={()=>{params._as.setModalToggle(router.route);params.setFormData(params.data)}} className="w-6 h-6 text-black hover:cursor-pointer" />
+                        <InputFields.GridButton title="Delete" type="DELETE"  onClick={()=>{params.setPreLoader(true);handleAction("DELETE",{"_id":params.data._id})}}  className={`flex items-center justify-center gap-2 hover:cursor-pointer text-black font-semibold`}/> */}
+                        <InputFields.GridButton title="Edit" type="ARROW" onClick={()=>{params.setReadMore(params.readMore==params.index+'i'?null:params.index+'i')}} className={`w-5 h-5 md:hidden  text-black ${params.readMore == params.index+'i' ?"rotate-90":""}`}/>
+                    </div>
+        </>);
+  };
+
   if(windowWidth<700){
     return(<>
-      <SmCardBody columns = {['name','totalPrice','date','paidBy','createdBy']} columnComponents = {['','','',columnComponentPaidBy,columnComponentCreatedBy]} setFormData={props._as.setCategoryData} IconComponent={IconComponent}   _as = {props._as} dataFilter={dataFilter} gridApi = {process.env.SERVER_API+"/api/orders"} />
+      <SmCardBody columns = {['name','totalPrice','items','date','paidBy','createdBy']} columnComponents = {['',ColumnComponentTotalPrice,columnComponentItems,'',columnComponentPaidBy,columnComponentCreatedBy]} ActionsComponent = {ActionsComponent} setFormData={props._as.setCategoryData}  IconComponent={IconComponent}   _as = {props._as} dataFilter={dataFilter} gridApi = {process.env.SERVER_API+"/api/orders"} />
     </>)
   }else{
     const columnComponentName = (params) => {
