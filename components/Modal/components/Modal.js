@@ -107,7 +107,7 @@ function Modal(props) {
         console.log(error);
       }
     }
-
+    
     return (<>
         <div className="justify-center items-center bg-black bg-opacity-50 flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
           {preLoader? <PageChange />:
@@ -139,7 +139,7 @@ function Modal(props) {
                                 return(<>No Form Field</>)                               
                             }                          
                           })}
-                          <FormInputFields.Button label={props.formData ? "Update Changes" :"Save Changes"} styleBg="bg-black hover:bg-gray-700 focus:ring-black"  />
+                          <FormInputFields.Button label={props.formData ? router.route == "/admin/profile" && props._as.profileTab == 1 ? "Send Request" : "Update Changes" :"Save Changes"} styleBg="bg-black hover:bg-gray-700 focus:ring-black"  />
                           <FormInputFields.Button label="Cancel" onClick={()=>{props._as.setModalToggle(""); props.setFormData("") }} styleBg="bg-black hover:bg-gray-700 focus:ring-white-300" />
                         </div>
                         <div className=" flex items-center justify-center">

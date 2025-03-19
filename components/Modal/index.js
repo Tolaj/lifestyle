@@ -9,7 +9,8 @@ export default function Modal(props) {
     {props._as.modalToggle == "/admin/products" ? <ProductsModal  _as = {props._as} /> : <></>}
     {props._as.modalToggle == "/admin/profile" ? <ProfileModal  _as = {props._as} /> : <></>}
 
-    {props._as.modalToggle == "/admin/cart" ? <CartModal  _as = {props._as} /> : <></>}
+    {props._as.modalToggle == "/admin/cart" ? <CartModal cart={"cart"} _as = {props._as} /> : <></>}
+    {props._as.modalToggle == "/admin/wishList" ? <CartModal cart={"wishList"} _as = {props._as} /> : <></>}
     {props._as.modalToggle == "/admin/group" ? <GroupModal  _as = {props._as} /> : <></>}
 
   </>)

@@ -8,109 +8,94 @@ import { useRouter } from "next/router";
 
 
 
-function CartListModal(props) {
+function CartWishListModal(props) {
   const [checkoutData, setCheckoutData] = useState({})
+  const [categories, setCategories] = useState({})
   const router = useRouter()
   const [tempData, setTempData] = useState(() => {
-    const cart = props?._as?.cart || [];
-    return groupAndCountProducts(cart);
+    console.log("tempData", props?._as?.wishList);
+    const cart = props?._as?.wishList ? JSON.parse(JSON.stringify(props?._as?.wishList)) : {};
+    return cart;
   });
   const { activeGroupMembers } = getUserGroupDetails(props._as.user, localStorage.getItem("projectLifestyle_activeGroup"));
 
   useEffect(()=>{
-    if(props?._as?.cart.length>0){
-      if(JSON.parse(localStorage.getItem("projectLifestyle_cart_checkout"))?.name){
-        let tempCheckout = JSON.parse(localStorage.getItem("projectLifestyle_cart_checkout"))
-        
-        tempCheckout.items = Object.values(tempData).map(product => ({
-          product: product._id,  
-          unit: String(product.unit || '0'),   
-          price: String(product.price || '0'),   
-          splitType: product.splitType || 'equal',  
-          splitAmong: product.splitAmong || [],  
-          count: String(product.count || '0'),  
-        }));       
-
-        tempCheckout.totalPrice = parseFloat(Object.values(tempData).reduce((total, product) => total + (product.price * product.count || 0), 0)).toFixed(2)
-        setCheckoutData(tempCheckout)
-      }else{
-        let tempItems =  Object.values(tempData).map(product => ({
-          product: product._id,  
-          unit: String(product.unit || '0'),   
-          price: String(product.price || '0'),   
-          splitType: product.splitType || 'equal',  
-          splitAmong: product.splitAmong || [],  
-          count: String(product.count || '0'),  
-        }));  
-        setCheckoutData({"name":"order-"+Math.floor(Math.random() * 10000) ,"paidBy":props._as.user._id,"createdBy":props._as.user._id,"totalPrice":parseFloat(Object.values(tempData).reduce((total, product) => total + (product.price * product.count || 0), 0)).toFixed(2),"date": new Date().toISOString().split("T")[0],"items":tempItems})
+    const fetchData = async () => {
+      try {
+        let data = await FetchAPI(process.env.SERVER_API+"/api/categories", 'GET');
+        if (data ) {
+          setCategories(dataFilter({data,_as:props._as}))
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    }else{
-      setCheckoutData({})
-    }
-  },[tempData])
+    };
+    
+    fetchData();
+  },[])
 
-  useEffect(()=>{
-    localStorage.setItem("projectLifestyle_cart_checkout",JSON.stringify(checkoutData));
-  },[checkoutData])
+ 
 
-  const handleChange = (e, key, memberId) => {
+  const handleChange = (e, index, memberId) => {
     const { name, value, checked } = e.target;
   
-    setTempData((prevData) => {
-      const updatedData = { ...prevData };
+    setTempData((prevState) => {
+      const updatedState = { ...prevState };
   
-      if (updatedData[key]) {
-        if (name == "count" && value < 1) {
-          delete updatedData[key];
-        } else {
-          updatedData[key] = {
-            ...updatedData[key],
-            [name]:
-              name === "splitAmong"
-                ? checked
-                  ? [...(updatedData[key].splitAmong || []), memberId]
-                  : (updatedData[key].splitAmong || []).filter((id) => id !== memberId)
-                : value,
-          };
-        }
-      }
-      const flattenData = unGroupAndFlattenProducts(updatedData)
-      props._as.setCart(flattenData);
-      const mergedData = groupAndCountProducts(flattenData)
+      if (index >= 0) {
 
-      if(Object.keys(mergedData).length < Object.keys(updatedData).length){
-        const userConfirmed = window.confirm("Multiple products with same properties wanna merge?");
-        if (!userConfirmed) {
-          return updatedData;  
+        if (name !== "splitAmong") {
+          if (name == "count" && value < 1) {
+            updatedState.items.splice(index, 1); 
+          }else{
+            updatedState.items[index][name] = value;
+          }
+          
+          if (name === "count" || name === "price") {
+            updatedState["totalPrice"] = parseFloat(
+              updatedState.items.reduce((total, item) => {
+                return total + (parseFloat(item.price) * parseInt(item.count) || 0);
+              }, 0)
+            ).toFixed(2);
+          }
         }
-        return mergedData
-      }else{
-        return updatedData;
+  
+        if (name === "splitAmong") {
+          const splitAmong = [...updatedState.items[index].splitAmong];
+          
+          if (checked) {
+            if (!splitAmong.find((member) => member._id === memberId)) {
+              splitAmong.push({ _id: memberId });
+            }
+          } else {
+            const memberIndex = splitAmong.findIndex((member) => member._id === memberId);
+            if (memberIndex >= 0) {
+              splitAmong.splice(memberIndex, 1);
+            }
+          }
+
+          updatedState.items[index].splitAmong = splitAmong;
+        }
+      } else {
+        updatedState[name] = value;
       }
+  
+      return updatedState;
     });
   };
-
-  const handleChangeCheckout = (e) =>{
-    const { name, value, checked } = e.target;
-
-    setCheckoutData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }
+  
 
   const handleSave = async (endpoint) => {
 
     let additionalData = {
-              ...checkoutData,
+              ...tempData,
               ...{"groupId":localStorage.getItem("projectLifestyle_activeGroup")}
             }
 
     try {
-      const result = await FetchAPI(process.env.SERVER_API+"/api/"+endpoint, 'POST', additionalData);
-      setCheckoutData({})
-      props._as.setCart([])
-      props._as.setToast(endpoint=="orders"?"Order Placed successfully!":"Wish list created successfully!")
+      const result = await FetchAPI(process.env.SERVER_API+"/api/"+endpoint, 'PUT', additionalData);
+      setTempData({})
+      props._as.setToast("Wish list created successfully!")
       props._as.setModalToggle(""); 
       props._as.setReloadChild(Math.random()); 
   
@@ -142,7 +127,7 @@ function CartListModal(props) {
 
   const refs5 = useRef(null);
   const {isVisible:isVisible5,setIsVisible:setIsVisible5} = useClickOutside(refs5); 
-
+  const key = 2
   return(
     <div class="relative z-50" aria-labelled-by="slide-over-title" role="dialog" aria-modal="true">
       {/* <!--
@@ -174,7 +159,7 @@ function CartListModal(props) {
               <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-xl ">
                 {/* cart Header */}
                 <div className="bg-white flex items-center justify-between px-6 py-4 border-b-2">
-                  <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">Shopping cart</h2>
+                  <h2 class="text-lg font-medium text-gray-900" id="slide-over-title">Wish list cart</h2>
                   <div>
                     <svg onClick={()=>{props._as.setModalToggle("")}} xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hover:cursor-pointer hover:text-gray-400 rounded-full" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -187,14 +172,14 @@ function CartListModal(props) {
                   <div class="mt-4">
                     <div class="flow-root">
                       <ul role="list" class="-my-6 divide-y divide-gray-200">
-                      { Object.keys(tempData).length > 0 ? Object.entries(tempData).map(([key, product], index) => {
-                            
+                      { tempData?.items?.length > 0 ? tempData?.items?.map((item, index) => {
+                        
                         return(
                         <li class="flex py-6">
                           <div class=" flex-shrink-0 overflow-hidden rounded-md flex items-center">
                             {/* <img src={product.imageUrl} alt="Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt." class="h-full w-full object-cover object-center"/> */}
-                            <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full ${product?.category?.color || 'bg-black'} text-black `} >
-                              <HeroIcon  style="size-6 text-black" iconTitle = {product?.category?.icon} />              
+                            <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full ${categories.length>0? categories?.find(category => category._id === item?.product.category).color : 'bg-black'} text-black `} >
+                              <HeroIcon  style="size-6 text-black" iconTitle = {categories.length>0?categories?.find(category => category._id === item?.product.category).icon:"ArrowDownCircleIcon"} />              
                             </span>
                           </div>
 
@@ -202,9 +187,9 @@ function CartListModal(props) {
                             <div className=""> 
                               <div class="flex justify-between text-base font-semibold ">
                                 <h3>
-                                  <a href="#">{product.name}</a>
+                                  <a href="#">{item.product.name}</a>
                                 </h3>
-                                <p class="ml-4">$ {parseFloat(product.price*product.count).toFixed(2)}</p>
+                                <p class="ml-4">$ {parseFloat(item.price*item.count).toFixed(2)}</p>
                               </div>
                               <div className="text-sm  flex md:gap-8 gap-2">
                                   <div className="flex flex-col">
@@ -228,7 +213,7 @@ function CartListModal(props) {
                                             className=" min-w-8 rounded-md text-xs "
                                           /> :
 
-                                          <div onClick={()=>{setVisibilityStates2[index](1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'> {product.unit}</div>
+                                          <div onClick={()=>{setVisibilityStates2[index](1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'> {item.unit}</div>
                                         }
                                         
                                         {/* <svg onClick={()=>{handleChange({"target":{"name":"unit","value":(parseFloat(product.unit) + 1).toFixed(0)}},key)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 flex-shrink-0 hover:cursor-pointer  ">
@@ -240,7 +225,7 @@ function CartListModal(props) {
                                       <div>Price</div>
                                       <div  className="flex items-center w-8/12 md:w-7/12">
                                       
-                                        <svg  onClick={()=>{handleChange({"target":{"name":"price","value":(parseFloat(product.price) - 0.05).toFixed(2)}},key)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 flex-shrink-0 hover:cursor-pointer   ">
+                                        <svg  onClick={()=>{handleChange({"target":{"name":"price","value":(parseFloat(item.price) - 0.05).toFixed(2)}},index)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 flex-shrink-0 hover:cursor-pointer   ">
                                           <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
                                         </svg>
                                         {
@@ -249,16 +234,16 @@ function CartListModal(props) {
                                           ref={refs1[index]}
                                             type="text"
                                             name='price'
-                                            value={product.price}  
-                                            onChange={(e)=>{handleChange(e,key)}}
+                                            value={item.price}  
+                                            onChange={(e)=>{handleChange(e,index)}}
                                             style={{ width: '100%', padding: '0px 0 0 6px' }}
                                             className=" min-w-8 rounded-md text-xs "
                                           /> :
                                           
-                                          <div onClick={()=>{setVisibilityStates1[index](1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'> {product.price}</div>
+                                          <div onClick={()=>{setVisibilityStates1[index](1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'> {item.price}</div>
                                         }
                                         
-                                        <svg onClick={()=>{handleChange({"target":{"name":"price","value":(parseFloat(product.price) + 0.05).toFixed(2)}},key)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 flex-shrink-0 hover:cursor-pointer  ">
+                                        <svg onClick={()=>{handleChange({"target":{"name":"price","value":(parseFloat(item.price) + 0.05).toFixed(2)}},index)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 flex-shrink-0 hover:cursor-pointer  ">
                                           <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
                                         </svg>
                                       </div>
@@ -271,7 +256,7 @@ function CartListModal(props) {
                                     <div>Split Among</div>
                                     
                                     <div onClick={() => setVisibilityStates4[index](1)}  className=" absolute hover:cursor-pointer justify-around items-center flex w-full mt-6   px-2 py-1  text-xs text-white bg-black rounded-md">
-                                        <span className=""> {product.splitAmong.length == activeGroupMembers.length?"Even":"Uneven"} </span>
+                                        <span className=""> {item.splitAmong.length == activeGroupMembers.length?"Even":"Uneven"} </span>
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                           <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                         </svg>
@@ -283,8 +268,9 @@ function CartListModal(props) {
                                                     <li key={indexM}>
                                                         <div className="flex items-center">
                                                             <input
-                                                                checked={product.splitAmong.includes(member._id)}
-                                                                onChange={(e) =>  handleChange(e,key,member._id)} 
+                                                            
+                                                                checked={item?.splitAmong?.find(people => people._id === member._id)}
+                                                                onChange={(e) =>  handleChange(e,index,member._id)} 
                                                                 id={"checkbox-" + indexM}
                                                                 type="checkbox"
                                                                 name="splitAmong"
@@ -307,7 +293,7 @@ function CartListModal(props) {
                                       <div>Count</div>
                                       <div  className="flex items-center w-8/12 md:w-7/12">
                                       
-                                        <svg onClick={()=>{handleChange({"target":{"name":"count","value":(parseFloat(product.count) - 1).toFixed(0)}},key)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 flex-shrink-0 hover:cursor-pointer   ">
+                                        <svg onClick={()=>{handleChange({"target":{"name":"count","value":(parseFloat(item.count) - 1).toFixed(0)}},index)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 flex-shrink-0 hover:cursor-pointer   ">
                                           <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
                                         </svg>
                                         {
@@ -316,23 +302,23 @@ function CartListModal(props) {
                                             ref={refs3[index]}
                                             type="text"
                                             name='count'
-                                            value={product.count}  
-                                            onChange={(e)=>{handleChange(e,key)}}
+                                            value={item.count}  
+                                            onChange={(e)=>{handleChange(e,index)}}
                                             style={{ width: '100%', padding: '0px 0 0 6px' }}
                                             className=" min-w-8 rounded-md text-xs "
                                           /> :
                                           
-                                          <div onClick={()=>{setVisibilityStates3[index](1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'> {product.count}</div>
+                                          <div onClick={()=>{setVisibilityStates3[index](1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'> {item.count}</div>
                                         }
                                         
-                                        <svg onClick={()=>{handleChange({"target":{"name":"count","value":(parseFloat(product.count) + 1).toFixed(0)}},key)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 flex-shrink-0 hover:cursor-pointer  ">
+                                        <svg onClick={()=>{handleChange({"target":{"name":"count","value":(parseFloat(item.count) + 1).toFixed(0)}},index)}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 flex-shrink-0 hover:cursor-pointer  ">
                                           <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
                                         </svg>
                                       </div>
                               </div>
 
                               <div class="flex">
-                                <div onClick={()=>{handleChange({"target":{"name":"count","value":'0'}},key)}}  class="font-medium text-red-600 hover:text-red-500 hover:cursor-pointer">Remove</div>
+                                <div onClick={()=>{handleChange({"target":{"name":"count","value":'0'}},index)}}  class="font-medium text-red-600 hover:text-red-500 hover:cursor-pointer">Remove</div>
                               </div>
                             </div>
                           </div>
@@ -349,17 +335,17 @@ function CartListModal(props) {
                 <div class="border-t border-gray-200 px-4 py-6 sm:px-6">
                   <div class="flex justify-between text-base font-medium text-gray-900">
                     <p>Subtotal</p>
-                    <p>Rs.{checkoutData.totalPrice}</p>
+                    <p>Rs.{tempData.totalPrice}</p>
                   </div>
                   
                   <div class="mt-0.5 flex gap-3 text-sm text-gray-500 w-full ">
                     <div className="w-1/3">
                       Order name
-                      <input disabled={Object.values(tempData).length>0?0:1} className="w-[100%] border-2 px-2 text-black rounded-md " name="name" value={checkoutData.name?checkoutData.name:""} placeholder="order" onChange={(e) => handleChangeCheckout(e)} />                       
+                      <input className="w-[100%] border-2 px-2 text-black rounded-md " name="name" value={tempData.name?tempData.name:""} placeholder="order" onChange={(e) => handleChange(e)} />                       
                     </div>
                     <div className="w-1/3">
                       Paid By
-                      <select disabled={Object.values(tempData).length>0?0:1} name="paidBy" id="paidBy" value={checkoutData.paidBy?checkoutData.paidBy:""} placeholder="user" onChange={(e) => handleChangeCheckout(e)}  className="border-2 px-2 h-6 w-[100%] border-gray-200 text-sm py-0 text-black rounded-md" >
+                      <select name="paidBy" id="paidBy" value={tempData.paidBy?tempData.paidBy._id:""} placeholder="user" onChange={(e) => handleChange(e)}  className="border-2 px-2 h-6 w-[100%] border-gray-200 text-sm py-0 text-black rounded-md" >
                         {activeGroupMembers.map((member, indexM) => {
                           return(<>
                             <option value={member._id}>{member.name}</option>
@@ -369,26 +355,18 @@ function CartListModal(props) {
                     </div>
                     <div className="w-1/3">
                       Date
-                      <input disabled={Object.values(tempData).length>0?0:1} className="border-2 px-2 h-6 w-[100%] border-gray-200 text-sm py-0 text-black rounded-md" name="date" type="date" value={checkoutData.date?checkoutData.date:"---"} placeholder="date" onChange={(e) => handleChangeCheckout(e)} />                       
+                      <input  className="border-2 px-2 h-6 w-[100%] border-gray-200 text-sm py-0 text-black rounded-md" name="date" type="date" value={tempData.date?tempData.date:"---"} placeholder="date" onChange={(e) => handleChange(e)} />                       
                     </div>
                   </div>
-                  <div className="flex w-full items-center justify-between gap-2">
                   <div class="mt-6 w-full">
-                      <button 
-                      onClick={()=>{
-                        handleSave("orders")   
-                      }}  
-                      disabled={Object.values(tempData).length>0?0:1} class={` ${Object.values(tempData).length>0? '' : 'opacity-10'}  w-full flex items-center justify-center rounded-md border border-transparent bg-[#161616] px-2 py-3 text-base font-medium text-white shadow-sm hover:bg-[#2b2a2a]`}>Place Order</button>
-                  </div>
-                  <div class="mt-6  w-full">
                       <button 
                       onClick={()=>{
                         handleSave("wishlists")   
                       }}  
-                      disabled={Object.values(tempData).length>0?0:1} class={` ${Object.values(tempData).length>0? '' : 'opacity-10'}  w-full flex items-center justify-center rounded-md border border-transparent bg-[#161616] px-2 py-3 text-base font-medium text-white shadow-sm hover:bg-[#2b2a2a]`}>Add to Wish List</button>
+                       class={` ${Object.values(tempData).length>0? '' : 'opacity-10'}  w-full flex items-center justify-center rounded-md border border-transparent bg-[#161616] px-2 py-3 text-base font-medium text-white shadow-sm hover:bg-[#2b2a2a]`}>Save Changes</button>
                   </div>
-                  </div>
-                  <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
+              
+                  {/* <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                     <p>
                       or&nbsp; 
                       <div onClick={()=>{router.route=='/admin/products'&&props._as.productsTab == 0?props._as.setModalToggle(""):router.push("/admin/products")}} type="button" class="font-medium hover:cursor-pointer text-black">
@@ -396,7 +374,7 @@ function CartListModal(props) {
                         <span aria-hidden="true"> &rarr;</span>
                       </div>
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -405,6 +383,11 @@ function CartListModal(props) {
       </div>
     </div>
   )
+}
+
+function dataFilter (params) {
+  let myGroup = params?._as?.user?.groups?.find((data) => data._id === localStorage.getItem('projectLifestyle_activeGroup'))
+  return params.data.filter((data) => myGroup.categories.includes(data._id));
 }
 
 function groupAndCountProducts(cart) {
@@ -435,4 +418,4 @@ function unGroupAndFlattenProducts(groupedProducts) {
   }, []);
 }
 
-export default CartListModal;
+export default CartWishListModal;

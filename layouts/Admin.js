@@ -33,13 +33,13 @@ export default function Admin({ children }) {
     'orders',
     'inventory',
     'resourcePlans',
-    'wishLists',
+    'wishList',
     'cart',
     'profile',
     'user',
     'groups',
     'toast',
-    'finance'
+    'finance',
   )
 
   useEffect(() => {

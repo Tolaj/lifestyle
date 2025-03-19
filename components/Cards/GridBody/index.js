@@ -113,6 +113,7 @@ const GridBody = (props) => {
           try {
             let data = props.gridData || await FetchAPI(props.gridApi, 'GET');
             if (data ) {
+              console.log("grif----------------",data)
               props?.dataFilter ?   
               setRowData(props.dataFilter({data,_as:props._as})):
               setRowData(data)

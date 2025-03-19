@@ -185,7 +185,7 @@ function OrderList(props) {
       return(<>
           <div>{params?.data?.items?.length}</div>
           {/* this element is there to just span space for grid  */}
-          <div className={` ${params.groupGrid()==params.rowIndex?"invisible pt-10 pb-2":"hidden"} `}>
+          <div className={` ${params.groupGrid()==params.rowIndex?"invisible pt-10 ":"hidden"} `}>
             <div class="relative overflow-x-auto">
               <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                   <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">

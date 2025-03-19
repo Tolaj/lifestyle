@@ -6,7 +6,7 @@ const GroupSchema = new mongoose.Schema({
   members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   budget: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Budget', default: 0 }],
   orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
-  Wishlists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Wishlist' }],
+  wishlists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Wishlist' }],
   categories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
   products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
   inventory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Inventory' }],

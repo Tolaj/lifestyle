@@ -10,7 +10,7 @@ import { useClickOutside } from 'utils/helperFunctions';
 import HeroIcon, { heroIconsNames } from 'utils/heroIcon';
 
 
-export default function ProductList(props)  {
+export default function InventoryList(props)  {
   const [windowWidth, setWindowWidth] = useState(null);
   const router = useRouter()
 

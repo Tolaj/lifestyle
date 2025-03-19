@@ -37,7 +37,7 @@ const loginMiddleware = async (req, res) => {
   }
   // Generate JWT token
   const token = jwt.sign({ id: user._id, email: user.email, groupId: user.groups.find(group => group.name === "ISOLATED_GROUP")?._id }, process.env.JWT_SECRET, {
-    expiresIn: '1h',
+    expiresIn: '1d',
   });
 
     res.setHeader('Set-Cookie', serialize('auth', token, {
