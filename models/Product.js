@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import Group from './Group';
-import { deleteFromGroupPostDelete } from '../utils/modelPlugins';
+import { deleteFromGroupPostDelete, preventDeleteIfReferenced } from '../utils/modelPlugins';
+import Wishlist from './Wishlist';
+import Inventory from './Inventory';
+import Order from './Order';
 
 const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -14,7 +17,12 @@ const ProductSchema = new mongoose.Schema({
   timestamps: true
 });
 
+
 ProductSchema.plugin(deleteFromGroupPostDelete('Group', 'products'));
+
+ProductSchema.plugin(preventDeleteIfReferenced('Wishlist', 'items.product'));
+
+ProductSchema.plugin(preventDeleteIfReferenced('Inventory', 'product'));
 
 
 // Check if the model already exists; if not, create it

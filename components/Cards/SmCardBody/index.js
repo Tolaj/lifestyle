@@ -57,7 +57,7 @@ function SmCardBody(props) {
                         <div className="flex items-center space-x-4 p-3.5 " >
                         {/* icon section */}
                             {props?.IconComponent?
-                                props?.IconComponent({data})
+                                props?.IconComponent({data,paramPass:props?.paramPass?props?.paramPass:{},readMore,index})
                                 :
                                 <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full bg-black text-black `} > 
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-white">

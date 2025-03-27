@@ -108,6 +108,22 @@ function CartListModal(props) {
 
     try {
       const result = await FetchAPI(process.env.SERVER_API+"/api/"+endpoint, 'POST', additionalData);
+      if (result?.message == "Order created successfully") {
+        let inventoryData = additionalData.items.map((item) => {
+          return {
+            
+            product: item.product,            
+            unit: item.unit,                
+            price: item.price,               
+            splitAmong: item.splitAmong,     
+            quantityAvailable: item.count, 
+            lastUpdated: additionalData.date,   
+          };
+        });
+        let inventoryObject = {...{"inventoryData":[inventoryData]},...{"groupId": additionalData.groupId,}}
+        await FetchAPI(process.env.SERVER_API+"/api/inventory", 'POST', inventoryObject);
+      }
+
       setCheckoutData({})
       props._as.setCart([])
       props._as.setToast(endpoint=="orders"?"Order Placed successfully!":"Wish list created successfully!")

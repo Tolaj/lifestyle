@@ -14,6 +14,23 @@ export default function InventoryList(props)  {
   const [windowWidth, setWindowWidth] = useState(null);
   const router = useRouter()
 
+  const [category, setCategory] = useState(null);  // State to store fetched category data
+  const [categorySm, setCategorySm] = useState(null);  // State to store fetched category data
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data =  FetchAPI(process.env.SERVER_API + "/api/categories", 'GET');
+        setCategory(data);  // Update state with the found category
+        setCategorySm(await data)
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchData(); 
+  }, []);
+
   useEffect(() => {
       setWindowWidth(window.outerWidth)
   },[]) 
@@ -21,14 +38,14 @@ export default function InventoryList(props)  {
   const dataFilter = (params) => {
     
     let myGroup = params?._as?.user?.groups?.find((data) => data._id === localStorage.getItem('projectLifestyle_activeGroup'))
-    return params.data.filter((data) => myGroup.products.includes(data._id));
+    return params.data.filter((data) => myGroup.inventories.includes(data._id));
   }
 
   const ActionsComponent = (params) => {
 
     const handleAction = async (method,data) => {
         try {
-            const response = await FetchAPI('/api/products', method, data);
+            const response = await FetchAPI('/api/inventory', method, data);
             params.setPreLoader(false)
             params._as.setReloadChild(Math.random())
         } catch (error) {
@@ -41,13 +58,28 @@ export default function InventoryList(props)  {
                     <div   className="flex items-center justify-center md:h-full gap-1 md:w-full md:gap-4">
                         <InputFields.GridButton title="Add to cart" type="ADD_CART"  
                             onClick={() => {
-                              props._as.setToast((prevToast) => {                              
-                                return `${(typeof prevToast === 'string' ? parseInt(prevToast.split(' ')[0], 10) : 0) + 1} Item(s) added to cart successfully!`;
-                              });
-                              props._as.setCart((prevCart) => [...prevCart, { ...params.data }])
+                             
+                              let tempInventoryData = JSON.parse(JSON.stringify(params?.data?.product))
+                              tempInventoryData.price = params?.data?.price
+                              tempInventoryData.unit = params?.data?.unit
+
+                   
+                                  if(params?.data?.category){
+                                    tempInventoryData.category = params?.data?.category
+                                    tempInventoryData.splitAmong = params?.data?.splitAmong.map(user => user._id);
+                                  }
+
+                                  props._as.setToast((prevToast) => {                              
+                                    return `${(typeof prevToast === 'string' ? parseInt(prevToast.split(' ')[0], 10) : 0) + 1} Item(s) added to cart successfully!`;
+                                  });
+
+                                  props._as.setCart((prevCart) => [...prevCart, { ...tempInventoryData }])                             
+
+                            
+                              
                             }} 
                           className="w-6 h-6 text-black hover:cursor-pointer" />
-                        <InputFields.GridButton title="Edit" type="EDIT"  onClick={()=>{params._as.setModalToggle(router.route);params.setFormData(params.data)}} className="w-6 h-6 text-black hover:cursor-pointer" />
+                        {/* <InputFields.GridButton title="Edit" type="EDIT"  onClick={()=>{params._as.setModalToggle(router.route);params.setFormData(params.data)}} className="w-6 h-6 text-black hover:cursor-pointer" /> */}
                         <InputFields.GridButton title="Delete" type="DELETE"  onClick={()=>{params.setPreLoader(true);handleAction("DELETE",{"_id":params.data._id})}}  className={`flex items-center justify-center gap-2 hover:cursor-pointer text-black font-semibold`}/>
                         <InputFields.GridButton title="Edit" type="ARROW" onClick={()=>{params.setReadMore(params.readMore==params.index+'i'?null:params.index+'i')}} className={`w-5 h-5 md:hidden  text-black ${params.readMore == params.index+'i' ?"rotate-90":""}`}/>
                     </div>
@@ -55,71 +87,68 @@ export default function InventoryList(props)  {
   };
 
   if(windowWidth<700){
+    
     const IconComponent = (params) => {
-      return(<>
+      
+      params.data.category = params.paramPass.categoryData.find(category => category._id === params.data.product.category)
+      if(params.readMore==params.index+'i'){
+        return(<>
           <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full ${params.data?.color || params.data?.category?.color || 'bg-black'} text-black `} >
-                    <HeroIcon  style="size-6 text-black" iconTitle = {params.data?.icon || params.data?.category?.icon} />              
+                    <HeroIcon  style="size-6 text-black" iconTitle = {params.data?.icon || params.data?.category?.icon } />              
           </span>
         </>)
+      }else{
+        return(<>
+        
+          <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full ${params.data?.color || params.data?.category?.color || 'bg-black'} text-black `} >
+             {params.data.quantityAvailable}
+                    {/* <HeroIcon  style="size-6 text-black" iconTitle = {params.data?.icon || params.data?.category?.icon || } />               */}
+          </span>
+        </>)
+      }
     }
-    const columnComponentCategory = (params) => {
-      return(<>{params.data.category.name}</>)
-    }
-  
-    const ColumnComponentPrice = ({ params }) => {
-      const {isVisible,setIsVisible,isVisibleRef} = useClickOutside()
-      const [tempData, setTempData] = useState(params.data);
     
+    const columnComponentName = (params) => {
+      return(<>{params?.data?.product?.name}</>)
+    }
+
+    const columnComponentCategory = (params) => {
+      return(<>{params?.data?.category?.name}</>)
+    }
   
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setTempData((prevState) => ({
-          ...prevState,
-          [name]: value,
-        }));
+    const columnComponentManufacturer = (params) => {
+      return(<>{params?.data?.product?.manufacturer}</>)
+    }
+    const columnComponentDescription = (params) => {
+      return(<>{params?.data?.product?.description}</>)
+    }
 
-        params.setRowData((prevRowData) => 
-          prevRowData.map(row => 
-            row._id === tempData._id
-                  ? { ...row, price: value }
-                  : { ...row }
-          )
-        );
+    const columnComponentQuantityAvailable = (params) => {
+      return(<> 
+        <div  class="flex-shrink-0 inline-flex max-w-fit items-center px-2 py-1 mr-2 text-xs text-white bg-black rounded">
+           <span className="">{params?.data?.quantityAvailable}</span>
+         </div>
+       </>)
+    }
 
-      };
+    const columnComponentLastUpdated = (params) => {
+      return(<>  {timeAgo(params.data.lastUpdated)} </>)
+    }
+
+    const ColumnComponentPrice = ({ params }) => {
+      
     
       return (<>
         {
           params.readMore == params.index+'i' ? 
-          <div  className="flex items-center w-full h-full  justify-between space-x-1 px-2">
-            <svg  onClick={()=>{handleChange({"target":{"name":"price","value":(parseFloat(tempData.price) - 0.05).toFixed(2)}})}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 flex-shrink-0 hover:cursor-pointer   ">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
-            </svg>
-            {
-              isVisible?
-              <input
-              ref={isVisibleRef}
-                type="text"
-                name='price'
-                value={tempData.price}  
-                onChange={handleChange}
-                style={{ width: '100%', padding: '0px 0 0 6px' }}
-                className=" min-w-8 rounded-md "
-              /> :
-              <div onClick={()=>{setIsVisible(1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'>{tempData.price}</div>
-            }
-            
-            <svg onClick={()=>{handleChange({"target":{"name":"price","value":(parseFloat(tempData.price) + 0.05).toFixed(2)}})}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 flex-shrink-0 hover:cursor-pointer  ">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
-            </svg>
-          </div>
+          <> $ {params.data.price} </>
           :
           <div className={`divide-x divide-gray-200 mt-auto `}>
             <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0">
                 $ {params.data.price} 
             </span>
             <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0" >
-              {params.data.unit} 
+              {timeAgo(params.data.lastUpdated)} 
             </span>
           </div>
          }
@@ -127,323 +156,106 @@ export default function InventoryList(props)  {
     };
 
     const ColumnComponentUnit = ({ params }) => {
-      const {isVisible,setIsVisible,isVisibleRef} = useClickOutside()
-      const [tempData, setTempData] = useState(params.data);
-    
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setTempData((prevState) => ({
-          ...prevState,
-          [name]: value,
-        }));
-
-        params.setRowData((prevRowData) => 
-          prevRowData.map(row => 
-            row._id === tempData._id
-                  ? { ...row, unit: value }
-                  : { ...row }
-          )
-        );
-
-      };
-    
-      return (<>
-        {
-          params.readMore ? 
-          <div  className="flex items-center w-full h-full  justify-between space-x-1 px-2">
-            <svg  onClick={()=>{handleChange({"target":{"name":"unit","value":(parseFloat(tempData.unit) - 1).toFixed(0)}})}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 flex-shrink-0 hover:cursor-pointer   ">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
-            </svg>
-            {
-              isVisible?
-              <input
-              ref={isVisibleRef}
-                type="text"
-                name='unit'
-                value={tempData.unit}  
-                onChange={handleChange}
-                style={{ width: '100%', padding: '0px 0 0 6px' }}
-                className=" min-w-8 rounded-md "
-              /> :
-              <div onClick={()=>{setIsVisible(1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'>{tempData.unit}</div>
-            }
-            
-            <svg onClick={()=>{handleChange({"target":{"name":"unit","value":(parseFloat(tempData.unit) + 1).toFixed(0)}})}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 flex-shrink-0 hover:cursor-pointer  ">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
-            </svg>
-        </div>
-          :
-          <></>
-         }
-      </>);
+      return <>{params?.data?.unit}</>
     };
 
     const ColumnComponentSplit = ({params}) => {
-      const {isVisible,setIsVisible,isVisibleRef} = useClickOutside()
+      const names = params.data.splitAmong.map(person => person.name);
 
-      const [tempData, setTempData] = React.useState(() => {
-
-        if(params?.data?.splitAmong){
-            return params?.data
-        }else{
-          const  {activeGroupMembers} = getUserGroupDetails(params?._as?.user, localStorage.getItem("projectLifestyle_activeGroup"));
-          const allMemberIds = activeGroupMembers?.map((member) => member._id) || [];
-          params.setRowData((prevRowData) => 
-            prevRowData.map(row => 
-              row._id === tempData._id
-                    ? { ...row, splitAmong: allMemberIds }
-                    : { ...row }
-            )
-          );
-          return {
-              ...params.data,
-              splitAmong: allMemberIds,
-          };
-        }        
-         
-      });
-  
-      const { activeGroupMembers } = getUserGroupDetails(params?._as?.user, localStorage.getItem("projectLifestyle_activeGroup"));
-  
-
-      const handleChange = (e, memberId) => {
-        const { checked } = e.target; 
-        setTempData((prevState) => {
-            const newSplitAmong = checked
-                ? [...prevState.splitAmong, memberId] 
-                : prevState.splitAmong.filter(id => id !== memberId);  
-
-                params.setRowData((prevRowData) => 
-                  prevRowData.map(row => 
-                    row._id === tempData._id
-                          ? { ...row, splitAmong: newSplitAmong }
-                          : { ...row }
-                  )
-                );
-            return {
-                ...prevState,
-                splitAmong: newSplitAmong,
-            };
-        });
-
-        
-    };
-
-  
-      return (
-          <>
-              <div className={`flex flex-row items-center h-full py-1`}>
-                  <div onClick={() => setIsVisible(1)} className=" hover:cursor-pointer justify-between items-center flex w-full px-2 py-1 mr-2 text-xs text-white bg-black rounded">
-                      <span className=""> {tempData.splitAmong.length == activeGroupMembers.length?"Even":"Uneven"} </span>
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                      </svg>
-                  </div>  
-              </div>
-              <div ref={isVisibleRef} id="dropdownDefaultCheckbox" className={`${isVisible ? "" : "hidden"} z-10 absolute w-72 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}>
-                  <ul className="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownCheckboxButton">
-                      {activeGroupMembers.map((member, index) => {
-                          return (
-                              <li key={index}>
-                                  <div className="flex items-center">
-                                      <input
-                                          checked={tempData.splitAmong.includes(member._id)}
-                                          onChange={(e) => handleChange(e, member._id)} // Pass the event and memberId to handleChange
-                                          id={"checkbox-" + index}
-                                          type="checkbox"
-                                          name="splitAmong"
-                                          className="w-4 h-4 text-black bg-gray-100 border-gray-300 rounded focus:ring-black  focus:ring-2 "
-                                      />
-                                      <label htmlFor={"checkbox-" + index} className="ms-2 text-sm font-medium text-gray-900 ">
-                                          {member.name}
-                                      </label>
-                                  </div>
-                              </li>
-                          );
-                      })}
-                  </ul>
-              </div>
-          </>
-      );
+      return(<>
+        <div className={`flex   flex-row items-center  h-full py-1`}>
+       {names.map((name,index)=>{
+           return(<div key={index} class="flex-shrink-0 inline-flex max-w-fit items-center px-2 py-1 mr-2 text-xs text-white bg-black rounded">
+           <span className="">{name}</span>
+         </div>)
+       })}
+     </div>
+     </>)
     };
     
+    
+    
     return(<> 
-      <SmCardBody columns = {['name','price','unit',"splitAmong",'description','category','manufacturer']} columnComponents={["",(params) => <ColumnComponentPrice params={params} />,(params) => <ColumnComponentUnit params={params} />,(params) => <ColumnComponentSplit params={params} />,"",columnComponentCategory]}  IconComponent={IconComponent} ActionsComponent = {ActionsComponent}  setFormData={props._as.setProductsData}   _as = {props._as} dataFilter={dataFilter}  gridApi = {process.env.SERVER_API+"/api/products"} />
+      <SmCardBody columns = {['name','price','unit','quantityAvailable','lastUpdated',"splitAmong",'description','category','manufacturer']} columnComponents={[columnComponentName,(params) => <ColumnComponentPrice params={params} />,(params) => <ColumnComponentUnit params={params} />,columnComponentQuantityAvailable,columnComponentLastUpdated,(params) => <ColumnComponentSplit params={params} />,columnComponentDescription,columnComponentCategory,columnComponentManufacturer]}  IconComponent={IconComponent} ActionsComponent = {ActionsComponent}  setFormData={props._as.setInventoryData} paramPass = {{"categoryData":categorySm?categorySm:"nothing"}}  _as = {props._as} dataFilter={dataFilter}  gridApi = {process.env.SERVER_API+"/api/inventory"} />
     </>)
   }else{
-    const columnComponentIcon = (params) => {
-      
-      if(params.data.category.icon) {
+
+    const columnComponentQuantityAvailable = (params) => {
+      return <>
+        <div className='flex items-center justify-center w-full h-full'>
+          <div className=' flex items-center justify-center w-8 h-8 rounded-full bg-colors-black text-white'>
+            {params.data.quantityAvailable} 
+          </div>
+        </div>
+      </> 
+    }
+    const columnComponentName = (params) => {
+         return <>{params.data.product.name} </> 
+    }
+    const columnComponentDescription = (params) => {
+      return <>{params.data.product.description} </> 
+    }
+
+    const columnComponentSplitAmong = (params) => {
+      const names = params.data.splitAmong.map(person => person.name);
+        return(<>
+           <div className={`flex   flex-row items-center  h-full py-1`}>
+          {names.map((name,index)=>{
+              return(<div key={index} class="flex-shrink-0 inline-flex max-w-fit items-center px-2 py-1 mr-2 text-xs text-white bg-black rounded">
+              <span className="">{name}</span>
+            </div>)
+          })}
+        </div>
+        </>)
+        
+    }
+    const columnComponentManufacturer = (params) => {
+      return <>{params.data.product.manufacturer} </> 
+    }
+
+    const columnComponentIcon =  (params) => {
+    
+      params.paramPass.categoryData.then((data)=>{        
+        params.node.setDataValue('category', data.find(category => category._id === params.data.product.category));
+      })
+
+      if(params?.data?.category?.icon) {
         return(<div className='flex  items-center justify-start w-full h-full gap-2'>  
-          <span className={`rounded-full  ${params.data.category.color} w-fit h-fit p-1 `}>
-            <HeroIcon style="" iconTitle = {params.data.category.icon? params.data.category.icon:"ExclamationTriangleIcon"} />
+          <span className={`rounded-full  ${params?.data?.category?.color} w-fit h-fit p-1 `}>
+            <HeroIcon style="" iconTitle = {params?.data?.category?.icon? params?.data?.category?.icon:"ExclamationTriangleIcon"} />
           </span>
-          {params.data.category.name} 
+          {params?.data?.category?.name} 
         </div> )
       } else {
         return( <div className='flex items-center justify-center w-full h-full'> <HeroIcon style="" iconTitle = {"ExclamationTriangleIcon"} /> </div> )
       }
     }
 
-    const columnComponentPrice = (params) => {
-      const {isVisible,setIsVisible,isVisibleRef} = useClickOutside()
-      const [tempData, setTempData] = React.useState(params.data);
-
-      const handleChange = (e) => {
-        
-        const { name, value } = e.target;
-        setTempData((prevState) => ({
-              ...prevState,
-              [name]: value,
-          }));
-        params.setValue(value)
-      }
-      
-      return(<>
-          
-        <div  className="flex items-center w-full h-full  justify-between space-x-1">
-            <svg  onClick={()=>{handleChange({"target":{"name":"price","value":(parseFloat(tempData.price) - 0.05).toFixed(2)}})}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 flex-shrink-0 hover:cursor-pointer   ">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
-            </svg>
-            {
-              isVisible?
-              <input
-                ref={isVisibleRef}
-                type="text"
-                name='price'
-                value={tempData.price}
-                onChange={handleChange}
-                style={{ width: '100%', padding: '0px 0 0 6px' }}
-                className="flex-grow min-w-8 rounded-md "
-              /> :
-              <div onClick={()=>{setIsVisible(1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'>{tempData.price}</div>
-            }
-            
-            <svg onClick={()=>{handleChange({"target":{"name":"price","value":(parseFloat(tempData.price) + 0.05).toFixed(2)}})}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 flex-shrink-0 hover:cursor-pointer  ">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
-            </svg>
-        </div>
-
-      </>)
-    }
-    
-    const columnComponentUnit = (params) => {
-      const {isVisible,setIsVisible,isVisibleRef} = useClickOutside()
-      const [tempData, setTempData] = React.useState(params.data);
-
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setTempData((prevState) => ({
-              ...prevState,
-              [name]: value,
-          }));
-        params.setValue(value)
-      }
-      
-      return(<>
-          
-        <div  className="flex items-center w-full h-full justify-between space-x-1">
-            <svg  onClick={()=>{handleChange({"target":{"name":"unit","value":(parseFloat(tempData.unit) - 1).toFixed(0)}})}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 flex-shrink-0 hover:cursor-pointer   ">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM6.75 9.25a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
-            </svg>
-            {
-              isVisible?
-              <input
-              ref={isVisibleRef}
-                type="text"
-                name='unit'
-                value={tempData.unit}
-                onChange={handleChange}
-                style={{ width: '100%', padding: '0px 0 0 6px' }}
-                className="flex-grow min-w-8 rounded-md "
-              /> :
-              <div onClick={()=>{setIsVisible(1)}} className=' hover:cursor-text w-full flex items-center justify-center  flex-grow'>{tempData.unit}</div>
-            }
-            
-            <svg onClick={()=>{handleChange({"target":{"name":"unit","value":(parseFloat(tempData.unit) + 1).toFixed(0)}})}} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 flex-shrink-0 hover:cursor-pointer  ">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd" />
-            </svg>
-        </div>
-
-      </>)
-    }
-
-    const columnComponentSplit = (params) => {
-      const {isVisible,setIsVisible,isVisibleRef} = useClickOutside()
-
-      const [tempData, setTempData] = React.useState(() => {
-          const  {activeGroupMembers} = getUserGroupDetails(params.paramPass._as.user, localStorage.getItem("projectLifestyle_activeGroup"));
-          const allMemberIds = activeGroupMembers?.map((member) => member._id) || [];
-          params.node.setDataValue('splitAmong', allMemberIds);
-          return {
-              ...params.data,
-              splitAmong: allMemberIds,
-          };
-      });
-  
-      const dropdownRef = useRef(null);
-      const { activeGroupMembers } = getUserGroupDetails(params.paramPass._as.user, localStorage.getItem("projectLifestyle_activeGroup"));
-  
-
-      const handleChange = (e, memberId) => {
-        const { checked } = e.target; 
-        setTempData((prevState) => {
-            const newSplitAmong = checked
-                ? [...prevState.splitAmong, memberId] 
-                : prevState.splitAmong.filter(id => id !== memberId);  
-          
-            params.node.setDataValue('splitAmong', newSplitAmong);
-
-            return {
-                ...prevState,
-                splitAmong: newSplitAmong,
-            };
-        });
-    };
-
-  
-      return (
-          <>
-              <div className={`flex flex-row items-center h-full py-1`}>
-                  <div onClick={() => setIsVisible(1)} className=" hover:cursor-pointer justify-between items-center flex max-w-fit px-2 py-1 mr-2 text-xs text-white bg-black rounded">
-                      <span className=""> {tempData.splitAmong.length == activeGroupMembers.length?"Even":"Uneven"} </span>
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                      </svg>
-                  </div>  
-              </div>
-              <div ref={isVisibleRef} id="dropdownDefaultCheckbox" className={`${isVisible ? "" : "hidden"} z-10 absolute w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600`}>
-                  <ul className="p-3 space-y-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownCheckboxButton">
-                      {activeGroupMembers.map((member, index) => {
-                          return (
-                              <li key={index}>
-                                  <div className="flex items-center">
-                                      <input
-                                          checked={tempData.splitAmong.includes(member._id)}
-                                          onChange={(e) => handleChange(e, member._id)} // Pass the event and memberId to handleChange
-                                          id={"checkbox-" + index}
-                                          type="checkbox"
-                                          name="splitAmong"
-                                          className="w-4 h-4 text-black bg-gray-100 border-gray-300 rounded focus:ring-black  focus:ring-2 "
-                                      />
-                                      <label htmlFor={"checkbox-" + index} className="ms-2 text-sm font-medium text-gray-900 ">
-                                          {member.name}
-                                      </label>
-                                  </div>
-                              </li>
-                          );
-                      })}
-                  </ul>
-              </div>
-          </>
-      );
-    };
   
     return (<>  
-      <GridBody columns = {['name','description','category','price','unit','splitAmong','manufacturer','action']}  columnComponents = {['','',columnComponentIcon,columnComponentPrice,columnComponentUnit,columnComponentSplit]} ActionsComponent = {ActionsComponent} cellStyle={['','','','','',{overflow:'visible'}]} paramPass={{"_as":props._as.user._id != undefined  ?props._as:"nothing"}} setFormData={props._as.setProductsData}  _as = {props._as} dataFilter={dataFilter}  gridApi = {process.env.SERVER_API+"/api/products"} />
+      <GridBody columns = {['quantity available','name','description','category','price','unit','splitAmong','manufacturer','action']}  columnComponents = {[columnComponentQuantityAvailable,columnComponentName,columnComponentDescription,columnComponentIcon,"","",columnComponentSplitAmong,columnComponentManufacturer]} ActionsComponent = {ActionsComponent} cellStyle={['','','','','',{overflow:'visible'}]} paramPass={{"_as":props._as.user._id != undefined  ?props._as:"nothing","categoryData":category?category:"nothing"}} setFormData={props._as.setProductsData}  _as = {props._as} dataFilter={dataFilter}  gridApi = {process.env.SERVER_API+"/api/inventory"} />
     </>);
   }
   
 }
 
 
+function timeAgo(dateString) {
+  const now = new Date();
+  const past = new Date(dateString);
+  const diffInSeconds = Math.floor((now - past) / 1000);
+
+  const minutes = Math.floor(diffInSeconds / 60);
+  const hours = Math.floor(diffInSeconds / 3600);
+  const days = Math.floor(diffInSeconds / 86400);
+  const weeks = Math.floor(diffInSeconds / (86400 * 7));
+  const months = Math.floor(diffInSeconds / (86400 * 30));
+
+  if (diffInSeconds < 60) return `${diffInSeconds} sec'${diffInSeconds !== 1 ? 's' : ''} ago`;
+  if (minutes < 60) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+  if (hours < 24) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+  if (days < 7) return `${days} day${days !== 1 ? 's' : ''} ago`;
+  if (weeks < 4) return `${weeks} week${weeks !== 1 ? 's' : ''} ago`;
+  
+  return `${months} month${months !== 1 ? 's' : ''} ago`;
+}

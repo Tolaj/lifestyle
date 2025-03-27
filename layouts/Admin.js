@@ -120,7 +120,7 @@ export default function Admin({ children }) {
         title: "Products", 
         route: "/admin/products",
         tabSections: ["Products List","Category","Wish List","Inventory","Resource Plan","Orders"],
-        tabButtons:[["GROUP","ADD","CART"],["GROUP","ADD","CART"],["GROUP","ADD","CART"],["GROUP","CART"],["GROUP","ADD","CART"],["GROUP","CART"]],
+        tabButtons:[["GROUP","ADD","CART"],["GROUP","ADD","CART"],["GROUP","CART"],["GROUP","CART"],["GROUP","ADD","CART"],["GROUP","CART"]],
         setActiveTabSection: _as.setProductsTab,
         activeTabSection: _as.productsTab,
         setModalToggle: _as.setModalToggle,

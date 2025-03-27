@@ -1,3 +1,4 @@
+import { isArray } from 'lodash';
 import mongoose from 'mongoose';
 
 
@@ -19,17 +20,41 @@ export const addToGroupAndSaveMiddleware = (modelName, refModelName, refField, u
         // Dynamically resolve models
         const PrimaryModel = mongoose.model(modelName);
         const RefModel = mongoose.model(refModelName);
+        let tempBody = JSON.parse(JSON.stringify(body))
+        delete tempBody[refField]
+        let newDoc;
+        let savedDoc;
+        let idList = [];
 
-        // Create a new document in the primary model
-        const newDoc = new PrimaryModel(body);
-        const savedDoc = await newDoc.save();
+        // !!!!!!! careful this doesn't work properly with single item <<<<<<<<<<---------=-=-=
+        // if(isArray(Object.values(tempBody)) && Object.values(tempBody).length == 1){
+        //   savedDoc = await mongoose.model(modelName).insertMany(Object.values(tempBody)[0])
+        //   savedDoc.map((object)=>{
+        //     idList.push(object._id)
+        //   })
 
-        // Update the reference model's array field with the new document's ID
+        //   await RefModel.updateMany(
+        //     { _id: body[refField] },  
+        //     { $addToSet: { [updateField]: idList } } 
+        //   );
+
+        // }else{
+        //   newDoc = new PrimaryModel(body);
+        //   savedDoc = await newDoc.save();
+
+        //   await RefModel.updateOne(
+        //     { _id: body[refField] }, // Match the reference field
+        //     { $addToSet: { [updateField]: savedDoc._id } } // Dynamically update the field
+        //   );
+        // }
+        
+        newDoc = new PrimaryModel(body);
+        savedDoc = await newDoc.save();
+
         await RefModel.updateOne(
           { _id: body[refField] }, // Match the reference field
           { $addToSet: { [updateField]: savedDoc._id } } // Dynamically update the field
         );
-
         // Send a success response
         res.status(200).json({
           message: `${modelName} created successfully`,
