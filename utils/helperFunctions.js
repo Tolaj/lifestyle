@@ -72,8 +72,15 @@ export function getUserGroupDetails(user, groupId) {
     return null;
   }
 
+  // const activeGroupMembers = friends.filter(friend =>
+  //   activeGroup.members.includes(friend.requester._id)
+  // ).map(friend => friend.requester);
+
   const activeGroupMembers = friends.filter(friend =>
-    activeGroup.members.includes(friend.requester._id)
+    activeGroup.members.some(memberId =>
+      memberId === friend.requester._id ||
+      memberId?.toString() === friend.requester._id?.toString()
+    )
   ).map(friend => friend.requester);
 
   activeGroupMembers.push(user);
