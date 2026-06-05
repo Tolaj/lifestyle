@@ -3,6 +3,7 @@ import { createHandler } from '../../controllers/genericHandler';
 import Group from 'models/Group';
 import { addToGroupAndSaveMiddleware } from 'utils/almostGenericMiddleware';
 import Inventory from 'models/Inventory';
+import Product from 'models/Product';
 
 
 export const config = {

@@ -3,7 +3,8 @@ import Wishlist from 'models/Wishlist';
 import { createHandler } from '../../controllers/genericHandler';
 import Group from 'models/Group';
 import { addToGroupAndSaveMiddleware } from 'utils/almostGenericMiddleware';
-
+import Product from 'models/Product';
+import User from 'models/User';
 
 export const config = {
   api: {

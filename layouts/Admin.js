@@ -187,9 +187,9 @@ export default function Admin({ children }) {
 
           </div>
         </div>
-        <div className="md:block hidden">
+        {/* <div className="md:block hidden">
           <FooterAdmin />
-        </div>
+        </div> */}
       </div>
     </div>
 

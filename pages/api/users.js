@@ -2,6 +2,7 @@ import User from 'models/User';
 import { createHandler } from '../../controllers/genericHandler';
 import { parse } from 'cookie';
 import { verify } from 'jsonwebtoken';
+import Group from 'models/Group';
 
 export const config = {
   api: {

@@ -2,7 +2,6 @@
 import { Category } from '../../models/index';
 import { createHandler } from '../../controllers/genericHandler';
 import Group from 'models/Group';
-import { message } from 'antd';
 import { addToGroupAndSaveMiddleware } from 'utils/almostGenericMiddleware';
 
 export const config = {
