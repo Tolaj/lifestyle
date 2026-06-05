@@ -1,3 +1,4 @@
+// pages/auth/login.js
 import React from "react";
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -13,20 +14,20 @@ export default function Login() {
   const [tempData, setTempData] = React.useState({});
 
   const handleChange = (e) => {
-      const { name, value } = e.target;
-      setTempData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-        
-      const file = e.target.files?e.target.files[0]:null;
+    const { name, value } = e.target;
+    setTempData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
 
-      if (file) {
-          setTempData((prevState) => ({
-            ...prevState,
-            file: file,
-          }));
-      }
+    const file = e.target.files ? e.target.files[0] : null;
+
+    if (file) {
+      setTempData((prevState) => ({
+        ...prevState,
+        file: file,
+      }));
+    }
   }
 
   const handleSave = async () => {
@@ -37,10 +38,10 @@ export default function Login() {
       if (result.message === 'Login successful') {
         // Redirect to dashboard
         router.push('/admin/dashboard'); // Change to your dashboard route
-    } else {
+      } else {
         // Handle login failure (show an error message, etc.)
         alert(result.message || 'Login failed');
-    }
+      }
       setPreLoader(false); // Stop the preloader
 
     } catch (error) {
@@ -50,11 +51,11 @@ export default function Login() {
     }
   };
 
-  if(preLoader) return <PageChange />
+  if (preLoader) return <PageChange />
 
   return (
     <>
-      
+
       <div className="container mx-auto px-4 h-full md:mt-20 mt-14">
         <div className="flex content-center items-center justify-center h-full">
           <div className="w-full md:w-2/5 px-4 ">
@@ -70,8 +71,8 @@ export default function Login() {
                 {/* <div className="text-white text-center py-4 text-lg font-medium">
                   Welcome to LifeStyle 
                 </div> */}
-                <form onSubmit={(e)=>{e.preventDefault();handleSave()}}>
-                  
+                <form onSubmit={(e) => { e.preventDefault(); handleSave() }}>
+
                   <div className="relative w-full mb-3">
                     <label
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -80,7 +81,7 @@ export default function Login() {
                       {/* Email */}
                     </label>
                     <input
-    
+
                       className="border-0 px-3 py-4 placeholder-blueGray-400 drop-shadow-sm  font-medium text-blueGray-600 bg-white rounded text-base  focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       placeholder="Email address"
                       name="email"
@@ -99,7 +100,7 @@ export default function Login() {
                       {/* Password */}
                     </label>
                     <input
-        
+
                       className="border-0 px-3 py-4 placeholder-blueGray-400 font-medium drop-shadow-sm text-blueGray-600 bg-white rounded text-base  focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       placeholder="Password"
                       name="password"
@@ -134,13 +135,13 @@ export default function Login() {
               <div className="">
                 <a
                   href="#pablo"
-                  onClick={()=>alert("For security reasons we did not automate this process, to reset password please contact swapnilhgf@gmail.com")}
-                  
+                  onClick={() => alert("For security reasons we did not automate this process, to reset password please contact swapnilhgf@gmail.com")}
+
                 >
                   <p className="text-white hover:text-blueGray-600 text-base font-medium drop-shadow-sm">Forgot password?</p>
                 </a>
               </div>
-             
+
             </div>
           </div>
         </div>

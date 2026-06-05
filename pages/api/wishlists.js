@@ -1,3 +1,4 @@
+// pages/api/wishlists.js
 import Wishlist from 'models/Wishlist';
 import { createHandler } from '../../controllers/genericHandler';
 import Group from 'models/Group';
@@ -12,7 +13,7 @@ export const config = {
 
 
 export default createHandler(Wishlist, {
-  useAuth: false, 
-  middleware:addToGroupAndSaveMiddleware('Wishlist', 'Group', 'groupId', 'wishlists'),
-  populate: ['items.product','paidBy','createdBy','items.splitAmong']
+  useAuth: false,
+  middleware: addToGroupAndSaveMiddleware('Wishlist', 'Group', 'groupId', 'wishlists'),
+  populate: ['items.product', 'paidBy', 'createdBy', 'items.splitAmong']
 });

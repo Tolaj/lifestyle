@@ -1,4 +1,5 @@
-import {Product} from '../../models/index';
+// pages/api/products.js
+import { Product } from '../../models/index';
 import { createHandler } from '../../controllers/genericHandler';
 import Group from 'models/Group';
 import { addToGroupAndSaveMiddleware } from 'utils/almostGenericMiddleware';
@@ -10,8 +11,8 @@ export const config = {
 };
 
 
-export default createHandler(Product,{
-  useAuth: false, 
-  middleware:addToGroupAndSaveMiddleware('Product', 'Group', 'groupId', 'products'),
+export default createHandler(Product, {
+  useAuth: false,
+  middleware: addToGroupAndSaveMiddleware('Product', 'Group', 'groupId', 'products'),
   populate: ['category']
 });

@@ -1,3 +1,4 @@
+// pages/api/orders.js
 import Order from 'models/Order';
 import { createHandler } from '../../controllers/genericHandler';
 import Group from 'models/Group';
@@ -12,7 +13,7 @@ export const config = {
 
 
 export default createHandler(Order, {
-  useAuth: false, 
-  middleware:addToGroupAndSaveMiddleware('Order', 'Group', 'groupId', 'orders'),
-  populate: ['items.product','paidBy','createdBy','items.splitAmong']
+  useAuth: false,
+  middleware: addToGroupAndSaveMiddleware('Order', 'Group', 'groupId', 'orders'),
+  populate: ['items.product', 'paidBy', 'createdBy', 'items.splitAmong']
 });

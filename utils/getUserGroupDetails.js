@@ -1,3 +1,4 @@
+// utils/getUserGroupDetails.js
 /**
  * Extracts and returns properties of the active group from a user's data based on groupId.
  * 
@@ -11,7 +12,7 @@ export function getUserGroupDetails(user, groupId) {
         return null;
     }
 
-    const { friends,groups } = user;
+    const { friends, groups } = user;
 
     // Find the active group based on groupId
     const activeGroup = groups?.find(group => group._id === groupId);
@@ -25,7 +26,7 @@ export function getUserGroupDetails(user, groupId) {
     ).map(friend => friend.requester);
 
     activeGroupMembers.push(user);
-    
+
 
     return {
         friends,

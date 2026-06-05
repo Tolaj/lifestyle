@@ -1,3 +1,4 @@
+// models/Group.js
 import mongoose from 'mongoose';
 import User from './User';
 
@@ -18,9 +19,9 @@ const GroupSchema = new mongoose.Schema({
 
 
 GroupSchema.pre('save', async function (next) {
-  if(!this.isModified('_id')){
+  if (!this.isModified('_id')) {
     this.$locals.wasNew = this.isNew
-  } 
+  }
   return next();
 });
 
@@ -30,8 +31,8 @@ GroupSchema.post('save', async function (doc) {
     try {
       if (doc.name != "ISOLATED_GROUP") {
         await User.updateMany(
-          { _id: { $in: doc.members } },  
-          { $addToSet: { groups: doc._id } }  
+          { _id: { $in: doc.members } },
+          { $addToSet: { groups: doc._id } }
         );
       }
     } catch (error) {
@@ -41,11 +42,11 @@ GroupSchema.post('save', async function (doc) {
 });
 
 GroupSchema.post('findOneAndDelete', async function (doc) {
-  if (doc) { 
+  if (doc) {
     try {
       await User.updateMany(
         { _id: { $in: doc.members } },
-        { $pull: { groups: doc._id } } 
+        { $pull: { groups: doc._id } }
       );
     } catch (error) {
       console.error("Error removing group for user:", error);

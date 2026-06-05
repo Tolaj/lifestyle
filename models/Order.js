@@ -1,3 +1,4 @@
+// models/Order.js
 import mongoose from 'mongoose';
 import { deleteFromGroupPostDelete } from '../utils/modelPlugins';
 import Product from './Product';
@@ -6,11 +7,11 @@ const OrderSchema = new mongoose.Schema({
 
   name: { type: String, required: true },
   items: [{
-    product:{ type: Object, required: true },
+    product: { type: Object, required: true },
     unit: { type: String, required: true },
     price: { type: String, required: true },
-    splitType: { type: String , default: 'Equal',enum: ['equal', 'percentage', 'custom']},
-	  splitAmong: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    splitType: { type: String, default: 'Equal', enum: ['equal', 'percentage', 'custom'] },
+    splitAmong: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     count: { type: String, required: true },
   }],
   date: { type: String, required: true },

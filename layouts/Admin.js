@@ -1,3 +1,4 @@
+// layouts/Admin.js
 import React, { useEffect } from "react";
 import { useRouter } from "next/router"
 import { parse } from 'cookie';
@@ -47,7 +48,7 @@ export default function Admin({ children }) {
       const timer = setTimeout(() => {
         _as.setToast(0);
       }, 2000);
-  
+
       // Cleanup the timeout if toast state changes before 3 seconds
       return () => clearTimeout(timer);
     }
@@ -55,117 +56,114 @@ export default function Admin({ children }) {
 
   useEffect(() => {
     const fetchData = async () => {
-        if (!sessionData) return; // Exit if no session data
-        
-        try {
+      if (!sessionData) return; // Exit if no session data
 
-            const res = await FetchAPI('/api/users', "GET", sessionData.user);
-            _as.setUser(res);
+      try {
 
-            if(localStorage.getItem('projectLifestyle_activeGroup') ){
-              let groupExist = res && res.groups && res.groups.some(g => g._id === localStorage.getItem('projectLifestyle_activeGroup')) || false;
-              if(!groupExist){
-                localStorage.setItem('projectLifestyle_activeGroup',sessionData.user.groupId)
-              }
-            }else{
-              localStorage.setItem('projectLifestyle_activeGroup',sessionData.user.groupId)
-            }
-            
-        } catch (error) {
-            console.error('Error fetching user data:', error);
+        const res = await FetchAPI('/api/users', "GET", sessionData.user);
+        _as.setUser(res);
+
+        if (localStorage.getItem('projectLifestyle_activeGroup')) {
+          let groupExist = res && res.groups && res.groups.some(g => g._id === localStorage.getItem('projectLifestyle_activeGroup')) || false;
+          if (!groupExist) {
+            localStorage.setItem('projectLifestyle_activeGroup', sessionData.user.groupId)
+          }
+        } else {
+          localStorage.setItem('projectLifestyle_activeGroup', sessionData.user.groupId)
         }
+
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
     };
 
     fetchData(); // Call the fetch function
-}, [sessionData, _as.reloadChild]); 
+  }, [sessionData, _as.reloadChild]);
 
- 
+
 
   useEffect(() => {
     const fetchData = async () => {
 
-      if(localStorage.getItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`)){
-          _as.setCart(JSON.parse(localStorage.getItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`)))
-        }
-      
+      if (localStorage.getItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`)) {
+        _as.setCart(JSON.parse(localStorage.getItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`)))
+      }
+
     };
 
     fetchData(); // Call the fetch function
-  }, []); 
+  }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-       if(_as.cart.length > 0){
-        localStorage.setItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`,JSON.stringify(_as.cart))
-       }else{
-        localStorage.setItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`,[])
-       }
-    };
-
-    fetchData(); // Call the fetch function
+    const key = `projectLifestyle_cart_${localStorage.getItem('projectLifestyle_activeGroup')}`;
+    localStorage.setItem(key, JSON.stringify(_as.cart));
   }, [_as.cart]);
 
+
   let _ac = [
-      {
-        title: "Dashboard",
-        route: "/admin/dashboard",
-        tabSections: ["code Template","Test Cases","Documentation"],
-        tabButtons : [["GROUP"],["GROUP"],["GROUP"]],
-        setActiveTabSection: _as.setDashboardTab,
-        activeTabSection: _as.dashboardTab,
-        setModalToggle: _as.setModalToggle,
-      },
-      
-      { 
-        title: "Products", 
-        route: "/admin/products",
-        tabSections: ["Products List","Category","Wish List","Inventory","Resource Plan","Orders"],
-        tabButtons:[["GROUP","ADD","CART"],["GROUP","ADD","CART"],["GROUP","CART"],["GROUP","CART"],["GROUP","ADD","CART"],["GROUP","CART"]],
-        setActiveTabSection: _as.setProductsTab,
-        activeTabSection: _as.productsTab,
-        setModalToggle: _as.setModalToggle,
-      },
+    {
+      title: "Dashboard",
+      route: "/admin/dashboard",
+      tabSections: ["code Template", "Test Cases", "Documentation"],
+      tabButtons: [["GROUP"], ["GROUP"], ["GROUP"]],
+      setActiveTabSection: _as.setDashboardTab,
+      activeTabSection: _as.dashboardTab,
+      setModalToggle: _as.setModalToggle,
+    },
 
-      { title: "Finance", 
-        route: "/admin/finance", 
-        tabSections: [],
-        tabButtons : ["GROUP"],
-        setActiveTabSection: _as.setFinanceTab,
-        activeTabSection: _as.financeTab,
-        setModalToggle: _as.setModalToggle,
-      },
-      {},
-      { title: "Documentation", 
-        route: "/admin/documentation", 
-        tabSections: [],
-        tabButtons : [],
-        setActiveTabSection: _as.setShoppingTab,
-        activeTabSection: _as.shoppingTab,
-        setModalToggle: _as.setModalToggle,
-      },
-      { title: "Profile", 
-        route: "/admin/profile", 
-        tabSections: ["My Profile","Friends","Groups"],
-        tabButtons : [["GROUP","CART"],["GROUP","ADD","CART"],["GROUP","ADD","CART"]],
-        setActiveTabSection: _as.setProfileTab,
-        activeTabSection: _as.profileTab,
-        setModalToggle: _as.setModalToggle,
-      },
+    {
+      title: "Products",
+      route: "/admin/products",
+      tabSections: ["Products List", "Category", "Wish List", "Inventory", "Resource Plan", "Orders"],
+      tabButtons: [["GROUP", "ADD", "CART"], ["GROUP", "ADD", "CART"], ["GROUP", "CART"], ["GROUP", "CART"], ["GROUP", "ADD", "CART"], ["GROUP", "CART"]],
+      setActiveTabSection: _as.setProductsTab,
+      activeTabSection: _as.productsTab,
+      setModalToggle: _as.setModalToggle,
+    },
 
-    ]
+    {
+      title: "Finance",
+      route: "/admin/finance",
+      tabSections: [],
+      tabButtons: ["GROUP"],
+      setActiveTabSection: _as.setFinanceTab,
+      activeTabSection: _as.financeTab,
+      setModalToggle: _as.setModalToggle,
+    },
+    {},
+    {
+      title: "Documentation",
+      route: "/admin/documentation",
+      tabSections: [],
+      tabButtons: [],
+      setActiveTabSection: _as.setShoppingTab,
+      activeTabSection: _as.shoppingTab,
+      setModalToggle: _as.setModalToggle,
+    },
+    {
+      title: "Profile",
+      route: "/admin/profile",
+      tabSections: ["My Profile", "Friends", "Groups"],
+      tabButtons: [["GROUP", "CART"], ["GROUP", "ADD", "CART"], ["GROUP", "ADD", "CART"]],
+      setActiveTabSection: _as.setProfileTab,
+      activeTabSection: _as.profileTab,
+      setModalToggle: _as.setModalToggle,
+    },
+
+  ]
 
 
   return (<>
- 
+
     <div className={`flex  h-fit  bg-[#F9FAFE] `}>
       <div className={` md:relative  fixed  bottom-0  h-16  `}>
         <Sidebar _ac={_ac} _as={_as} />
       </div>
       <div className="flex flex-col  w-full h-screen ">
-        
+
         {/* admin header nav */}
         <div className="md:relative fixed bg-[#F9FAFE] z-3 ">
-        <AdminNavbar _ac={_ac} _as={_as} />
+          <AdminNavbar _ac={_ac} _as={_as} />
 
         </div>
         {/* admin body */}
@@ -176,15 +174,16 @@ export default function Admin({ children }) {
             {/* {React.Children.map(children, (child) => {
               return React.cloneElement(child, { _as: _as });
             })} */}
-              {_as.toast != 0 && (
-                <Toast 
-                  message={`${_as.toast}`} 
-                  setToast={_as.setToast} 
-                />
-              )} 
-            {_as?.user?._id != undefined?  <TabBody  _as = {_as} /> :<></>}
+            {_as.toast != 0 && (
+              <Toast
+                message={`${_as.toast}`}
+                setToast={_as.setToast}
+              />
+            )}
+            {_as?.user?._id ? <TabBody _as={_as} /> : <PageChange />}
 
-          <Modal _as = {_as} />
+
+            <Modal _as={_as} />
 
           </div>
         </div>

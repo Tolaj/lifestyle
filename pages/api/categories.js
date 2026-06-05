@@ -1,4 +1,5 @@
-import {Category} from '../../models/index';
+// pages/api/categories.js
+import { Category } from '../../models/index';
 import { createHandler } from '../../controllers/genericHandler';
 import Group from 'models/Group';
 import { message } from 'antd';
@@ -12,8 +13,8 @@ export const config = {
 
 
 export default createHandler(Category, {
-  useAuth: false, 
-  middleware: addToGroupAndSaveMiddleware('Category', 'Group', 'groupId', 'categories'), 
+  useAuth: false,
+  middleware: addToGroupAndSaveMiddleware('Category', 'Group', 'groupId', 'categories'),
 });
 
 // export default createHandler(Product, {

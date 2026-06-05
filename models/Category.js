@@ -1,5 +1,6 @@
+// models/Category.js
 import mongoose from 'mongoose';
-import {deleteFromGroupPostDelete, preventDeleteIfReferenced} from '../utils/modelPlugins';
+import { deleteFromGroupPostDelete, preventDeleteIfReferenced } from '../utils/modelPlugins';
 import Product from './Product';
 import Group from './Group';
 

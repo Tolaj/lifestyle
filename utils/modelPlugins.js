@@ -1,4 +1,5 @@
-// plugins/index.js
+// utils/modelPlugins.js
+
 import mongoose from 'mongoose';
 
 /**
@@ -15,13 +16,13 @@ export const preventDeleteIfReferenced = (refModel, refField) => {
         const isReferenced = await mongoose
           .model(refModel)
           .exists({ [refField]: new mongoose.Types.ObjectId(docId) });
-          
+
         if (isReferenced) {
           const error = new Error(`Cannot delete; document is referenced in ${refModel}.`);
           error.status = 400;
           return next(error);
         }
-        
+
         next();
       } catch (error) {
         console.log("Error in preventDeleteIfReferenced:", error);

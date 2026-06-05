@@ -108,7 +108,7 @@ export function createHandler(model, options = {}) {
 
     if (needsAuth && ['POST', 'PUT', 'DELETE'].includes(method)) {
       const cookies = cookie.parse(req.headers.cookie || '');
-      const token = cookies.token;
+      const token = cookies.auth;
       if (!token) {
         return res.status(401).json({ success: false, message: 'No authentication token found' });
       }

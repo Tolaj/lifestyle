@@ -8,16 +8,19 @@ function useSession() {
     const router = useRouter()
     useEffect(() => {
         async function fetchSession() {
-            const res = await fetch('/api/session');
-            if (res.ok) {
-                const data = await res.json();
-                setSessionData(data);
-                setLoading(false);
-            } else {
-                router.push('/auth/login')
+            try {
+                const res = await fetch('/api/session');
+                if (res.ok) {
+                    const data = await res.json();
+                    setSessionData(data);
+                    setLoading(false);
+                } else {
+                    router.push('/auth/login');
+                }
+            } catch (e) {
+                router.push('/auth/login');
             }
         }
-
         fetchSession();
     }, []);
 

@@ -1,13 +1,14 @@
+// utils/formatDate.js
 export function TimeAgo(dateString) {
     const date = new Date(dateString);
     const now = new Date();
     const seconds = Math.floor((now - date) / 1000);
-    
+
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(seconds / 3600);
     const days = Math.floor(seconds / (3600 * 24));
     const months = Math.floor(days / 30);
-    
+
     if (months > 0) {
         return months === 1 ? "1 month ago" : `${months} months ago`;
     } else if (days > 0) {

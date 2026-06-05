@@ -1,25 +1,27 @@
 import React from "react";
 
-const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+const capitalizeFirstLetter = (string) =>
+  string.charAt(0).toUpperCase() + string.slice(1);
 
 const useDynamicState = (...stateNames) => {
-    const state = {};
+  const states = stateNames.map(() => ({
+    isolate: React.useState([]),
+    tab: React.useState(0),
+    data: React.useState(0),
+  }));
 
-    stateNames.forEach((stateName) => {
-      const [isolate, setIsolate] = React.useState([]);
-      const [tab, setTab] = React.useState(0);
-      const [data, setData] = React.useState(0);
-  
-      state[`${stateName}`] = isolate;
-      state[`${stateName}Tab`] = tab;
-      state[`${stateName}Data`] = data;
-      state[`set${capitalizeFirstLetter(stateName)}`] = setIsolate;
-      state[`set${capitalizeFirstLetter(stateName)}Tab`] = setTab;
-      state[`set${capitalizeFirstLetter(stateName)}Data`] = setData;
-       });
-    return state;
-  };
+  const state = {};
+  stateNames.forEach((stateName, i) => {
+    const { isolate, tab, data } = states[i];
+    state[stateName] = isolate[0];
+    state[`${stateName}Tab`] = tab[0];
+    state[`${stateName}Data`] = data[0];
+    state[`set${capitalizeFirstLetter(stateName)}`] = isolate[1];
+    state[`set${capitalizeFirstLetter(stateName)}Tab`] = tab[1];
+    state[`set${capitalizeFirstLetter(stateName)}Data`] = data[1];
+  });
 
-  export default useDynamicState;
+  return state;
+};
+
+export default useDynamicState;

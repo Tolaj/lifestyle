@@ -1,3 +1,4 @@
+// utils/almostGenericMiddleware.js
 import { isArray } from 'lodash';
 import mongoose from 'mongoose';
 
@@ -47,7 +48,7 @@ export const addToGroupAndSaveMiddleware = (modelName, refModelName, refField, u
         //     { $addToSet: { [updateField]: savedDoc._id } } // Dynamically update the field
         //   );
         // }
-        
+
         newDoc = new PrimaryModel(body);
         savedDoc = await newDoc.save();
 
@@ -65,6 +66,6 @@ export const addToGroupAndSaveMiddleware = (modelName, refModelName, refField, u
         console.error(`Error in ${modelName} middleware:`, error);
         res.status(500).json({ error: 'Internal Server Error' });
       }
-    } 
+    }
   };
 };

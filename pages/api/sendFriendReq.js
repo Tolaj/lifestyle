@@ -1,3 +1,4 @@
+// pages/api/sendFriendReq.js
 import User from 'models/User';
 import { createHandler } from '../../controllers/genericHandler';
 import parseFormData from 'utils/parseFormData';
@@ -15,15 +16,15 @@ async function sendFriendRequest(userId, friendEmail) {
     if (!friend) {
       return { message: "Friend not found with the provided email!" };
     }
-    
-    
+
+
     // Find the current user
     const user = await User.findById(userId);
     if (!user) {
       return { message: "User not found" };
     }
 
-    if(friendEmail == user.email){
+    if (friendEmail == user.email) {
       return { message: "Can not send friend request to yourself!" };
     }
 
@@ -31,15 +32,15 @@ async function sendFriendRequest(userId, friendEmail) {
       (f) => f.requester.toString() === user._id.toString() && f.status === 'ACCEPTED'
     );
 
-    if(existingFriend){
+    if (existingFriend) {
       return { message: "Already Friend!" };
     }
 
     const existingFriendRejection = friend.friends.some(
-      (f) => f.requester.toString() === user._id.toString() && f.status === 'ACCEPTED'
+      (f) => f.requester.toString() === user._id.toString() && f.status === 'REJECTED'
     );
 
-    if(existingFriendRejection){
+    if (existingFriendRejection) {
       return { message: "Friend request rejected!" };
     }
 
@@ -93,12 +94,12 @@ async function sendFriendRequest(userId, friendEmail) {
 }
 
 const customMiddleware = async (req, res) => {
-  const  fields  = req.body
+  const fields = req.body
   const response = await sendFriendRequest(fields._id, fields.friendEmail);
-  if(response.message == 'send'){
+  if (response.message == 'send') {
     res.status(200).json(response);
     return 'ok'
-  }else{
+  } else {
     res.status(400).json({ success: false, message: response.message });
     return 'ok'
   }
@@ -106,6 +107,6 @@ const customMiddleware = async (req, res) => {
 };
 
 export default createHandler(User, {
-  useAuth: false, 
-  middleware: customMiddleware, 
+  useAuth: false,
+  middleware: customMiddleware,
 });

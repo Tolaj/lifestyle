@@ -1,3 +1,4 @@
+// models/User.js
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import Group from './Group';
@@ -11,10 +12,10 @@ const UserSchema = new mongoose.Schema({
   friends: [
     {
       requester: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // User who sent the request
-      status: { 
-        type: String, 
-        enum: ['PENDING', 'ACCEPTED', 'REJECTED'], 
-        default: 'PENDING' 
+      status: {
+        type: String,
+        enum: ['PENDING', 'ACCEPTED', 'REJECTED'],
+        default: 'PENDING'
       },
       timestamp: { type: Date, default: Date.now }
     }
@@ -39,17 +40,17 @@ UserSchema.pre('save', async function (next) {
   if (this.email) {
     this.email = this.email.toLowerCase();
   }
-  
+
   // Check if password has been modified
   if (!this.isModified('password')) {
     return next(); // Skip hashing if password hasn't changed
   }
-  
+
   if (!this.isModified('_id')) {
     this.$locals.wasNew = this.isNew
   }
 
-  try { 
+  try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     next();
@@ -68,13 +69,13 @@ UserSchema.post('save', async function (doc) {
         name: `ISOLATED_GROUP`,
         members: [doc._id],
       });
-      
+
       const savedGroup = await newGroup.save();
 
       // Update the user's groups field to include the new group
       doc.groups.push(savedGroup._id);
       await doc.save();
-      
+
       // console.log(`Group created for user ${doc.name} with group ID: ${savedGroup._id}`);
     } catch (error) {
       console.error("Error creating group for user:", error);
