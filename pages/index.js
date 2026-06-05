@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import useInstallPrompt from '../utils/useInstallPrompt';
 import { useRouter } from "next/router";
-import IndexNavbar from "components/Navbars/indexNavbar.js";
+import IndexNavbar from "components/Navbars/IndexNavbar.js"
 import IndexFooter from "components/Footers/indexFooter.js";
 
 export default function Index() {
