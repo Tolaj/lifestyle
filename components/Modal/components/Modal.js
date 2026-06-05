@@ -20,6 +20,7 @@ function Modal(props) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
         setTempData((prevState) => ({
               ...prevState,
               [name]: value,
@@ -124,7 +125,8 @@ function Modal(props) {
                           {props.formFields.map((formField,index)=>{
                             switch (formField.type) {
                               case 'text':
-                                return(<><FormInputFields.Text name={formField.name} onChange={handleChange} value={tempData[formField.name]} label={formField.label} placeholder={formField.placeholder} style={formField.style} /></>)
+                                return(<>
+                                <FormInputFields.Text name={formField.name} onChange={handleChange} value={tempData[formField.name]} label={formField.label} placeholder={formField.placeholder} style={formField.style} /></>)
                               case 'email':
                                 return(<><FormInputFields.Email name={formField.name} onChange={handleChange} value={tempData[formField.name]} label={formField.label} placeholder={formField.placeholder} /></>)
                               case 'password':
@@ -135,6 +137,8 @@ function Modal(props) {
                                 return(<><FormInputFields.GridSelect name={formField.name} onClick={handleChange} value={tempData[formField.name]} label={formField.label} options = {formField.options} optionValues = {formField.optionValues} placeholder={formField.placeholder} /></>)
                               case 'checkBoxSelect':
                                 return(<><FormInputFields.CheckBoxSelect name={formField.name} onClick={handleChange} value={tempData[formField.name]} label={formField.label} options = {formField.options} optionValues = {formField.optionValues} placeholder={formField.placeholder} /></>)
+                              case 'toggle':
+                                return(<><FormInputFields.Toggle name={formField.name} onClick={handleChange} value={tempData[formField.name]} label={formField.label} style={formField.style} /></>)
                               default:
                                 return(<>No Form Field</>)                               
                             }                          

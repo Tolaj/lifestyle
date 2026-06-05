@@ -12,6 +12,7 @@ const ProductSchema = new mongoose.Schema({
   unit: { type: String, required: true },
   description: { type: String, optional: true },
   manufacturer: { type: String, optional: true },
+  inventory: { type: Boolean, optional: true, default:false },
   fileUrl: { type: String, optional: true }
 }, {
   timestamps: true

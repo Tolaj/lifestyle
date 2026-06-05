@@ -61,6 +61,15 @@ function ProductListModal(props) {
       "label":"Manufacturer",
       "placeholder":"recibo"
     },
+    {
+      "type":"toggle",
+      "name":"inventory",
+      "label":"Track In Inventory",
+    },
+    {
+      "type":"text",
+      "style":"invisible"
+    },
   ]
   return (<>
     <Modal formData = {props._as.productsData} setFormData = {props._as.setProductsData} _as = {props._as} additionalData = {{"groupId":localStorage.getItem("projectLifestyle_activeGroup")}} formTitle = "Create a Product" formFields = {formFields} formAPI={process.env.SERVER_API+"/api/products/"} style="grid grid-cols-2" />

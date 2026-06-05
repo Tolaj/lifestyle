@@ -1,3 +1,4 @@
+// utils/useSession.js
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/router"
 
@@ -12,7 +13,7 @@ function useSession() {
                 const data = await res.json();
                 setSessionData(data);
                 setLoading(false);
-            }else{
+            } else {
                 router.push('/auth/login')
             }
         }

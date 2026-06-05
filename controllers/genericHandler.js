@@ -1,5 +1,7 @@
+// controllers/genericHandler.js
+
 import dbConnect from '../utils/dbConnect';
-import formidable,{IncomingForm} from 'formidable';
+import formidable, { IncomingForm } from 'formidable';
 import verifyToken from '../utils/authMiddleware';
 import parseFormData from 'utils/parseFormData';
 import cookie from 'cookie';
@@ -10,24 +12,24 @@ import cookie from 'cookie';
 
 async function handleGet(req, res, model, options) {
   try {
-    const { id } = req.query; 
-     if (id) {
-      const populateOptions = options.populate ? options.populate : [];  
+    const { id } = req.query;
+    if (id) {
+      const populateOptions = options.populate ? options.populate : [];
 
-      const data = await model.findById(id).populate(populateOptions);  
+      const data = await model.findById(id).populate(populateOptions);
 
-       
+
       if (!data) {
         return res.status(404).json({ message: 'Document not found' });
       }
 
-      return res.status(200).json(data);  
+      return res.status(200).json(data);
     } else {
-      const populateOptions = options.populate ? options.populate : []; 
+      const populateOptions = options.populate ? options.populate : [];
 
-      const data = await model.find().populate(populateOptions); 
+      const data = await model.find().populate(populateOptions);
 
-      return res.status(200).json(data);  
+      return res.status(200).json(data);
     }
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error: error.message });
@@ -98,30 +100,30 @@ export function createHandler(model, options = {}) {
 
     const needsAuth = options.useAuth;
 
-    if(['POST', 'PUT'].includes(method)){
-      const { fields,files } = await parseFormData(req)
+    if (['POST', 'PUT'].includes(method)) {
+      const { fields, files } = await parseFormData(req)
       req.body = fields;
       req.files = files
     }
-    
-        if (needsAuth && ['POST', 'PUT', 'DELETE'].includes(method)) {
-          const cookies = cookie.parse(req.headers.cookie || '');
-          const token = cookies.token;
-          if (!token) {
-            return res.status(401).json({ success: false, message: 'No authentication token found' });
-          }
-          await new Promise((resolve, reject) =>
-            verifyToken(token, (err) => (err ? reject(err) : resolve()))
-          );
-        }
 
-    
-        if (options.middleware) {
-          const middlewareResponse = await options.middleware(req, res);
-          if (middlewareResponse) {
-            return "Middleware response ok"
-          }
-        }
+    if (needsAuth && ['POST', 'PUT', 'DELETE'].includes(method)) {
+      const cookies = cookie.parse(req.headers.cookie || '');
+      const token = cookies.token;
+      if (!token) {
+        return res.status(401).json({ success: false, message: 'No authentication token found' });
+      }
+      await new Promise((resolve, reject) =>
+        verifyToken(token, (err) => (err ? reject(err) : resolve()))
+      );
+    }
+
+
+    if (options.middleware) {
+      const middlewareResponse = await options.middleware(req, res);
+      if (middlewareResponse === 'ok') {
+        return; // middleware already sent the response
+      }
+    }
 
     try {
       switch (method) {

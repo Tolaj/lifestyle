@@ -40,7 +40,8 @@ function CartListModal(props) {
           price: String(product.price || '0'),   
           splitType: product.splitType || 'equal',  
           splitAmong: product.splitAmong || [],  
-          count: String(product.count || '0'),  
+          count: String(product.count || '0'), 
+          inventory: product.inventory
         }));  
         setCheckoutData({"name":"order-"+Math.floor(Math.random() * 10000) ,"paidBy":props._as.user._id,"createdBy":props._as.user._id,"totalPrice":parseFloat(Object.values(tempData).reduce((total, product) => total + (product.price * product.count || 0), 0)).toFixed(2),"date": new Date().toISOString().split("T")[0],"items":tempItems})
       }
@@ -109,9 +110,9 @@ function CartListModal(props) {
     try {
       const result = await FetchAPI(process.env.SERVER_API+"/api/"+endpoint, 'POST', additionalData);
       if (result?.message == "Order created successfully") {
-        let inventoryData = additionalData.items.map((item) => {
+        let inventoryData = additionalData.items.filter((item) => item.inventory !== false).map((item) => {
+
           return {
-            
             product: item.product,            
             unit: item.unit,                
             price: item.price,               
