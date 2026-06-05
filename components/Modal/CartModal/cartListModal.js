@@ -295,7 +295,7 @@ function CartListModal(props) {
                                       <div>Split Among</div>
 
                                       <div onClick={() => setVisibilityStates4[index](1)} className=" absolute hover:cursor-pointer justify-around items-center flex w-full mt-6   px-2 py-1  text-xs text-white bg-black rounded-md">
-                                        <span className=""> {product.splitAmong.length == activeGroupMembers.length ? "Even" : "Uneven"} </span>
+                                        <span className=""> {(product.splitAmong?.length || 0) == activeGroupMembers.length ? "Even" : "Uneven"} </span>
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                           <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                         </svg>
@@ -440,6 +440,7 @@ function groupAndCountProducts(cart) {
     if (!acc[key]) {
       acc[key] = {
         ...product,
+        splitAmong: product.splitAmong || [],
         count: 0, // Initialize count
       };
     }
