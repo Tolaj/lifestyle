@@ -904,9 +904,12 @@ export const heroIconsNames = ['AcademicCapIcon'
 
 function HeroIcon(props) {
     const IconToRender = heroIcons[props.iconTitle];
-    return (<>
-        <span onClick={props.onClick ? props.onClick : () => { }}><IconToRender className={`${props.style ? props.style : "h-6 w-6"}`} /></span>
-    </>);
+    if (!IconToRender) return null; // ← add this
+    return (
+        <span onClick={props.onClick ? props.onClick : () => { }}>
+            <IconToRender className={`${props.style ? props.style : "h-6 w-6"}`} />
+        </span>
+    );
 }
 
 
