@@ -159,6 +159,12 @@ function WishList(props) {
       </>)
     }
     const ColumnComponentTotalPrice = (params) => {
+      const formattedDate = new Date(params.data.date).toLocaleDateString("en-US", {
+        month: "2-digit",
+        day: "2-digit",
+        year: "2-digit",
+      });
+
       return (<>
         {
           params.readMore == params?.index + 'i' ?
@@ -167,11 +173,11 @@ function WishList(props) {
             </span>
             :
             <div className={`divide-x divide-gray-200 mt-auto `}>
-              <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0">
+              <span className="inline-block px-1.5 text-xs leading-none text-gray-400 font-normal first:pl-0">
                 $ {params.data.totalPrice}
               </span>
-              <span className="inline-block px-3 text-xs leading-none text-gray-400 font-normal first:pl-0" >
-                {params.data.date}
+              <span className="inline-block px-1.5 text-xs leading-none text-gray-400 font-normal first:pl-0" >
+                {formattedDate}
               </span>
             </div>
         }
