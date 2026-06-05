@@ -1,42 +1,30 @@
 // pages/auth/register.js
 import React from "react";
-import { useState } from 'react';
 import { useRouter } from 'next/router';
-// layout for page
-
 import Auth from "layouts/Auth.js";
 import FetchAPI from "controllers/fetchAPI";
 import PageChange from "components/PreLoader";
+import AuthNavbar from "components/Navbars/AuthNavbar.js";
+import AuthFooter from "components/Footers/authFooter.js";
 
 export default function Register() {
   const router = useRouter();
-  const [preLoader, setPreLoader] = React.useState(0);
+  const [preLoader, setPreLoader] = React.useState(false);
   const [tempData, setTempData] = React.useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setTempData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-
+    setTempData((prevState) => ({ ...prevState, [name]: value }));
     const file = e.target.files ? e.target.files[0] : null;
-
-    if (file) {
-      setTempData((prevState) => ({
-        ...prevState,
-        file: file,
-      }));
-    }
-  }
+    if (file) setTempData((prevState) => ({ ...prevState, file }));
+  };
 
   const handleSave = async () => {
     setPreLoader(true);
-
     try {
       const result = await FetchAPI('/api/users', 'POST', tempData);
-      setPreLoader(false); // Stop the preloader
-      router.push("/auth/login")
+      setPreLoader(false);
+      router.push('/auth/login');
     } catch (error) {
       console.log('_____Create Account Failed!_____');
       setPreLoader(false);
@@ -44,116 +32,160 @@ export default function Register() {
     }
   };
 
-  if (preLoader) return <PageChange />
+  if (preLoader) return <PageChange />;
 
   return (
     <>
+      <style>{`
+        .rg-outer {
+          width: 100%;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 96px 16px 24px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+        }
+        .rg-wrap {
+          background: #fff;
+          width: 100%;
+          max-width: 460px;
+          display: flex;
+          flex-direction: column;
+          border-radius: 16px;
+          overflow: hidden;
+        }
+        .rg-body {
+          padding: 40px 36px 32px;
+        }
+        .rg-body h1 {
+          font-size: 26px;
+          font-weight: 700;
+          letter-spacing: -0.8px;
+          color: #111;
+          margin-bottom: 6px;
+        }
+        .rg-sub {
+          font-size: 14px;
+          color: #888;
+          margin-bottom: 28px;
+        }
+        .rg-label {
+          font-size: 11px;
+          font-weight: 600;
+          color: #aaa;
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+          margin-bottom: 6px;
+          display: block;
+        }
+        .rg-input {
+          width: 100%;
+          font-size: 15px;
+          color: #111;
+          background: #fafafa;
+          border: 1px solid #e5e5e5;
+          border-radius: 10px;
+          padding: 13px 16px;
+          outline: none;
+          font-family: inherit;
+          margin-bottom: 14px;
+          transition: border-color 0.15s, background 0.15s;
+        }
+        .rg-input::placeholder { color: #ccc; }
+        .rg-input:focus { border-color: #bbb; background: #fff; }
+        .rg-btn {
+          width: 100%;
+          font-size: 15px;
+          font-weight: 600;
+          padding: 13px;
+          border-radius: 10px;
+          background: #111;
+          color: #fff;
+          border: none;
+          cursor: pointer;
+          font-family: inherit;
+          margin-top: 10px;
+          transition: background 0.15s;
+        }
+        .rg-btn:hover { background: #333; }
+        .rg-terms {
+          margin-top: 16px;
+          text-align: center;
+          font-size: 12px;
+          color: #bbb;
+          line-height: 1.6;
+        }
 
-      <div className="container mx-auto px-4 h-full md:mt-20 mt-14">
-        <div className="flex content-center items-center justify-center h-full">
-          <div className="w-full md:w-2/5 px-4 ">
-            <div className="relative flex flex-col min-w-0 break-words w-full mb-6  bg-[#161616] border-0">
-              <div className="rounded-t px-6 py-6">
-                <div className="flex items-center w-full justify-center ">
-                  <div className=" flex justify-center items-center  rounded-full  ">
-                    <img src="/assets/images/logo.png" className="px-2  w-52     rounded-full " alt="" />
-                  </div>
-                </div>
-              </div>
-              <div className="flex-auto pt-0">
-                {/* <div className="text-white text-center py-4 text-lg font-medium">
-                  Welcome to LifeStyle 
-                </div> */}
-                <form onSubmit={(e) => { e.preventDefault(); handleSave() }}>
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {/* Email */}
-                    </label>
-                    <input
+        @media (max-width: 768px) {
+          .rg-outer {
+            padding-top: 80px;
+          }
+          .rg-body {
+            padding: 32px 24px 24px;
+          }
+          .rg-body h1 {
+            font-size: 22px;
+          }
+        }
+      `}</style>
 
-                      className="border-0 px-3 py-4 placeholder-blueGray-400 drop-shadow-sm  font-medium text-blueGray-600 bg-white rounded text-base  focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Your Name"
-                      name="name"
-                      type="text"
-                      id="name"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {/* Email */}
-                    </label>
-                    <input
+      <AuthNavbar />
 
-                      className="border-0 px-3 py-4 placeholder-blueGray-400 drop-shadow-sm  font-medium text-blueGray-600 bg-white rounded text-base  focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Email address"
-                      name="email"
-                      type="email"
-                      id="email"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+      <div className="rg-outer">
+        <div className="rg-wrap">
 
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      {/* Password */}
-                    </label>
-                    <input
+          <div className="rg-body">
+            <h1>Create an account.</h1>
+            <p className="rg-sub">Join Lifestyle and start organizing your finances.</p>
 
-                      className="border-0 px-3 py-4 placeholder-blueGray-400 font-medium drop-shadow-sm text-blueGray-600 bg-white rounded text-base  focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Password"
-                      name="password"
-                      type="password"
-                      id="password"
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  {/* <div>
-                    <label className="inline-flex text-white items-center cursor-pointer">
-                      <input
-                        id="customCheckLogin"
-                        type="checkbox"
-                        className="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
-                      />
-                      <span className="ml-2 text-sm font-semibold text-blueGray-600">
-                        Remember me
-                      </span>
-                    </label>
-                  </div> */}
+            <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+              <label className="rg-label" htmlFor="name">Name</label>
+              <input
+                className="rg-input"
+                type="text"
+                placeholder="Your name"
+                id="name"
+                name="name"
+                onChange={handleChange}
+                required
+              />
 
-                  <div className=" flex items-center justify-center ">
-                    <button type="submit" class=" my-6 md:my-8  w-fit text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">
-                      Create Account
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div className="flex flex-wrap justify-center -mt-9 relative ">
-              <div className="">
-                <a
-                  href="#pablo"
-                  onClick={() => alert("For security reasons we did not automate this process, to reset password please contact swapnilhgf@gmail.com")}
+              <label className="rg-label" htmlFor="email">Email</label>
+              <input
+                className="rg-input"
+                type="email"
+                placeholder="you@example.com"
+                id="email"
+                name="email"
+                onChange={handleChange}
+                required
+              />
 
-                >
-                  {/* <p className="text-white hover:text-blueGray-600 text-base font-medium drop-shadow-sm">Forgot password?</p> */}
-                </a>
-              </div>
+              <label className="rg-label" htmlFor="password">Password</label>
+              <input
+                className="rg-input"
+                type="password"
+                placeholder="••••••••"
+                id="password"
+                name="password"
+                onChange={handleChange}
+                required
+              />
 
-            </div>
+              <button type="submit" className="rg-btn">Create account</button>
+            </form>
+
+            <p className="rg-terms">
+              By signing up you agree to our{" "}
+              <a href="#" style={{ color: '#aaa', textDecoration: 'none' }}>Terms</a>
+              {" "}and{" "}
+              <a href="#" style={{ color: '#aaa', textDecoration: 'none' }}>Privacy Policy</a>.
+            </p>
           </div>
+
+          <AuthFooter />
+
         </div>
       </div>
     </>

@@ -108,9 +108,8 @@ export default function Sidebar(props) {
       </> : <>
         <div className="relative overflow-y-auto  h-screen w-full max-w-[18rem] flex-col rounded-xl bg-[#F9FAFE] bg-clip-border p-4 text-gray-700 ">
           <div className="flex items-center justify-evenly gap-4 p-4  mt-4">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m1.5.5-1.5-.5M6.75 7.364V3h-3v18m3-13.636 10.5-3.819" />
-            </svg>
+            <img src="/assets/images/logo.png" className="px-2  w-20     rounded-full " alt="" />
+
             <h5 className="block font-sans font-extrabold text-3xl antialiased  leading-snug tracking-normal text-blue-gray-900">
               Lifestyle
             </h5>

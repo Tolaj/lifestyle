@@ -1,112 +1,77 @@
+// components/authNavbar.js
 import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/router"
-// components
+import { useRouter } from "next/router";
 
-import PagesDropdown from "components/Dropdowns/PagesDropdown.js";
+export default function AuthNavbar() {
+  const router = useRouter();
+  const isLogin = router.route === "/auth/login";
 
-export default function Navbar(props) {
-  const [navbarOpen, setNavbarOpen] = React.useState(false);
-  const router = useRouter()
   return (
     <>
-   
-      <nav className="top-0 absolute z-30 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
-        <div className="container px-4 mx-auto flex flex-wrap items-center justify-end bg-[#161616] my-2">
-          {/* <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
-            <Link legacyBehavior href="/">
-              <a
-                className="text-white text-sm font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase"
-                href="#pablo"
-              >
-              <img src="/img/blackboxlogo.png" alt="" className="  w-[180px] h-[70px] " />
-              </a>
-            </Link>
-            <button
-              className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
-              type="button"
-              onClick={() => setNavbarOpen(!navbarOpen)}
-            >
-              <i className="text-white fas fa-bars"></i>
-            </button>
-          </div>
-          <div
-            className={
-              "lg:flex flex-grow items-center bg-white lg:bg-opacity-0 lg:shadow-none" +
-              (navbarOpen ? " block rounded shadow-lg" : " hidden")
-            }
-            id="example-navbar-warning"
-          >
-            <ul className="flex flex-col lg:flex-row list-none mr-auto">
-              <li className="flex items-center">
-                <a
-                  className="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
-                  href="https://www.creative-tim.com/learning-lab/tailwind/nextjs/overview/notus?ref=nnjs-auth-navbar"
-                >
-                  <i className="lg:text-blueGray-200 text-blueGray-400 far fa-file-alt text-lg leading-lg mr-2" />{" "}
-                  Docs
-                </a>
-              </li>
-            </ul>
-            <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
-              <li className="flex items-center">
-                <PagesDropdown />
-              </li>
-              <li className="flex items-center">
-                <a
-                  className="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
-                  href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdemos.creative-tim.com%2Fnotus-nextjs%2F"
-                  target="_blank"
-                >
-                  <i className="lg:text-blueGray-200 text-blueGray-400 fab fa-facebook text-lg leading-lg " />
-                  <span className="lg:hidden inline-block ml-2">Share</span>
-                </a>
-              </li>
+      <style>{`
+        .an-nav {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          z-index: 30;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 56px;
+          height: 72px;
+          border-bottom: 1px solid #efefef;
+          background: #fff;
+        }
+        .an-logo {
+          font-size: 20px;
+          font-weight: 700;
+          letter-spacing: -0.5px;
+          color: #111;
+          cursor: pointer;
+        }
+        .an-btn {
+          font-size: 14px;
+          padding: 9px 20px;
+          border-radius: 9px;
+          cursor: pointer;
+          font-weight: 500;
+          border: 1px solid #e5e5e5;
+          background: #fff;
+          color: #444;
+          font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+          transition: background 0.15s, color 0.15s;
+        }
+        .an-btn:hover {
+          background: #111;
+          color: #fff;
+          border-color: #111;
+        }
 
-              <li className="flex items-center">
-                <a
-                  className="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
-                  href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fdemos.creative-tim.com%2Fnotus-nextjs%2F&text=Start%20your%20development%20with%20a%20Free%20Tailwind%20CSS%20and%20NextJS%20UI%20Kit%20and%20Admin.%20Let%20Notus%20NextJS%20amaze%20you%20with%20its%20cool%20features%20and%20build%20tools%20and%20get%20your%20project%20to%20a%20whole%20new%20level."
-                  target="_blank"
-                >
-                  <i className="lg:text-blueGray-200 text-blueGray-400 fab fa-twitter text-lg leading-lg " />
-                  <span className="lg:hidden inline-block ml-2">Tweet</span>
-                </a>
-              </li>
+        @media (max-width: 768px) {
+          .an-nav {
+            padding: 0 20px;
+            height: 60px;
+          }
+          .an-btn {
+            font-size: 13px;
+            padding: 8px 14px;
+          }
+        }
+      `}</style>
 
-              <li className="flex items-center">
-                <a
-                  className="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
-                  href="https://github.com/creativetimofficial/notus-nextjs?ref=nnjs-auth-navbar"
-                  target="_blank"
-                >
-                  <i className="lg:text-blueGray-200 text-blueGray-400 fab fa-github text-lg leading-lg " />
-                  <span className="lg:hidden inline-block ml-2">Star</span>
-                </a>
-              </li>
+      <nav className="an-nav">
+        <div className="an-logo flex items-center" onClick={() => router.push('/')}>
+          <img src="/assets/images/logo.png" className="px-2  w-20     rounded-full " alt="" />
 
-              <li className="flex items-center">
-                <button
-                  className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
-                  type="button"
-                >
-                  <i className="fas fa-arrow-alt-circle-down"></i> Download
-                </button>
-              </li>
-            </ul>
-          </div> */}
-           <div className="text-center">
-            {router.route == "/auth/login" ? 
-                    <div onClick={()=>{router.push('/auth/register')}} class=" my-6 md:my-8  text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">
-                      Sign Up
-							      </div>
-                  :
-                    <div onClick={()=>{router.push('/auth/login')}} class=" my-6 md:my-8  text-sm text-[#cacaca] hover:cursor-pointer hover:text-black hover:bg-gray-200  border border-opacity-50 border-[#cacaca] rounded-3xl px-5 py-[7px]  ">
-                      Sign In
-							      </div>
-                  }
-            </div>
+          Lifestyle
         </div>
+        <button
+          className="an-btn"
+          onClick={() => router.push(isLogin ? '/auth/register' : '/auth/login')}
+        >
+          {isLogin ? 'Sign up' : 'Sign in'}
+        </button>
       </nav>
     </>
   );
