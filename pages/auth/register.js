@@ -24,7 +24,8 @@ export default function Register() {
     try {
       const result = await FetchAPI('/api/users', 'POST', tempData);
       setPreLoader(false);
-      router.push('/auth/login');
+      // router.push('/auth/login');
+      router.push('/auth/template');
     } catch (error) {
       console.log('_____Create Account Failed!_____');
       setPreLoader(false);

@@ -76,7 +76,7 @@ const GridBody = (props) => {
             cellStyle: () => { return props?.cellStyle ? props?.cellStyle[index] ? props?.cellStyle[index] : {} : {}; },
             popoverAppendToBody: true,
             cellRendererParams: { paramPass: props?.paramPass ? props?.paramPass : {}, groupGrid: () => dataRef.current, setGroupGrid: setGroupGrid, gridRef },
-            cellRenderer: props.columnComponents ? (typeof (props.columnComponents[index]) != 'function') ? (params) => { return params.data[column] } : props.columnComponents[index] : (params) => { return params.data[column] }
+            cellRenderer: props.columnComponents && typeof props.columnComponents[index] === 'function' ? props.columnComponents[index] : (params) => params.data[column] ?? ''
           };
         }
 

@@ -143,8 +143,8 @@ export default function Admin({ children }) {
     {
       title: "Profile",
       route: "/admin/profile",
-      tabSections: ["My Profile", "Friends", "Groups"],
-      tabButtons: [["GROUP", "CART"], ["GROUP", "ADD", "CART"], ["GROUP", "ADD", "CART"]],
+      tabSections: ["My Profile", "Friends", "Groups", "Templates"],
+      tabButtons: [["GROUP", "CART"], ["GROUP", "ADD", "CART"], ["GROUP", "ADD", "CART"], ["GROUP", "CART"]],
       setActiveTabSection: _as.setProfileTab,
       activeTabSection: _as.profileTab,
       setModalToggle: _as.setModalToggle,
