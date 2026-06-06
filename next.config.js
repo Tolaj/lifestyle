@@ -3,8 +3,8 @@
 const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
-  skipWaiting:true,
-  // disable: process.env.NODE_ENV === 'development',
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
   // scope: '/app',
   // sw: 'service-worker.js',
   //...
@@ -39,7 +39,7 @@ const nextConfig = {
   env: {
     SERVER_API: '',
     // SERVER_API:'http://localhost:8081'
-    JWT_SECRET:'kirti'
+    JWT_SECRET: 'kirti'
   },
 }
 
