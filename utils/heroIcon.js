@@ -609,7 +609,29 @@ export const heroIcons = {
     XMarkIcon
 }
 
-export const heroIconsNames = ['AcademicCapIcon'
+export const heroIconsNames = [
+    'Food & Drink',
+    '🍽️', '🥛', '🥦', '🍞', '🧀', '🥚', '🍎', '🍊', '🍋', '🍇', '🍓', '🫐', '🍒', '🍑', '🥭', '🍍', '🥝', '🍅', '🥥', '🥑', '🍆', '🥕', '🌽', '🌶️', '🥒', '🧄', '🧅', '🥔', '🍠', '🥜', '🫘', '🌰', '🍗', '🥩', '🥓', '🍖', '🌭', '🍔', '🍟', '🍕', '🫓', '🥙', '🧆', '🌮', '🌯', '🥗', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🥟', '🍤', '🍙', '🍚', '🍘', '🧁', '🍰', '🎂', '🍮', '🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🌰', '🥐', '🥖', '🫔', '🧇', '🥞', '🧈', '🍳', '🥘', '🍥', '🥫', '🧃', '🥤', '🧋', '☕', '🍵', '🫖', '🍺', '🍷', '🥂', '🍸', '🍹', '🧉', '🍾',
+    'Household & Cleaning',
+    '🧹', '🧺', '🧻', '🪣', '🧴', '🧷', '🧽', '🪥', '🧼', '🪒', '🚿', '🛁', '🪠', '🧯', '🪜', '🧰', '🔧', '🔨', '🪛', '🔩', '🪤', '🧲', '💡', '🔋', '🪫', '🔌', '📦', '🗑️', '🚪', '🪟', '🛋️', '🛏️', '🪑', '🚽', '🪞', '🧸',
+    'Health & Personal Care',
+    '💊', '🩺', '🩹', '🏥', '💉', '🩻', '🦷', '👓', '🩴', '👟', '🧦', '👕', '👖', '🧥', '👗', '👔', '🧣', '🧤', '🧢', '👒', '🎒', '👜', '💼',
+    'Baby & Kids',
+    '🍼', '🧸', '🪀', '🪁', '🎠', '🎡', '🎢', '🎨', '✏️', '📚', '🖍️', '🎒',
+    'Pets & Animals',
+    '🐶', '🐱', '🐟', '🐠', '🐹', '🐰', '🦜', '🐢', '🐾',
+    'Transport & Travel',
+    '🚗', '🚕', '🏠', '🏡', '✈️', '🚂', '🚲', '⛽', '🅿️',
+    'Office & Work',
+    '💻', '🖨️', '📱', '⌨️', '🖱️', '🖥️', '📷', '📸', '📞', '☎️', '📟', '📠', '📺', '📻', '🎙️', '⏰', '🔑', '🗝️', '📋', '📁', '📂', '🗂️', '📊', '📈', '📉', '📝', '✂️', '🖊️', '🖋️', '📌', '📍', '🗃️', '🗄️',
+    'Sports & Fitness',
+    '⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🥊', '🏋️', '🤸', '🧘', '🏊', '🚴', '🧗',
+    'Nature & Garden',
+    '🌱', '🌿', '🍀', '🌸', '🌺', '🌻', '🌹', '🪴', '🌵', '🎋', '🎍', '🪨', '🪵', '🌾', '🍂', '🍁', '🌊', '🌈', '⛅', '❄️', '🌙', '⭐',
+    'Money & Finance',
+    '💰', '💳', '🏦', '💵', '💴', '💶', '💷', '🧾', '💹', '📊',
+    'Hero Icons',
+    'AcademicCapIcon'
     , 'AdjustmentsHorizontalIcon'
     , 'AdjustmentsVerticalIcon'
     , 'ArchiveBoxArrowDownIcon'
@@ -902,9 +924,14 @@ export const heroIconsNames = ['AcademicCapIcon'
     'XMarkIcon'
 ]
 
+export const isSeparator = (name) => name.includes(' ') && name.length < 30 && !name.includes('Icon');
+
+
 function HeroIcon(props) {
     const IconToRender = heroIcons[props.iconTitle];
-    if (!IconToRender) return null; // ← add this
+    if (!IconToRender) {
+        return props.iconTitle ? <span>{props.iconTitle}</span> : null;
+    }
     return (
         <span onClick={props.onClick ? props.onClick : () => { }}>
             <IconToRender className={`${props.style ? props.style : "h-6 w-6"}`} />

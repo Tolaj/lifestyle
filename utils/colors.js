@@ -1,7 +1,12 @@
 import React from 'react';
 
 const Colors = [
-    
+  'bg-gray-100',
+  'bg-gray-200',
+  'bg-gray-300',
+  'bg-gray-400',
+  'bg-gray-500',
+  'bg-gray-600',
   'bg-red-100',
   'bg-red-200',
   'bg-red-300',
@@ -38,6 +43,6 @@ const Colors = [
   'bg-teal-400',
   'bg-teal-500',
   'bg-teal-600',
-  ];
+];
 
 export default Colors;

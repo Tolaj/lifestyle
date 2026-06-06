@@ -56,6 +56,8 @@ export default function ProductList(props) {
   };
 
   if (windowWidth < 700) {
+    // ------------------------------ mobile view ------------------------------
+
     const IconComponent = (params) => {
       return (<>
         <span className={`flex items-center justify-center w-10 h-10 shrink-0 rounded-full ${params.data?.color || params.data?.category?.color || 'bg-black'} text-black `} >
@@ -272,12 +274,14 @@ export default function ProductList(props) {
       <SmCardBody columns={['name', 'price', 'unit', "splitAmong", 'description', 'category', 'manufacturer']} columnComponents={["", (params) => <ColumnComponentPrice params={params} />, (params) => <ColumnComponentUnit params={params} />, (params) => <ColumnComponentSplit params={params} />, "", columnComponentCategory]} IconComponent={IconComponent} ActionsComponent={ActionsComponent} setFormData={props._as.setProductsData} _as={props._as} dataFilter={dataFilter} gridApi={process.env.SERVER_API + "/api/products"} />
     </>)
   } else {
+    // ------------------------------ desktop view ------------------------------
+
     const columnComponentIcon = (params) => {
 
       if (params.data.category.icon) {
         return (<div className='flex  items-center justify-start w-full h-full gap-2'>
-          <span className={`rounded-full  ${params.data.category.color} w-fit h-fit p-1 `}>
-            <HeroIcon style="" iconTitle={params.data.category.icon ? params.data.category.icon : "ExclamationTriangleIcon"} />
+          <span className={`flex items-center justify-center rounded-full w-8 h-8 shrink-0 ${params.data.category.color}`}>
+            <HeroIcon style="w-5 h-5" iconTitle={params.data.category.icon} />
           </span>
           {params.data.category.name}
         </div>)
@@ -439,7 +443,15 @@ export default function ProductList(props) {
     };
 
     return (<>
-      <GridBody columns={['name', 'description', 'category', 'price', 'unit', 'splitAmong', 'manufacturer', 'action']} columnComponents={['', '', columnComponentIcon, columnComponentPrice, columnComponentUnit, columnComponentSplit]} ActionsComponent={ActionsComponent} cellStyle={['', '', '', '', '', { overflow: 'visible' }]} paramPass={{ "_as": props._as.user._id != undefined ? props._as : "nothing" }} setFormData={props._as.setProductsData} _as={props._as} dataFilter={dataFilter} gridApi={process.env.SERVER_API + "/api/products"} />
+      <GridBody
+        columns={['name', 'description', 'category', 'price', 'unit', 'splitAmong', 'manufacturer', 'action']}
+        columnComponents={['', '', columnComponentIcon, columnComponentPrice, columnComponentUnit, columnComponentSplit]}
+        ActionsComponent={ActionsComponent} cellStyle={['', '', '', '', '', { overflow: 'visible' }]}
+        paramPass={{ "_as": props._as.user._id != undefined ? props._as : "nothing" }}
+        setFormData={props._as.setProductsData}
+        _as={props._as}
+        dataFilter={dataFilter}
+        gridApi={process.env.SERVER_API + "/api/products"} />
     </>);
   }
 

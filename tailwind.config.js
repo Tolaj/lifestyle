@@ -2,6 +2,15 @@
 const plugin = require("tailwindcss/plugin");
 const colors = require("tailwindcss/colors");
 module.exports = {
+  safelist: [
+    'bg-gray-100',
+    'bg-gray-200',
+    'bg-gray-300',
+    'bg-gray-400',
+    'bg-gray-500',
+    'bg-gray-600',
+  ],
+
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -147,5 +156,5 @@ module.exports = {
         },
       },
     ]);
-  }),require("@tailwindcss/line-clamp"), require("flowbite/plugin")],
+  }), require("@tailwindcss/line-clamp"), require("flowbite/plugin")],
 }

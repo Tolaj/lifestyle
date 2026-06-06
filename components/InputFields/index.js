@@ -127,6 +127,16 @@ const GridSelect = (props) => {
                 <div className={` ${isVisible ? "block" : "hidden"} overflow-y-auto  absolute left-0 z-50 w-full max-h-48 md:max-h-52 -ml-2  -mt-7 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-xl focus:outline-none`} >
                     <div className="py-1 bg-gray-200 grid grid-cols-6  drop-shadow-2xl rounded-md" >
                         {props.options.map((option, index) => {
+                            const isSep = typeof props.optionValues[index] === 'string' &&
+                                !props.optionValues[index].endsWith('Icon') &&
+                                !props.optionValues[index].match(/^[^\s]+$/) && // not a single word (emoji)
+                                props.optionValues[index].length < 30;
+
+                            if (isSep) return (
+                                <div className="col-span-6 px-2 pt-2 pb-1 text-xs font-semibold text-gray-500">
+                                    {props.optionValues[index]}
+                                </div>
+                            );
                             return (<>
                                 <div onClick={() => { props.onClick({ "target": { "name": props.name, "value": props.optionValues[index] } }); setOptionSelect(option); setIsVisible(0); }} key={index} name="icon" value="value" className="  text-center items-center justify-center flex mx-2 py-1 text-sm  hover:bg-blue-200 text-gray-700  rounded-md" >{option}</div>
                             </>)
