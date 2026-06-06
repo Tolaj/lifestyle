@@ -24,7 +24,7 @@ async function receiveFriendRequest(userId, friendId, action) {
     let isInGroup;
     switch (action) {
       case "DELETE":
-        isInGroup = await Group.exists({ members: friendId });
+        isInGroup = await Group.exists({ members: { $all: [userId, friendId] } });
 
         if (isInGroup) {
           // If the user is a member of any group, prevent removal from friends
@@ -75,7 +75,7 @@ async function receiveFriendRequest(userId, friendId, action) {
         break;
 
       case "REJECTED":
-        isInGroup = await Group.exists({ members: friendId });
+        isInGroup = await Group.exists({ members: { $all: [userId, friendId] } });
 
         if (isInGroup) {
           // If the user is a member of any group, prevent removal from friends
