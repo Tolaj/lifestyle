@@ -63,7 +63,7 @@ const Tab = ({ _acTab, _as }) => {
 
     return (
         <>
-            <nav className="pt-10 left-0 w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start flex items-center p-4">
+            <nav className=" left-0 w-full z-10 bg-transparent md:flex-row md:flex-nowrap md:justify-start flex items-center p-4">
                 <div className="w-full mx-auto items-center justify-between flex md:flex-nowrap flex-wrap md:px-10 px-4">
                     {/* mobile */}
                     <div className="md:hidden text-black text-lg uppercase font-bold flex justify-between w-full md:w-fit">

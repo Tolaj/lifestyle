@@ -219,7 +219,7 @@ const GridBody = (props) => {
         </style>
 
         <div style={containerStyle} className="my-8 -mt-4 ">
-          <div className="ag-theme-alpine 2xl:h-[80vh] md:h-[70vh] h-[75vh] ">
+          <div className="ag-theme-alpine 2xl:h-[85vh] md:h-[82vh] h-[75vh] ">
 
             <AgGridReact
               className="w-full h-full "
