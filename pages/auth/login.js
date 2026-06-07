@@ -192,7 +192,7 @@ export default function Login() {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  alert("For security reasons we did not automate this process, to reset password please contact swapnilhgf@gmail.com");
+                  alert("Nahh we were too lazy to make this work 😅");
                 }}
               >
                 Forgot password?
