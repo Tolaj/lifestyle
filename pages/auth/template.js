@@ -136,9 +136,24 @@ export default function TemplatePicker() {
         .tp-skip:hover { color: #111; }
 
         @media (max-width: 600px) {
-          .tp-grid { grid-template-columns: repeat(2, 1fr); }
-          .tp-heading { font-size: 22px; }
-        }
+  .tp-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-width: 100%;
+  }
+  .tp-heading { font-size: 22px; }
+  .tp-card {
+    padding: 18px 12px;
+  }
+  .tp-card-emoji { font-size: 26px; margin-bottom: 6px; }
+  .tp-card-name { font-size: 12px; }
+  .tp-card-desc { font-size: 10px; }
+  .tp-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 13px 24px;
+  }
+}
       `}</style>
 
             <AuthNavbar />
