@@ -25,6 +25,7 @@ const FetchAPI = async (api, method, data = null, config = {}) => {
     method,
     url,
     data: payload,
+    withCredentials: true,
     headers: {
       'Content-Type': isMultipart ? 'multipart/form-data' : 'application/json',
     },

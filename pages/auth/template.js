@@ -32,20 +32,28 @@ export default function TemplatePicker() {
         if (!selected) return;
         setApplying(true);
         try {
-            const session = await FetchAPI(process.env.SERVER_API + '/api/session', 'GET');
+            const sessionRes = await fetch('/api/session', { credentials: 'include' });
+            if (!sessionRes.ok) {
+                alert('Session expired. Please log in again.');
+                router.push('/auth/login');
+                return;
+            }
+            const session = await sessionRes.json();
             const groupId = session?.user?.groupId;
 
             if (selected.name === 'Blank / Custom') {
+                localStorage.setItem('lifestyle_show_onboarding', 'true')
                 router.push('/admin/dashboard');
                 return;
             }
 
-            const result = await FetchAPI(process.env.SERVER_API + '/api/applyTemplate', 'POST', {
+            const result = await FetchAPI('/api/applyTemplate', 'POST', {
                 templateId: selected._id,
                 groupId,
             });
 
             if (result.message === 'Template applied successfully') {
+                localStorage.setItem('lifestyle_show_onboarding', 'true')
                 router.push('/admin/dashboard');
             } else {
                 alert('Failed to apply template');
@@ -183,7 +191,10 @@ export default function TemplatePicker() {
                 <button className="tp-btn" onClick={handleApply} disabled={!selected}>
                     Get started
                 </button>
-                <a className="tp-skip" onClick={() => router.push('/admin/dashboard')}>
+                <a className="tp-skip" onClick={() => {
+                    localStorage.setItem('lifestyle_show_onboarding', 'true');
+                    router.push('/admin/dashboard');
+                }}>
                     Skip for now
                 </a>
             </div>

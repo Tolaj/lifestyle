@@ -20,7 +20,8 @@ const UserSchema = new mongoose.Schema({
       timestamp: { type: Date, default: Date.now }
     }
   ],
-  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }]
+  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Group' }],
+  onboardingSeen: { type: Boolean, default: false }
 }, {
   timestamps: true
 });

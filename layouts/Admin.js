@@ -1,10 +1,6 @@
 // layouts/Admin.js
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router"
-import { parse } from 'cookie';
-import { verify } from 'jsonwebtoken';
-// components
-
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 import FooterAdmin from "components/Footers/FooterAdmin.js";
@@ -15,12 +11,13 @@ import useSession from "utils/useSession";
 import FetchAPI from "controllers/fetchAPI";
 import PageChange from "components/PreLoader";
 import Toast from "components/Toast";
-
+import Onboarding from "components/Onboarding";
 
 export default function Admin({ children }) {
 
   const router = useRouter()
   const { sessionData, loading } = useSession();
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   let _as = useDynamicState(
     'modalToggle',
@@ -43,26 +40,41 @@ export default function Admin({ children }) {
     'finance',
   )
 
+  // Show onboarding only if user hasn't seen it
+  useEffect(() => {
+    if (!sessionData) return;
+    const key = `lifestyle_onboarded_${sessionData.user.id}`;
+    const seen = localStorage.getItem(key);
+    if (!seen) setShowOnboarding(true);
+  }, [sessionData]);
+
+  const handleOnboardingFinish = async () => {
+    setShowOnboarding(false);
+    if (!sessionData) return;
+    const key = `lifestyle_onboarded_${sessionData.user.id}`;
+    localStorage.setItem(key, 'true');
+    try {
+      await FetchAPI('/api/users', 'PUT', { _id: sessionData.user.id, onboardingSeen: true });
+    } catch (e) {
+      // non-critical
+    }
+  };
+
   useEffect(() => {
     if (_as.toast) {
       const timer = setTimeout(() => {
         _as.setToast(0);
       }, 2000);
-
-      // Cleanup the timeout if toast state changes before 3 seconds
       return () => clearTimeout(timer);
     }
   }, [_as.toast]);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!sessionData) return; // Exit if no session data
-
+      if (!sessionData) return;
       try {
-
         const res = await FetchAPI('/api/users', "GET", sessionData.user);
         _as.setUser(res);
-
         if (localStorage.getItem('projectLifestyle_activeGroup')) {
           let groupExist = res && res.groups && res.groups.some(g => g._id === localStorage.getItem('projectLifestyle_activeGroup')) || false;
           if (!groupExist) {
@@ -71,34 +83,26 @@ export default function Admin({ children }) {
         } else {
           localStorage.setItem('projectLifestyle_activeGroup', sessionData.user.groupId)
         }
-
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
     };
-
-    fetchData(); // Call the fetch function
+    fetchData();
   }, [sessionData, _as.reloadChild]);
-
-
 
   useEffect(() => {
     const fetchData = async () => {
-
       if (localStorage.getItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`)) {
         _as.setCart(JSON.parse(localStorage.getItem(`projectLifestyle_cart_${localStorage.getItem(`projectLifestyle_activeGroup`)}`)))
       }
-
     };
-
-    fetchData(); // Call the fetch function
+    fetchData();
   }, []);
 
   useEffect(() => {
     const key = `projectLifestyle_cart_${localStorage.getItem('projectLifestyle_activeGroup')}`;
     localStorage.setItem(key, JSON.stringify(_as.cart));
   }, [_as.cart]);
-
 
   let _ac = [
     {
@@ -110,7 +114,6 @@ export default function Admin({ children }) {
       activeTabSection: _as.dashboardTab,
       setModalToggle: _as.setModalToggle,
     },
-
     {
       title: "Products",
       route: "/admin/products",
@@ -120,7 +123,6 @@ export default function Admin({ children }) {
       activeTabSection: _as.productsTab,
       setModalToggle: _as.setModalToggle,
     },
-
     {
       title: "Finance",
       route: "/admin/finance",
@@ -149,42 +151,26 @@ export default function Admin({ children }) {
       activeTabSection: _as.profileTab,
       setModalToggle: _as.setModalToggle,
     },
-
   ]
 
-
   return (<>
+    {showOnboarding && <Onboarding onFinish={handleOnboardingFinish} />}
 
-    <div className={`flex  h-fit  bg-[#F9FAFE] `}>
-      <div className={` md:relative  fixed  bottom-0  h-16  `}>
+    <div className={`flex h-fit bg-[#F9FAFE]`}>
+      <div className={`md:relative fixed bottom-0 h-16`}>
         <Sidebar _ac={_ac} _as={_as} />
       </div>
-      <div className="flex flex-col  w-full h-screen ">
-
-        {/* admin header nav */}
-        <div className="md:relative fixed bg-[#F9FAFE] z-3 ">
+      <div className="flex flex-col w-full h-screen">
+        <div className="md:relative fixed bg-[#F9FAFE] z-3">
           <AdminNavbar _ac={_ac} _as={_as} />
-
         </div>
-        {/* admin body */}
-        <div className="   bg-opacity-50 flex-grow  p-4 md:py-0 py-44  max-w-full  flex flex-col  justify-between  ">
-          <div className="  bg-[#f9fafeb3] h-full w-full rounded-3xl p-3">
-            {/* below comment is to use pages/page as child component */}
-
-            {/* {React.Children.map(children, (child) => {
-              return React.cloneElement(child, { _as: _as });
-            })} */}
+        <div className="bg-opacity-50 flex-grow p-4 md:py-0 py-44 max-w-full flex flex-col justify-between">
+          <div className="bg-[#f9fafeb3] h-full w-full rounded-3xl p-3">
             {_as.toast != 0 && (
-              <Toast
-                message={`${_as.toast}`}
-                setToast={_as.setToast}
-              />
+              <Toast message={`${_as.toast}`} setToast={_as.setToast} />
             )}
             {_as?.user?._id ? <TabBody _as={_as} /> : <PageChange />}
-
-
             <Modal _as={_as} />
-
           </div>
         </div>
         <div className="md:block hidden">
@@ -192,9 +178,5 @@ export default function Admin({ children }) {
         </div>
       </div>
     </div>
-
   </>);
 }
-
-
-

@@ -22,9 +22,9 @@ export default function Register() {
   const handleSave = async () => {
     setPreLoader(true);
     try {
-      const result = await FetchAPI('/api/users', 'POST', tempData);
+      await FetchAPI('/api/users', 'POST', tempData);
+      await FetchAPI('/api/login', 'POST', tempData);
       setPreLoader(false);
-      // router.push('/auth/login');
       router.push('/auth/template');
     } catch (error) {
       console.log('_____Create Account Failed!_____');
