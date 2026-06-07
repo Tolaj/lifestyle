@@ -43,7 +43,7 @@ export default function Sidebar(props) {
   return (
     <>
       {windowWidth < 700 ? <>
-        <div className="absolute bottom-0 w-screen z-50 bg-black h-16">
+        <div data-tour="bottom-nav" className="absolute bottom-0 w-screen z-50 bg-black h-16">
           <div className="fixed w-full bottom-2  p-3 px-6 mb-3  flex items-center justify-between   bg-black shadow-3xl text-white  cursor-pointer">
             {/* 1 */}
             <a href="/admin/dashboard" className="flex flex-col items-center transition ease-in duration-20 hover:text-blue-400 p-2">
@@ -72,7 +72,7 @@ export default function Sidebar(props) {
             {/* 3 Action Button */}
 
             <div className="flex flex-col items-center  hover:text-blue-400 p-2 ">
-              <div onClick={() => { disableAddButton ? false : props._as.setModalToggle(router.route) }} className={`absolute bottom-5 text-center flex items-center justify-center rounded-full border-4  border-[#F9FAFE] ${disableAddButton ? "bg-gray-300" : "bg-black"}  w-16 h-16  p-2 text-black  `}>
+              <div data-tour="add-btn" onClick={() => { disableAddButton ? false : props._as.setModalToggle(router.route) }} className={`absolute bottom-5 text-center flex items-center justify-center rounded-full border-4  border-[#F9FAFE] ${disableAddButton ? "bg-gray-300" : "bg-black"}  w-16 h-16  p-2 text-black  `}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className=" size-6 stroke-colors-white  text-white   ">
                   <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
                 </svg>

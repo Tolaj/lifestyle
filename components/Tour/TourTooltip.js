@@ -36,9 +36,9 @@ const STEPS = [
     },
     {
         id: 1,
-        title: "Sidebar navigation",
+        title: "navigation",
         body: "Move between Products, Finance, and Profile from here.",
-        selector: ".sidebar, nav, aside",
+        selector: ".sidebar, [data-tour='bottom-nav'], nav, aside",
         placement: "right",
     },
     {
@@ -60,7 +60,7 @@ const STEPS = [
         title: "Fill in the product details",
         body: "Name it, pick a category, set a price. Hit save and it appears for everyone in your group instantly.",
         selector: "[data-tour='modal-products']",
-        placement: "left",
+        placement: "right",
         triggerModal: "/admin/products",
     },
     {
@@ -129,12 +129,13 @@ const STEPS = [
 // ─── Utility: get element bounding rect relative to viewport ─────────────────
 function getRect(selector) {
     if (!selector) return null;
-    // Try multiple selectors separated by comma
     const selectors = selector.split(",").map((s) => s.trim());
     for (const sel of selectors) {
         try {
-            const el = document.querySelector(sel);
-            if (el) {
+            const els = document.querySelectorAll(sel);
+            for (const el of els) {
+                const style = window.getComputedStyle(el);
+                if (style.display === "none" || style.visibility === "hidden" || style.opacity === "0") continue;
                 const r = el.getBoundingClientRect();
                 if (r.width > 0 && r.height > 0) return r;
             }
@@ -531,7 +532,29 @@ export default function TourTooltip({ onFinish }) {
 
         const winW = window.innerWidth;
         const winH = window.innerHeight;
-        const pos = computePopoverPos(rect, step.placement, winW, winH);
+
+        const placement = step.id === 1 || step.id === 9 || step.id === 10
+            ? (winW < 700 ? "top" : step.placement)
+            : (step.id === 6 || step.id == 4) && winW < 700 ? "center"
+                : step.placement;
+
+
+        const pos = computePopoverPos(rect, placement, winW, winH);
+
+        if (winW < 700) {
+            if (step.id === 1) {
+                pos.top = pos.top - 20;
+            }
+
+            if (step.id == 3) {
+                pos.top = pos.top - 60;
+            }
+
+            if (step.id === 9 || step.id === 10) {
+                pos.top = pos.top - 40;
+            }
+        }
+
         setPopoverPos(pos);
 
         // Scroll element into view if needed
