@@ -33,30 +33,27 @@ export default async function handler(req, res) {
 
     const { templateId } = req.body;
 
-    const template = await Template.findById(templateId);
-    if (!template) return res.status(404).json({ message: 'Template not found' });
+    const [template, group] = await Promise.all([
+        Template.findById(templateId),
+        Group.findById(groupId).populate('categories products orders inventories wishlists')
+    ]);
 
-    const group = await Group.findById(groupId).populate('categories products orders inventories wishlists');
+    if (!template) return res.status(404).json({ message: 'Template not found' });
     if (!group) return res.status(404).json({ message: 'Group not found' });
 
     // --- Conflict check ---
-    // Get existing category and product IDs in group
-    const existingCategoryIds = group.categories.map(c => c._id.toString());
-    const existingProductIds = group.products.map(p => p._id.toString());
-
-    // Get all product IDs referenced in orders, inventory, wishlists
     const referencedProductIds = new Set();
 
-    const orders = await Order.find({ _id: { $in: group.orders } });
+    const [orders, inventories, wishlists] = await Promise.all([
+        Order.find({ _id: { $in: group.orders } }),
+        Inventory.find({ _id: { $in: group.inventories } }),
+        Wishlist.find({ _id: { $in: group.wishlists } })
+    ]);
+
     orders.forEach(o => o.items.forEach(i => referencedProductIds.add(i.product?.toString())));
-
-    const inventories = await Inventory.find({ _id: { $in: group.inventories } });
     inventories.forEach(i => referencedProductIds.add(i.product?.toString()));
-
-    const wishlists = await Wishlist.find({ _id: { $in: group.wishlists } });
     wishlists.forEach(w => w.items.forEach(i => referencedProductIds.add(i.product?.toString())));
 
-    // Products that are referenced but won't exist in new template
     const templateProductNames = template.products.map(p => p.name.toLowerCase());
     const conflictingProducts = group.products.filter(p =>
         referencedProductIds.has(p._id.toString()) &&
@@ -71,7 +68,6 @@ export default async function handler(req, res) {
     }
 
     // --- Apply template ---
-    // Remove existing categories and products not referenced anywhere
     const safeToRemoveCategoryIds = group.categories
         .filter(c => !group.products.some(p => p.category?.toString() === c._id.toString() && referencedProductIds.has(p._id.toString())))
         .map(c => c._id);
@@ -80,45 +76,60 @@ export default async function handler(req, res) {
         .filter(p => !referencedProductIds.has(p._id.toString()))
         .map(p => p._id);
 
-    await Category.deleteMany({ _id: { $in: safeToRemoveCategoryIds } });
-    await Product.deleteMany({ _id: { $in: safeToRemoveProductIds } });
+    await Promise.all([
+        Category.deleteMany({ _id: { $in: safeToRemoveCategoryIds } }),
+        Product.deleteMany({ _id: { $in: safeToRemoveProductIds } }),
+        Group.updateOne({ _id: groupId }, {
+            $pull: {
+                categories: { $in: safeToRemoveCategoryIds },
+                products: { $in: safeToRemoveProductIds },
+            }
+        })
+    ]);
 
-    await Group.updateOne({ _id: groupId }, {
-        $pull: {
-            categories: { $in: safeToRemoveCategoryIds },
-            products: { $in: safeToRemoveProductIds },
-        }
-    });
+    // Create all categories in parallel
+    const existingCatMap = {};
+    group.categories.forEach(c => { existingCatMap[c.name] = c._id; });
 
-    // Create new categories
     const categoryMap = {};
-    for (const cat of template.categories) {
-        const existing = await Category.findOne({ name: cat.name, _id: { $in: group.categories } });
-        if (existing) {
-            categoryMap[cat.name] = existing._id;
-        } else {
-            const newCat = await Category.create({ name: cat.name, icon: cat.icon, color: cat.color });
-            await Group.updateOne({ _id: groupId }, { $addToSet: { categories: newCat._id } });
-            categoryMap[cat.name] = newCat._id;
-        }
+    const newCats = template.categories.filter(c => !existingCatMap[c.name]);
+    const existingCats = template.categories.filter(c => existingCatMap[c.name]);
+
+    existingCats.forEach(c => { categoryMap[c.name] = existingCatMap[c.name]; });
+
+    const createdCats = await Category.insertMany(
+        newCats.map(c => ({ name: c.name, icon: c.icon, color: c.color }))
+    );
+
+    createdCats.forEach((c, i) => { categoryMap[newCats[i].name] = c._id; });
+
+    if (createdCats.length > 0) {
+        await Group.updateOne({ _id: groupId }, {
+            $addToSet: { categories: { $each: createdCats.map(c => c._id) } }
+        });
     }
 
-    // Create new products
-    for (const prod of template.products) {
-        const categoryId = categoryMap[prod.category];
-        if (!categoryId) continue;
-        const existing = await Product.findOne({ name: prod.name, _id: { $in: group.products } });
-        if (!existing) {
-            const newProd = await Product.create({
-                name: prod.name,
-                category: categoryId,
-                price: prod.price || '0',
-                unit: prod.unit || 'unit',
-                description: prod.description || '',
-                inventory: false,
-            });
-            await Group.updateOne({ _id: groupId }, { $addToSet: { products: newProd._id } });
-        }
+    // Create all products in parallel
+    const existingProdNames = new Set(group.products.map(p => p.name.toLowerCase()));
+    const newProds = template.products.filter(p =>
+        categoryMap[p.category] && !existingProdNames.has(p.name.toLowerCase())
+    );
+
+    const createdProds = await Product.insertMany(
+        newProds.map(p => ({
+            name: p.name,
+            category: categoryMap[p.category],
+            price: p.price || '0',
+            unit: p.unit || 'unit',
+            description: p.description || '',
+            inventory: false,
+        }))
+    );
+
+    if (createdProds.length > 0) {
+        await Group.updateOne({ _id: groupId }, {
+            $addToSet: { products: { $each: createdProds.map(p => p._id) } }
+        });
     }
 
     return res.status(200).json({ message: 'Template applied successfully' });
