@@ -203,7 +203,7 @@ const TabButton = (props) => {
         case "ADD":
             return (<>
                 <div className="text-center ">
-                    <button type="submit" onClick={() => { props.clickButton(props.route) }} className={` ${props.className} md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150`} >
+                    <button type="submit" data-tour="add-btn" onClick={() => { props.clickButton(props.route) }} className={` ${props.className} md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150`} >
                         <div>
                             {props.placeholder}
                         </div>
@@ -220,7 +220,7 @@ const TabButton = (props) => {
 
             return (<>
                 <div className="text-center ">
-                    <button type="submit" onClick={() => { props.clickButton(props.route) }} className={` ${props.className} md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150 `}>
+                    <button type="submit" data-tour="cart-btn" onClick={() => { props.clickButton(props.route) }} className={` ${props.className} md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150 `}>
                         <div>
                             {props.placeholder}
                         </div>
@@ -238,7 +238,7 @@ const TabButton = (props) => {
         case "GROUP":
             return (<>
                 <div className="text-center ">
-                    <button type="submit" onClick={() => { props.clickButton(props.route) }} className={` ${props.className} md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150 `}>
+                    <button type="submit" data-tour="group-btn" onClick={() => { props.clickButton(props.route) }} className={` ${props.className} md:px-6 md:py-4 px-3 py-2 md:gap-3 gap-1 shadow-lg md:shadow-none bg-white flex items-center  text-black active:bg-slate-200 text-sm font-medium  rounded-full  hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-fit ease-linear transition-all duration-150 `}>
                         <div>
                             {props.placeholder}
                         </div>

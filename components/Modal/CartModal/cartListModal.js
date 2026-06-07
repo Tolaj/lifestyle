@@ -194,7 +194,7 @@ function CartListModal(props) {
               From: "translate-x-0"
               To: "translate-x-full"
           --> */}
-            <div class="pointer-events-auto w-screen max-w-md">
+            <div data-tour="modal-cart" class="pointer-events-auto w-screen max-w-md">
               <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-xl ">
                 {/* cart Header */}
                 <div className="bg-white flex items-center justify-between px-6 py-4 border-b-2">

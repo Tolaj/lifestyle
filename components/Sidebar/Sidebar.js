@@ -80,7 +80,7 @@ export default function Sidebar(props) {
             </div>
 
             {/* 4 */}
-            <a href="/admin/finance" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 p-2 ">
+            <a href="/admin/finance" data-tour="finance-link" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 p-2 ">
               {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2"
@@ -95,7 +95,7 @@ export default function Sidebar(props) {
             </a>
 
             {/* 5 */}
-            <a href="/admin/profile" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 p-2 ">
+            <a href="/admin/profile" data-tour="profile-link" className="flex flex-col items-center transition ease-in duration-200 hover:text-blue-400 p-2 ">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" strokeWidth="2"
@@ -134,6 +134,7 @@ export default function Sidebar(props) {
                       <nav className="flex min-w-[240px] flex-col gap-1 p-0 font-sans text-base font-normal text-blue-gray-700">
                         <a
                           href={sideBarTab.route}
+                          data-tour={sideBarTab.title === "Finance" ? "finance-link" : sideBarTab.title === "Profile" ? "profile-link" : undefined}
                           className="flex items-center w-full p-3 leading-tight transition-all rounded-lg outline-none text-start hover:bg-gray-100 hover:bg-opacity-80 hover:text-blue-gray-900 focus:bg-gray-100 focus:bg-opacity-80 focus:text-blue-gray-900 active:bg-gray-100 active:bg-opacity-80 active:text-blue-gray-900">
                           <div className="grid mr-4 place-items-center">
 

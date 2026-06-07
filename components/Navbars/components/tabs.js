@@ -36,6 +36,7 @@ const Tab = ({ _acTab, _as }) => {
                     <a
                         href="#"
                         aria-current="page"
+                        data-tour={`${section.toLowerCase().replace(/\s+/g, '-')}-tab`}
                         className={`md:p-4 p-2 ${_acTab.activeTabSection === index ? "text-white bg-gray-900 active" : "text-gray-500 hover:text-gray-600 hover:bg-gray-100"} inline-block rounded-t-lg`}
                     >
                         {section}
@@ -56,6 +57,8 @@ const Tab = ({ _acTab, _as }) => {
                     route={button == "CART" ? "/admin/cart" : button == "GROUP" ? "/admin/group" : router.route}
                     clickButton={_acTab.setModalToggle}
                     placeholder={windowWidth < 700 ? "Add" : button}
+                    data-tour={button === "ADD" ? "add-btn" : button === "CART" ? "cart-btn" : "group-btn"}
+
                 />
             );
         })
