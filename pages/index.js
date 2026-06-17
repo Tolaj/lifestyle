@@ -526,7 +526,7 @@ export default function Index() {
 					<div className="lf-social-cards">
 						{[
 							{ initials: "SW", name: "Swapnil added an order", action: "Weekly groceries · $112.40", pill: "Split ✓", pillClass: "lf-pill-g" },
-							{ initials: "KJ", name: "Kirti joined the group", action: "Home · 3 members now", pill: "New", pillClass: "lf-pill-n" },
+							{ initials: "KJ", name: "Rahul joined the group", action: "Home · 3 members now", pill: "New", pillClass: "lf-pill-n" },
 							{ initials: "AM", name: "Arjun paid for Costco run", action: "$88.20 · you owe $29.40", pill: "Tracked", pillClass: "lf-pill-g" },
 							{ initials: "RV", name: "Reorder from wish list", action: "Walmart weekly · 12 items", pill: "Pending", pillClass: "lf-pill-n" },
 						].map(card => (
