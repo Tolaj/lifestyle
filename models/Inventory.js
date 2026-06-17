@@ -5,7 +5,7 @@ import { deleteFromGroupPostDelete } from '../utils/modelPlugins';
 const InventorySchema = new mongoose.Schema({
 
   product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-  unit: { type: Number, default: 0 },
+  unit: { type: String, default: '' },
   price: { type: Number, default: 0 },
   splitAmong: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   quantityAvailable: { type: Number, required: true, default: 0 },
